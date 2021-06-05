@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "54411831209",
+    "firebase_url": "https://flatchat-85f1c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "flatchat-85f1c",
+    "storage_bucket": "flatchat-85f1c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54411831209:android:2b144140220e4b021646b8",
+        "android_client_info": {
+          "package_name": "com.example.helloworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "54411831209-ep615m6nv3hqsns8e9tqd3tc964so8h6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.helloworld",
+            "certificate_hash": "cc2ed46edab98b06290a29e7ea89439df501fc1f"
+          }
+        },
+        {
+          "client_id": "54411831209-pqp4tm9s6jv2i61bffpfng1grodhon1d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgaNR0Pb16Hu4vUPLLOfxYCjp8vDSLrJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "54411831209-pqp4tm9s6jv2i61bffpfng1grodhon1d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

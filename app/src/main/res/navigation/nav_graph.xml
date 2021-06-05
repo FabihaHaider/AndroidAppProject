@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homepage">
+    <fragment
+        android:id="@+id/homepage"
+        android:name="com.example.helloworld.HomePageFragment"
+        android:label="home_page"
+        tools:layout="@layout/fragment_home_page" />
+    <fragment
+        android:id="@+id/logout"
+        android:name="com.example.helloworld.logout_Fragment"
+        android:label="logout"
+        tools:layout="@layout/fragment_logout" />
+    <fragment
+        android:id="@+id/add_a_place"
+        android:name="com.example.helloworld.add_house_Fragment"
+        android:label="add house"
+        tools:layout="@layout/fragment_add_house" />
+</navigation>

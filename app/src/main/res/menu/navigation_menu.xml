@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homepage"
+        android:icon="@drawable/ic_baseline_homepage"
+        android:title="homepage"/>
+    <item android:id="@+id/notification"
+        android:icon="@drawable/ic_baseline_notifications"
+        android:title="notifications"/>
+    <item android:id="@+id/add_a_place"
+        android:icon="@drawable/ic_baseline_add"
+        android:title="add a place"/>
+    <item android:id="@+id/selected_places"
+        android:icon="@drawable/ic_baseline_add_location_alt"
+        android:title="selected places for booking"/>
+    <item android:id="@+id/your_added_venues"
+        android:icon="@drawable/ic_baseline_apartment"
+        android:title="your added venues"/>
+
+    <item
+        android:title="Others">
+        <menu>
+            <item android:id="@+id/logout"
+                android:icon="@drawable/ic_baseline_exit_to_app_24"
+                android:title="log out"/>
+        </menu>
+
+    </item>
+
+
+</menu>
