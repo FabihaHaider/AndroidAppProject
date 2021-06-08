@@ -10,4 +10,5 @@
     <color name="trasparent">#00000000</color>
     <color name="gradStart">#004d99</color>
     <color name="gradStop"> #003366</color>
+    <color name = "spinner_bg">#D6D6D6</color>
 </resources>

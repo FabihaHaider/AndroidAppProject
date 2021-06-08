@@ -35,14 +35,6 @@ public class logout_Fragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment logout.
-     */
     // TODO: Rename and change types and number of parameters
     public static logout_Fragment newInstance(String param1, String param2) {
         logout_Fragment fragment = new logout_Fragment();
@@ -68,7 +60,7 @@ public class logout_Fragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         // Inflate the layout for this fragment
         new AlertDialog.Builder(getActivity())
-                .setMessage("Are you sure you want to exit?")
+                .setMessage("Are you sure you want to log out?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

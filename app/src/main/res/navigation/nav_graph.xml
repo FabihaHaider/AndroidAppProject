@@ -16,7 +16,7 @@
         tools:layout="@layout/fragment_logout" />
     <fragment
         android:id="@+id/add_a_place"
-        android:name="com.example.helloworld.add_house_Fragment"
+        android:name="com.example.helloworld.add_place_Fragment"
         android:label="add house"
-        tools:layout="@layout/fragment_add_house" />
+        tools:layout="@layout/fragment_add_place" />
 </navigation>

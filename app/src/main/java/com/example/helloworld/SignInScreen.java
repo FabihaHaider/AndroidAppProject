@@ -36,8 +36,7 @@ public class SignInScreen extends AppCompatActivity {
         @Override
         public void run() {
             rellay1.setVisibility(View.VISIBLE);
-            rellay2.setVisibility(View.VISIBLE
-            );
+            rellay2.setVisibility(View.VISIBLE);
         }
     };
 

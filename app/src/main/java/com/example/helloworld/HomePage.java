@@ -1,5 +1,6 @@
 package com.example.helloworld;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -10,24 +11,36 @@ import androidx.navigation.ui.NavigationUI;
 import android.content.ClipData;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.content.Intent;
-import android.widget.EditText;
 import android.widget.TextView;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+
+
+import org.jetbrains.annotations.NotNull;
+
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomePage extends AppCompatActivity {
     private Button Landlord;
     private Button Tenant;
     private ClipData.Item add_a_place;
     private TextView textView;
+    private ImageSlider imageSlider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +48,8 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_homepage);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+        imageSlider = findViewById(R.id.image_slider);
+        List<SlideModel> slidingImagesArray = new ArrayList<>();
 
         findViewById(R.id.MenuImage).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,46 +70,31 @@ public class HomePage extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.NavHostFragment);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-//        Tenant = findViewById(R.id.button_Tenant);
-//        Tenant.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openTenantView();
-//            }
-//        });
+        FirebaseDatabase.getInstance().getReference().child("Images").child("red")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+
+
+                        for(DataSnapshot data: snapshot.getChildren())
+                        {
+                            String s =  data.getValue().toString();
+                            String d = data.getValue().toString().substring(data.getValue().toString().indexOf('=')+1, data.getValue().toString().length()-1);
+
+
+                            slidingImagesArray.add(new SlideModel(d, "image1", ScaleTypes.FIT));
+
+                        }
+                        imageSlider.setImageList(slidingImagesArray, ScaleTypes.FIT);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
+
     }
-
-
-
-//    public Boolean onCreateOptionsMenU (Menu menu){
-//        getMenuInflater().inflate(R.menu.navigation_menu,menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if(id == R.id.add_a_place){
-//            Log.i("navigationBar", "onOptionsItemSelected: clicked on add a place");
-//            Intent intent = new Intent(HomePage.this, addHouseForRent.class);
-//            startActivity(intent);
-//            return true;
-//        }
-//        switch(item.getItemId()) {
-//            case R.id.add_a_place:
-//                Log.i("navigationBar", "onOptionsItemSelected: clicked on add a place");
-//                Intent intent = new Intent(this, addHouseForRent.class);
-//                this.startActivity(intent);
-//                break;
-//            case R.id.logout:
-//                // another startActivity, this is for item with id "menu_item2"
-//                break;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//
-//        return true;
-//    }
 
 }
 
