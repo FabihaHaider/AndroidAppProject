@@ -99,7 +99,7 @@ public class SignInScreen extends AppCompatActivity {
                 progressDialog.dismiss();
                 if(task.isSuccessful()) {
                     Toast.makeText(SignInScreen.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(SignInScreen.this, HomePage.class));
+                    startActivity(new Intent(SignInScreen.this, Launching_Activity.class));
                 }
                 else{
                     Toast.makeText(SignInScreen.this, "Login Failed", Toast.LENGTH_SHORT).show();

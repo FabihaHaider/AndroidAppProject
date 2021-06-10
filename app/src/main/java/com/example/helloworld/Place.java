@@ -2,6 +2,8 @@ package com.example.helloworld;
 
 import android.net.Uri;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class Place {
@@ -9,18 +11,32 @@ public class Place {
     private String address;
     private String owner_email;
     private int amount_of_charge;
+    private String charge_unit;
     private int maxm_no_of_guests;
+    private String description;
     private ArrayList<String> arrayList = new ArrayList<String>();
 
-    public Place(String name, String address, String owner_email, int amount_of_charge, int maxm_no_of_guests, ArrayList<String> arrayList) {
+
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, ArrayList<String> arrayList) {
         this.name = name;
         this.address = address;
         this.owner_email = owner_email;
         this.amount_of_charge = amount_of_charge;
+        this.charge_unit = charge_unit;
         this.maxm_no_of_guests = maxm_no_of_guests;
         this.arrayList = arrayList;
     }
 
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, ArrayList<String> arrayList) {
+        this.name = name;
+        this.address = address;
+        this.owner_email = owner_email;
+        this.amount_of_charge = amount_of_charge;
+        this.charge_unit = charge_unit;
+        this.maxm_no_of_guests = maxm_no_of_guests;
+        this.description = description;
+        this.arrayList = arrayList;
+    }
 
     public String getName() {
         return name;
@@ -60,5 +76,21 @@ public class Place {
 
     public void setAmount_of_charge(int amount_of_charge) {
         this.amount_of_charge = amount_of_charge;
+    }
+
+    public String getCharge_unit() {
+        return charge_unit;
+    }
+
+    public void setCharge_unit(String charge_unit) {
+        this.charge_unit = charge_unit;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

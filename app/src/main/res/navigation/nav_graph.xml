@@ -19,4 +19,16 @@
         android:name="com.example.helloworld.add_place_Fragment"
         android:label="add house"
         tools:layout="@layout/fragment_add_place" />
+    <fragment
+        android:id="@+id/my_places"
+        android:name="com.example.helloworld.My_places_fragment"
+        android:label="demo"
+        tools:layout="@layout/activity_my_places"/>
+    <!--    <activity-->
+<!--        android:id="@+id/my_places"-->
+<!--        android:name="com.example.helloworld.My_Places"-->
+<!--        android:label="activity_my_places"-->
+<!--        tools:layout="@layout/activity_my_places" />-->
+
+
 </navigation>

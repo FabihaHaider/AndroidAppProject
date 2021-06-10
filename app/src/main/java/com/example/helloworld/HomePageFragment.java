@@ -2,11 +2,25 @@ package com.example.helloworld;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +28,9 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class HomePageFragment extends Fragment {
+
+    private ImageSlider imageSlider;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +76,33 @@ public class HomePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_page, container, false);
+        imageSlider = view.findViewById(R.id.image_slider);
+        List<SlideModel> slidingImagesArray = new ArrayList<>();
+
+        FirebaseDatabase.getInstance().getReference().child("Images").child("cry")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+
+
+                        for(DataSnapshot data: snapshot.getChildren())
+                        {
+                            String s =  data.getValue().toString();
+                            String d = data.getValue().toString().substring(data.getValue().toString().indexOf('=')+1, data.getValue().toString().length()-1);
+
+
+                            slidingImagesArray.add(new SlideModel(d, "image1", ScaleTypes.FIT));
+
+                        }
+                        imageSlider.setImageList(slidingImagesArray, ScaleTypes.FIT);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
+        return  view;
     }
 }

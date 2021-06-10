@@ -11,10 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld">
-        <activity android:name=".HomePage"></activity>
-        <activity android:name=".Registration"></activity>
-        <activity android:name=".locationView" />
-<!--        <activity android:name=".LandlordView" />-->
+
+        <activity android:name=".Launching_Activity" />
+        <activity android:name=".Registration" />
+        <activity android:name=".locationView" /> <!-- <activity android:name=".LandlordView" /> -->
         <activity android:name=".SignInScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -7,12 +7,7 @@
     tools:context="com.example.helloworld.HomePageFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text= "homepage"
-        android:textSize="20sp"
-        android:layout_gravity="center"/>
+
 
     <com.denzcoskun.imageslider.ImageSlider
         android:id="@+id/image_slider"

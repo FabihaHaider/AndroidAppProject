@@ -10,7 +10,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.content.ClipData;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,17 +24,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.denzcoskun.imageslider.constants.ScaleTypes;
 
 
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePage extends AppCompatActivity {
+public class Launching_Activity extends AppCompatActivity {
     private Button Landlord;
     private Button Tenant;
     private ClipData.Item add_a_place;
@@ -45,7 +41,7 @@ public class HomePage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homepage);
+        setContentView(R.layout.activity_launcher);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         imageSlider = findViewById(R.id.image_slider);
@@ -70,7 +66,7 @@ public class HomePage extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.NavHostFragment);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        FirebaseDatabase.getInstance().getReference().child("Images").child("red")
+        FirebaseDatabase.getInstance().getReference().child("Images").child("cry")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {

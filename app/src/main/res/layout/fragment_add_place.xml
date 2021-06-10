@@ -95,6 +95,7 @@
             android:layout_height="43dp"
             android:layout_marginStart="28dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:ems="10"
             android:hint="Enter unique name"
             android:inputType="textLongMessage"
@@ -117,6 +118,7 @@
             android:layout_height="38dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:ems="10"
             android:hint="Enter Address"
             android:inputType="textLongMessage|textPostalAddress"
@@ -140,6 +142,7 @@
             android:layout_height="41dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:ems="10"
             android:hint="Enter amount"
             android:inputType="number"
@@ -153,6 +156,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:spinnerMode="dropdown"
+            android:backgroundTint="@color/black"
             android:text="choose an unit" />
 
         <TextView
@@ -160,7 +164,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:text="Maximum number of guests"
             android:textColor="#020202"
             android:textSize="16sp" />
@@ -177,6 +181,30 @@
             android:textColor="#7E7676"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/textView_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Description (optional)"
+            android:textColor="#020202"
+            android:textSize="16sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/description"
+                android:layout_width="349dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:inputType="textMultiLine"
+                android:hint="Add any notes (if any)" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/button_add_place"
@@ -184,8 +212,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
             android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
             android:text="Add Place" />
-
 
 
     </LinearLayout>

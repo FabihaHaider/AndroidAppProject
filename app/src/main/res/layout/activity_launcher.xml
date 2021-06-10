@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.helloworld.HomePage">
+    tools:context="com.example.helloworld.Launching_Activity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             <LinearLayout
                 android:id="@+id/layoutToolBar"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
+                android:layout_height="60dp"
                 android:background="@color/purple_500"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
@@ -29,6 +29,12 @@
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/ic_baseline_menu"
                     app:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@android:string/yes"
+                    android:paddingStart="10dp"/>
             </LinearLayout>
 
             <fragment
@@ -54,16 +60,5 @@
             app:headerLayout="@layout/layout_navigation_header"/>
 
 
-<!--    <Button-->
-<!--        android:id="@+id/button_Tenant"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Tenant"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.5"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.596" />-->
 
 </androidx.drawerlayout.widget.DrawerLayout>

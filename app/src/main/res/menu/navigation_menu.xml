@@ -10,12 +10,13 @@
     <item android:id="@+id/add_a_place"
         android:icon="@drawable/ic_baseline_add"
         android:title="add a place"/>
-    <item android:id="@+id/selected_places"
-        android:icon="@drawable/ic_baseline_add_location_alt"
-        android:title="selected places for booking"/>
-    <item android:id="@+id/your_added_venues"
+    <item android:id="@+id/my_places"
         android:icon="@drawable/ic_baseline_apartment"
-        android:title="your added venues"/>
+        android:title="my places"/>
+    <item android:id="@+id/selected_places"
+        android:icon="@drawable/ic_baseline_shopping_cart"
+        android:title="selected places for booking"/>
+
 
     <item
         android:title="Others">

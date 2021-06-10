@@ -29,6 +29,7 @@ import android.net.Uri;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,6 +44,7 @@ import com.squareup.picasso.Picasso;
 
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +53,7 @@ import java.util.HashMap;
 public class add_place_Fragment extends Fragment implements AdapterView.OnItemSelectedListener{
 
 
-    private TextView name, location, amount_of_charge, guests_no, show_extra_image;
+    private TextView name, location, amount_of_charge, guests_no, show_extra_image, description;
     private Button add_place, upload_btn;
     private ImageView image;
     private ImageView added_image1, added_image2;
@@ -63,6 +65,7 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
     private DatabaseReference ref;
     private ProgressDialog progressDialog;
     private int upload_count = 0;
+    private String charge_rate;
     private HashMap<String, String> hashMap = new HashMap<>();
 
 
@@ -84,6 +87,7 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
         added_image2 = view.findViewById(R.id.image_added2);
         show_extra_image = view.findViewById(R.id.show_extra_image);
         upload_btn = view.findViewById(R.id.button_upload);
+        description = view.findViewById(R.id.description);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Uploading Image");
@@ -124,7 +128,7 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
         upload_btn.setOnClickListener(new View.OnClickListener() {
                                           @Override
                                           public void onClick(View v) {
-                                              Log.i("add_place", "onClick: "+imageList.size());
+
                                               if(imageList.size() < 3 ){
                                                   upload_btn.setVisibility(View.INVISIBLE);
                                                   Toast.makeText(getActivity(),"select at least three images to upload", Toast.LENGTH_LONG);
@@ -133,8 +137,9 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
                                               else {
                                                   added_image1.setVisibility(View.VISIBLE);
                                                   added_image2.setVisibility(View.VISIBLE);
+                                                  show_extra_image.setVisibility(View.VISIBLE);
                                                   if(imageList.size() == 3) {
-                                                      show_extra_image.setVisibility(View.VISIBLE);
+                                                      show_extra_image.setVisibility(View.INVISIBLE);
                                                   }
                                                   Picasso.get().load(imageList.get(0)).into(image);
                                                   Picasso.get().load(imageList.get(1)).into(added_image1);
@@ -182,6 +187,8 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
         String address = location.getText().toString();
         String price = amount_of_charge.getText().toString().trim();
         String crowd = guests_no.getText().toString().trim();
+        String description_text = description.getText().toString();
+
         int charge_amount = 0;
         int number_of_guests = 0;
         if(price.length() !=0 && crowd.length() != 0) {
@@ -193,7 +200,7 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
         String email = user.getEmail();
 
 
-        if(place_name.isEmpty() || address.isEmpty() || price.isEmpty() || crowd.isEmpty()){
+        if(place_name.isEmpty() || address.isEmpty() || price.isEmpty() || crowd.isEmpty() || charge_rate.equals("Choose the charging rate")){
             Toast.makeText(getContext(),"Enter all the data", Toast.LENGTH_LONG).show();
         }
         else if(imageList.size()<3){
@@ -201,6 +208,7 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
         }
         else {
             ref = FirebaseDatabase.getInstance().getReference().child("Place");
+            Place place;
 
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -242,7 +250,10 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
                 });
             }
 
-            Place place = new Place(place_name, address, email, charge_amount, number_of_guests, userimage);
+            if(description_text.isEmpty())
+                place = new Place(place_name, address, email, charge_amount,charge_rate, number_of_guests, userimage);
+            else
+                place = new Place(place_name,address, email, charge_amount, charge_rate, number_of_guests, description_text, userimage);
             ref.child(String.valueOf(place_cnt + 1)).setValue(place);
 
             Toast.makeText(getContext(), "Inserted place successfully", Toast.LENGTH_LONG).show();
@@ -258,17 +269,7 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-        switch (position) {
-            case 0:
-                // Whatever you want to happen when the first item gets selected
-                break;
-            case 1:
-                // Whatever you want to happen when the second item gets selected
-                break;
-
-        }
-
+        charge_rate = parent.getItemAtPosition(position).toString();
     }
 
     @Override
@@ -277,3 +278,4 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
     }
 
 }
+
