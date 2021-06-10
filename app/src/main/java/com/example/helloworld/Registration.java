@@ -15,8 +15,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.jetbrains.annotations.NotNull;
 
 public class Registration extends AppCompatActivity {
 
@@ -77,8 +80,7 @@ public class Registration extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    Toast.makeText(Registration.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Registration.this, SignInScreen.class));
+                    sendEmailVerification();
                 }
                 else{
                     Toast.makeText(Registration.this, "Registration Failed", Toast.LENGTH_SHORT).show();
@@ -99,10 +101,36 @@ public class Registration extends AppCompatActivity {
         if(name.isEmpty() || user_password.isEmpty() || user_email.isEmpty() || user_profession.isEmpty() || user_phone_number.isEmpty()){
             Toast.makeText(this, "Please enter all the details", Toast.LENGTH_SHORT).show();
         }
+        else if(password.length()<6){
+            Toast.makeText(this, "Password must contain at least 6 characters",Toast.LENGTH_SHORT).show();
+        }
         else{
             result = true;
         }
 
         return result;
+    }
+
+
+    private void sendEmailVerification(){
+        FirebaseUser user = firebase_auth.getCurrentUser();
+        if (user != null) {
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(Registration.this, "Verification mail has been sent", Toast.LENGTH_SHORT).show();
+                        firebase_auth.signOut();
+                        finish();
+                        startActivity(new Intent(Registration.this, SignInScreen.class));
+                    }
+                    else {
+                        Toast.makeText(Registration.this, "Error occurred while sending mail", Toast.LENGTH_SHORT).show();
+                        firebase_auth.signOut();
+
+                    }
+                }
+            });
+        }
     }
 }

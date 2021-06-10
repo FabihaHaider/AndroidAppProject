@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld">
-
+        <activity android:name=".ResetPassword"></activity>
         <activity android:name=".Launching_Activity" />
         <activity android:name=".Registration" />
         <activity android:name=".locationView" /> <!-- <activity android:name=".LandlordView" /> -->

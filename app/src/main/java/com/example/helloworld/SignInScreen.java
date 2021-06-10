@@ -26,6 +26,7 @@ public class SignInScreen extends AppCompatActivity {
     private EditText email, password;
     private TextView  signup;
     private Button signin;
+    private Button forgotPass;
     private int counter = 5;
     private FirebaseAuth firebase_auth;
     private ProgressDialog progressDialog;
@@ -54,18 +55,20 @@ public class SignInScreen extends AppCompatActivity {
         password = findViewById(R.id.plainText_password);
         signin = (Button) findViewById(R.id.button_signIn);
         signup = findViewById(R.id.textView_signup);
+        forgotPass = findViewById(R.id.button_forgot_password);
 
 
 
         firebase_auth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = firebase_auth.getCurrentUser();
 
-//        if(user != null){
-//            finish();
-//            Toast.makeText(SignInScreen.this, "Already signed in", Toast.LENGTH_SHORT).show();
-//            startActivity(new Intent(SignInScreen.this, HomePage.class));
-//        }
+        //if user is already signed in then direct them to homepage
+        if(user != null){
+            finish();
+            Toast.makeText(SignInScreen.this, "Already signed in", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(SignInScreen.this, Launching_Activity.class));
+        }
 
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +89,13 @@ public class SignInScreen extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignInScreen.this, ResetPassword.class));
+            }
+        });
     }
 
     public void validate(String email_txt, String password_txt){
@@ -98,8 +108,7 @@ public class SignInScreen extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressDialog.dismiss();
                 if(task.isSuccessful()) {
-                    Toast.makeText(SignInScreen.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(SignInScreen.this, Launching_Activity.class));
+                    checkEmailVerification();
                 }
                 else{
                     Toast.makeText(SignInScreen.this, "Login Failed", Toast.LENGTH_SHORT).show();
@@ -112,5 +121,20 @@ public class SignInScreen extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    public void checkEmailVerification(){
+        FirebaseUser user = firebase_auth.getCurrentUser();
+        if(user.isEmailVerified()){
+            Toast.makeText(SignInScreen.this, "Login Successful", Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(new Intent(SignInScreen.this, Launching_Activity.class));
+
+        }
+        else{
+            firebase_auth.signOut();
+            Toast.makeText(SignInScreen.this, "Please verify your email", Toast.LENGTH_SHORT);
+        }
     }
 }
