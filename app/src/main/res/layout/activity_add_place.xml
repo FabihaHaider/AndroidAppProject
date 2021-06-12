@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.helloworld.add_place_Fragment">
+    tools:context="com.example.helloworld.Add_Place_activity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,6 +23,16 @@
             android:layout_marginTop="40dp"
             android:text="Click the icon below to add images"
             android:textColor="#070707"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/image_count_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="31dp"
+            android:layout_marginTop="5dp"
+            android:text="Select between 3 to 5 images"
+            android:textColor="#727171"
             android:textSize="16sp" />
 
         <LinearLayout

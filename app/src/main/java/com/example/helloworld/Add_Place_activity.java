@@ -1,9 +1,7 @@
 package com.example.helloworld;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,9 +10,8 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +26,6 @@ import android.net.Uri;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,13 +40,12 @@ import com.squareup.picasso.Picasso;
 
 
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class add_place_Fragment extends Fragment implements AdapterView.OnItemSelectedListener{
+public class Add_Place_activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
 
     private TextView name, location, amount_of_charge, guests_no, show_extra_image, description;
@@ -61,7 +56,6 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
     private Uri imageUri;
     private int place_cnt = 0;
     private ArrayList<Uri> imageList = new ArrayList<Uri>();
-    private ArrayList<String> userimage = new ArrayList<String>();
     private DatabaseReference ref;
     private ProgressDialog progressDialog;
     private int upload_count = 0;
@@ -69,28 +63,12 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
     private HashMap<String, String> hashMap = new HashMap<>();
 
 
+    public void onCreate(Bundle savedInstanceState) {
 
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_place);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        View view = inflater.inflate(R.layout.fragment_add_place, container, false);
-        name = view.findViewById(R.id.plainText_name);
-        location = view.findViewById(R.id.plainText_address);
-        amount_of_charge = view.findViewById(R.id.plainText_charge);
-        guests_no = view.findViewById(R.id.plainText_number_of_guests);
-        add_place = (Button) view.findViewById(R.id.button_add_place);
-        spinner = view.findViewById(R.id.spinner);
-        image = view.findViewById(R.id.add_image);
-        added_image1 = view.findViewById(R.id.image_added1);
-        added_image2 = view.findViewById(R.id.image_added2);
-        show_extra_image = view.findViewById(R.id.show_extra_image);
-        upload_btn = view.findViewById(R.id.button_upload);
-        description = view.findViewById(R.id.description);
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Uploading Image");
+        bindUI();
 
         onClickingSpinner();
 
@@ -108,11 +86,25 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
             }
         });
 
-        return view;
+    }
+
+    private void bindUI() {
+        name = findViewById(R.id.plainText_name);
+        location = findViewById(R.id.plainText_address);
+        amount_of_charge = findViewById(R.id.plainText_charge);
+        guests_no = findViewById(R.id.plainText_number_of_guests);
+        add_place = (Button) findViewById(R.id.button_add_place);
+        spinner = findViewById(R.id.spinner);
+        image = findViewById(R.id.add_image);
+        added_image1 = findViewById(R.id.image_added1);
+        added_image2 = findViewById(R.id.image_added2);
+        show_extra_image = findViewById(R.id.show_extra_image);
+        upload_btn = findViewById(R.id.button_upload);
+        description = findViewById(R.id.description);
     }
 
     private void onClickingSpinner() {
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.charge_rate, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(Add_Place_activity.this,R.array.charge_rate, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(this);
@@ -131,7 +123,12 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
 
                                               if(imageList.size() < 3 ){
                                                   upload_btn.setVisibility(View.INVISIBLE);
-                                                  Toast.makeText(getActivity(),"select at least three images to upload", Toast.LENGTH_LONG);
+                                                  Toast.makeText(Add_Place_activity.this,"select at least three images to upload", Toast.LENGTH_LONG);
+                                                  imageList.clear();
+                                              }
+                                              if(imageList.size() > 5 ){
+                                                  upload_btn.setVisibility(View.INVISIBLE);
+                                                  Toast.makeText(Add_Place_activity.this,"select at most five images to upload", Toast.LENGTH_LONG);
                                                   imageList.clear();
                                               }
                                               else {
@@ -160,7 +157,7 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
                         Intent data = result.getData();
 
                         if(data.getClipData().getItemCount() < 3){
-                            Toast.makeText(getContext(),"Please select at least 3 images", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Add_Place_activity.this,"Please select at least 3 images", Toast.LENGTH_LONG).show();
                         }
 
                         if(data != null && data.getClipData().getItemCount() >=3){
@@ -170,12 +167,11 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
                             while(currentImage < count_data){
                                 imageUri = data.getClipData().getItemAt(currentImage).getUri();
                                 imageList.add(imageUri);
-                                userimage.add(imageUri.toString().trim());
                                 currentImage++;
                             }
                         }
                         else{
-                            Toast.makeText(getContext(),"No file selected", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Add_Place_activity.this,"No file selected", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -201,10 +197,10 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
 
 
         if(place_name.isEmpty() || address.isEmpty() || price.isEmpty() || crowd.isEmpty() || charge_rate.equals("Choose the charging rate")){
-            Toast.makeText(getContext(),"Enter all the data", Toast.LENGTH_LONG).show();
+            Toast.makeText(Add_Place_activity.this,"Enter all the data", Toast.LENGTH_LONG).show();
         }
-        else if(imageList.size()<3){
-            Toast.makeText(getContext(),"Enter at least 3 images", Toast.LENGTH_LONG).show();
+        else if(imageList.size()<3 || imageList.size()>5){
+            Toast.makeText(Add_Place_activity.this,"Please select 3 to 5 images only", Toast.LENGTH_LONG).show();
         }
         else {
             ref = FirebaseDatabase.getInstance().getReference().child("Place");
@@ -251,12 +247,14 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
             }
 
             if(description_text.isEmpty())
-                place = new Place(place_name, address, email, charge_amount,charge_rate, number_of_guests, userimage);
+                place = new Place(place_name, address, email, charge_amount,charge_rate, number_of_guests);
             else
-                place = new Place(place_name,address, email, charge_amount, charge_rate, number_of_guests, description_text, userimage);
+                place = new Place(place_name,address, email, charge_amount, charge_rate, number_of_guests, description_text);
             ref.child(String.valueOf(place_cnt + 1)).setValue(place);
 
-            Toast.makeText(getContext(), "Inserted place successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, My_places_activity.class);
+            startActivity(intent);
         }
     }
 
@@ -274,8 +272,9 @@ public class add_place_Fragment extends Fragment implements AdapterView.OnItemSe
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        Toast.makeText(getContext(), "Select an unit", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Add_Place_activity.this, "Select an unit", Toast.LENGTH_SHORT).show();
     }
+
 
 }
 

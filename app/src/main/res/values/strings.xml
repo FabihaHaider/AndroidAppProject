@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">HelloWorld</string>
     <string name="title_activity_add_house_for_rent">addHouseForRent</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

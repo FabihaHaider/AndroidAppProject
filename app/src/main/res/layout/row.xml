@@ -42,20 +42,35 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_below="@id/cardview_place_name"/>
-
-        <TextView
-            android:id="@+id/cardview_charge"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="charge rate"
+            android:orientation="horizontal"
             android:layout_toRightOf="@id/cardview_image"
             android:layout_toEndOf="@id/cardview_image"
-            android:textSize="18sp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_below="@id/cardview_location"/>
-        
+            android:layout_below="@id/cardview_location">
+
+            <TextView
+                android:id="@+id/cardview_charge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="charge rate"
+                android:textSize="18sp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                />
+
+            <TextView
+                android:id="@+id/rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="unit"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"/>
+        </LinearLayout>
+
+
 
     </RelativeLayout>
 

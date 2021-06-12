@@ -4,9 +4,10 @@ import android.net.Uri;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Place {
+public class Place implements Serializable {
     private String name;
     private String address;
     private String owner_email;
@@ -14,20 +15,22 @@ public class Place {
     private String charge_unit;
     private int maxm_no_of_guests;
     private String description;
-    private ArrayList<String> arrayList = new ArrayList<String>();
+    private int image;
 
+    public Place() {
+    }
 
-    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, ArrayList<String> arrayList) {
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests) {
         this.name = name;
         this.address = address;
         this.owner_email = owner_email;
         this.amount_of_charge = amount_of_charge;
         this.charge_unit = charge_unit;
         this.maxm_no_of_guests = maxm_no_of_guests;
-        this.arrayList = arrayList;
+
     }
 
-    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, ArrayList<String> arrayList) {
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description) {
         this.name = name;
         this.address = address;
         this.owner_email = owner_email;
@@ -35,7 +38,7 @@ public class Place {
         this.charge_unit = charge_unit;
         this.maxm_no_of_guests = maxm_no_of_guests;
         this.description = description;
-        this.arrayList = arrayList;
+
     }
 
     public String getName() {
@@ -92,5 +95,13 @@ public class Place {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
     }
 }
