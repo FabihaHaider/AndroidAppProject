@@ -37,7 +37,7 @@ import java.util.ArrayList;
 
 
 public class Place_Details_activity extends AppCompatActivity {
-    private TextView place_name, address, price_rate, number_of_guests, description;
+    private TextView place_name, address, price_rate, number_of_guests, description, category;
     private Place place;
     private DatabaseReference ref;
     private ArrayList<image_model> image_models;
@@ -52,7 +52,7 @@ public class Place_Details_activity extends AppCompatActivity {
         setContentView(R.layout.activity_place_details);
 
         setTitle("Place Details");
-        binnUI();
+
 
         if (getIntent().getExtras() != null) {
             Object place = getIntent().getExtras().get("place");
@@ -61,6 +61,18 @@ public class Place_Details_activity extends AppCompatActivity {
             }
         }
 
+        binnUI();
+
+        bindLabels();
+    }
+
+    private void binnUI() {
+        place_name = findViewById(R.id.place_name);
+        address = findViewById(R.id.address);
+        number_of_guests = findViewById(R.id.guests_number);
+        price_rate = findViewById(R.id.price_rate);
+        description = findViewById(R.id.description);
+        category = findViewById(R.id.textview_category);
         recyclerView = findViewById(R.id.recyclerView_SHOW_IMAGES);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -68,9 +80,22 @@ public class Place_Details_activity extends AppCompatActivity {
         image_models = new ArrayList<>();
         myImageAdapter = new MyImageAdapter(Place_Details_activity.this, image_models);
         recyclerView.setAdapter(myImageAdapter);
-
         ref = FirebaseDatabase.getInstance().getReference().child("Images").child(place.getName());
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void bindLabels() {
+
+
+        place_name.setText(place.getName());
+        address.setText(place.getAddress());
+        number_of_guests.setText(Integer.toString(place.getMaxm_no_of_guests()));
+        price_rate.setText("Tk " + Integer.toString(place.getAmount_of_charge()) + " " + place.getCharge_unit());
+        category.setText(place.getCategory());
+        if(place.getDescription() != null){
+            description.setText(place.getDescription());
+        }
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -90,32 +115,7 @@ public class Place_Details_activity extends AppCompatActivity {
             }
         });
 
-
-        bindLabels();
     }
-
-    private void binnUI() {
-        place_name = findViewById(R.id.place_name);
-        address = findViewById(R.id.address);
-        number_of_guests = findViewById(R.id.guests_number);
-        price_rate = findViewById(R.id.price_rate);
-        description = findViewById(R.id.description);
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void bindLabels() {
-
-
-        place_name.setText(place.getName());
-        address.setText(place.getAddress());
-        number_of_guests.setText(Integer.toString(place.getMaxm_no_of_guests()));
-        price_rate.setText("Tk " + Integer.toString(place.getAmount_of_charge()) + " " + place.getCharge_unit());
-        if(place.getDescription() != null){
-            description.setText(place.getDescription());
-        }
-
-    }
-
 
 
     @Override

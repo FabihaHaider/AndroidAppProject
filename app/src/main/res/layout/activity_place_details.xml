@@ -97,6 +97,19 @@
                             android:textSize="20sp"
                             android:textIsSelectable="true"
                             tools:text="no parking allowed"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Purpose" />
+
+                        <TextView
+                            android:id="@+id/textview_category"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:textIsSelectable="true"
+                            tools:text = "Educational purposes"/>
                 </LinearLayout>
 
         </ScrollView>

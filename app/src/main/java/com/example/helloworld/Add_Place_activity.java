@@ -48,7 +48,7 @@ import java.util.HashMap;
 public class Add_Place_activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
 
-    private TextView name, location, amount_of_charge, guests_no, show_extra_image, description;
+    private TextView name, location, amount_of_charge, guests_no, show_extra_image, description,category;
     private Button add_place, upload_btn;
     private ImageView image;
     private ImageView added_image1, added_image2;
@@ -101,6 +101,7 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
         show_extra_image = findViewById(R.id.show_extra_image);
         upload_btn = findViewById(R.id.button_upload);
         description = findViewById(R.id.description);
+        category = findViewById(R.id.plainText_category);
     }
 
     private void onClickingSpinner() {
@@ -124,11 +125,6 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
                                               if(imageList.size() < 3 ){
                                                   upload_btn.setVisibility(View.INVISIBLE);
                                                   Toast.makeText(Add_Place_activity.this,"select at least three images to upload", Toast.LENGTH_LONG);
-                                                  imageList.clear();
-                                              }
-                                              if(imageList.size() > 5 ){
-                                                  upload_btn.setVisibility(View.INVISIBLE);
-                                                  Toast.makeText(Add_Place_activity.this,"select at most five images to upload", Toast.LENGTH_LONG);
                                                   imageList.clear();
                                               }
                                               else {
@@ -184,6 +180,7 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
         String price = amount_of_charge.getText().toString().trim();
         String crowd = guests_no.getText().toString().trim();
         String description_text = description.getText().toString();
+        String category_text = category.getText().toString();
 
         int charge_amount = 0;
         int number_of_guests = 0;
@@ -196,10 +193,10 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
         String email = user.getEmail();
 
 
-        if(place_name.isEmpty() || address.isEmpty() || price.isEmpty() || crowd.isEmpty() || charge_rate.equals("Choose the charging rate")){
+        if(place_name.isEmpty() || address.isEmpty() || price.isEmpty() || crowd.isEmpty() || charge_rate.equals("Choose the charging rate") || category_text.isEmpty()){
             Toast.makeText(Add_Place_activity.this,"Enter all the data", Toast.LENGTH_LONG).show();
         }
-        else if(imageList.size()<3 || imageList.size()>5){
+        else if(imageList.size()<3){
             Toast.makeText(Add_Place_activity.this,"Please select 3 to 5 images only", Toast.LENGTH_LONG).show();
         }
         else {
@@ -247,9 +244,9 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
             }
 
             if(description_text.isEmpty())
-                place = new Place(place_name, address, email, charge_amount,charge_rate, number_of_guests);
+                place = new Place(place_name, address, email, charge_amount,charge_rate, number_of_guests, category_text);
             else
-                place = new Place(place_name,address, email, charge_amount, charge_rate, number_of_guests, description_text);
+                place = new Place(place_name,address, email, charge_amount, charge_rate, number_of_guests, description_text, category_text);
             ref.child(String.valueOf(place_cnt + 1)).setValue(place);
 
             Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();

@@ -21,7 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ActionTypes;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.interfaces.ItemClickListener;
+import com.denzcoskun.imageslider.interfaces.TouchListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,7 +38,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class Launching_Activity extends AppCompatActivity {
     private TextView textView;
@@ -86,7 +92,6 @@ public class Launching_Activity extends AppCompatActivity {
                             String s =  data.getValue().toString();
                             String d = data.getValue().toString().substring(data.getValue().toString().indexOf('=')+1, data.getValue().toString().length()-1);
 
-
                             slidingImagesArray.add(new SlideModel(d, "image1", ScaleTypes.FIT));
 
                         }
@@ -114,6 +119,7 @@ public class Launching_Activity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
 
 

@@ -16,16 +16,6 @@
 
 
         <TextView
-            android:id="@+id/image_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="31dp"
-            android:layout_marginTop="40dp"
-            android:text="Click the icon below to add images"
-            android:textColor="#070707"
-            android:textSize="16sp" />
-
-        <TextView
             android:id="@+id/image_count_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,7 +97,7 @@
             android:layout_marginRight="10dp"
             android:ems="10"
             android:hint="Enter unique name"
-            android:inputType="textLongMessage"
+            android:inputType="textMultiLine|textCapSentences"
             android:textColor="#7E7676"
             android:textSize="16sp" />
 
@@ -130,7 +120,7 @@
             android:layout_marginRight="10dp"
             android:ems="10"
             android:hint="Enter Address"
-            android:inputType="textLongMessage|textPostalAddress"
+            android:inputType="textLongMessage|textPostalAddress|textCapSentences"
             android:textColor="#7E7676"
             android:textSize="14sp" />
 
@@ -191,6 +181,28 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/textView_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:text="Purpose"
+            android:textColor="#020202"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/plainText_category"
+            android:layout_width="349dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="Enter possible reason customers can rent this place for"
+            android:inputType="textMultiLine|textCapSentences"
+            android:textColor="#7E7676"
+            android:textSize="16sp" />
+
+        <TextView
             android:id="@+id/textView_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -211,7 +223,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
-                android:inputType="textMultiLine"
+                android:inputType="textMultiLine|textCapSentences"
                 android:hint="Add any notes (if any)" />
         </com.google.android.material.textfield.TextInputLayout>
 

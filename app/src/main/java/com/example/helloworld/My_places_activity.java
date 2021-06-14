@@ -65,19 +65,21 @@ public class My_places_activity extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
                     Place place;
+                    if(snapshot.exists()) {
+                        String email = dataSnapshot.child("owner_email").getValue().toString();
+                        String place_name = dataSnapshot.child("name").getValue().toString();
+                        String address = dataSnapshot.child("address").getValue().toString();
+                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                        String category = dataSnapshot.child("category").getValue().toString();
 
-                    String email = dataSnapshot.child("owner_email").getValue().toString();
-                    String place_name = dataSnapshot.child("name").getValue().toString();
-                    String address = dataSnapshot.child("address").getValue().toString();
-                    Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
-                    String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
-                    Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                        if (email.equals(owner_email)) {
+                            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, category);
 
-                    if(email.equals(owner_email)) {
-                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests);
-
-                        place.setImage(R.drawable.logo);
-                        arrayList.add(place);
+                            place.setImage(R.drawable.logo);
+                            arrayList.add(place);
+                        }
                     }
                 }
                 myadapter.notifyDataSetChanged();

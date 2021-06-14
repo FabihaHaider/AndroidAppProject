@@ -5,9 +5,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
@@ -30,6 +32,7 @@ import java.util.List;
 public class HomePageFragment extends Fragment {
 
     private ImageSlider imageSlider;
+
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -78,7 +81,12 @@ public class HomePageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
         imageSlider = view.findViewById(R.id.image_slider);
+
+
         List<SlideModel> slidingImagesArray = new ArrayList<>();
+        List<SlideModel> buttonArray = new ArrayList<>();
+
+
 
         FirebaseDatabase.getInstance().getReference().child("Images").child("cry")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,7 +99,7 @@ public class HomePageFragment extends Fragment {
                             String s =  data.getValue().toString();
                             String d = data.getValue().toString().substring(data.getValue().toString().indexOf('=')+1, data.getValue().toString().length()-1);
 
-
+                            Log.i("imglink", "onDataChange: "+d);
                             slidingImagesArray.add(new SlideModel(d, "image1", ScaleTypes.FIT));
 
                         }

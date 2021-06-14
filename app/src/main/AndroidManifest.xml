@@ -3,6 +3,7 @@
     package="com.example.helloworld">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld">
-        <activity android:name=".Show_Images"></activity>
         <activity android:name=".Place_Details_activity" />
         <activity android:name=".ResetPassword" />
         <activity android:name=".My_places_activity" />

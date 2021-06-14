@@ -15,22 +15,24 @@ public class Place implements Serializable {
     private String charge_unit;
     private int maxm_no_of_guests;
     private String description;
+    private String category;
     private int image;
 
     public Place() {
     }
 
-    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests) {
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String category) {
         this.name = name;
         this.address = address;
         this.owner_email = owner_email;
         this.amount_of_charge = amount_of_charge;
         this.charge_unit = charge_unit;
         this.maxm_no_of_guests = maxm_no_of_guests;
+        this.category = category;
 
     }
 
-    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description) {
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, String category) {
         this.name = name;
         this.address = address;
         this.owner_email = owner_email;
@@ -38,6 +40,8 @@ public class Place implements Serializable {
         this.charge_unit = charge_unit;
         this.maxm_no_of_guests = maxm_no_of_guests;
         this.description = description;
+        this.category = category;
+
 
     }
 
@@ -103,5 +107,13 @@ public class Place implements Serializable {
 
     public void setImage(int image) {
         this.image = image;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
