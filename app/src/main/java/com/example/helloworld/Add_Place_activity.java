@@ -12,9 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -45,21 +43,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Add_Place_activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class Add_Place_activity extends AppCompatActivity{
 
 
-    private TextView name, location, amount_of_charge, guests_no, show_extra_image, description,category;
+    private TextView name, location, amount_of_charge, guests_no, show_extra_image, description;
     private Button add_place, upload_btn;
     private ImageView image;
     private ImageView added_image1, added_image2;
-    private Spinner spinner;
+    private Spinner spinner_charge_rate, spinner_purpose;
     private Uri imageUri;
     private int place_cnt = 0;
     private ArrayList<Uri> imageList = new ArrayList<Uri>();
     private DatabaseReference ref;
     private ProgressDialog progressDialog;
     private int upload_count = 0;
-    private String charge_rate;
+    private String charge_rate, purpose;
     private HashMap<String, String> hashMap = new HashMap<>();
 
 
@@ -94,21 +92,50 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
         amount_of_charge = findViewById(R.id.plainText_charge);
         guests_no = findViewById(R.id.plainText_number_of_guests);
         add_place = (Button) findViewById(R.id.button_add_place);
-        spinner = findViewById(R.id.spinner);
+        spinner_charge_rate = findViewById(R.id.spinner_charge_rate);
         image = findViewById(R.id.add_image);
         added_image1 = findViewById(R.id.image_added1);
         added_image2 = findViewById(R.id.image_added2);
         show_extra_image = findViewById(R.id.show_extra_image);
         upload_btn = findViewById(R.id.button_upload);
         description = findViewById(R.id.description);
-        category = findViewById(R.id.plainText_category);
+        spinner_purpose = findViewById(R.id.spinner_purpose);
     }
 
     private void onClickingSpinner() {
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(Add_Place_activity.this,R.array.charge_rate, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(this);
+        spinner_charge_rate.setAdapter(arrayAdapter);
+
+
+        ArrayAdapter<CharSequence> arrayAdapter1 = ArrayAdapter.createFromResource(Add_Place_activity.this, R.array.purpose, android.R.layout.simple_spinner_item);
+        arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_purpose.setAdapter(arrayAdapter1);
+
+
+        spinner_charge_rate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                charge_rate = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinner_purpose.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                purpose = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void insertImage() {
@@ -180,7 +207,7 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
         String price = amount_of_charge.getText().toString().trim();
         String crowd = guests_no.getText().toString().trim();
         String description_text = description.getText().toString();
-        String category_text = category.getText().toString();
+
 
         int charge_amount = 0;
         int number_of_guests = 0;
@@ -193,7 +220,7 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
         String email = user.getEmail();
 
 
-        if(place_name.isEmpty() || address.isEmpty() || price.isEmpty() || crowd.isEmpty() || charge_rate.equals("Choose the charging rate") || category_text.isEmpty()){
+        if(place_name.isEmpty() || address.isEmpty() || price.isEmpty() || crowd.isEmpty() || charge_rate.equals("Choose the charging rate") || purpose.equals("Let the customers know what they can use your place for")){
             Toast.makeText(Add_Place_activity.this,"Enter all the data", Toast.LENGTH_LONG).show();
         }
         else if(imageList.size()<3){
@@ -244,9 +271,9 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
             }
 
             if(description_text.isEmpty())
-                place = new Place(place_name, address, email, charge_amount,charge_rate, number_of_guests, category_text);
+                place = new Place(place_name, address, email, charge_amount,charge_rate, number_of_guests, "none", purpose);
             else
-                place = new Place(place_name,address, email, charge_amount, charge_rate, number_of_guests, description_text, category_text);
+                place = new Place(place_name,address, email, charge_amount, charge_rate, number_of_guests, description_text, purpose);
             ref.child(String.valueOf(place_cnt + 1)).setValue(place);
 
             Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
@@ -262,15 +289,6 @@ public class Add_Place_activity extends AppCompatActivity implements AdapterView
 
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        charge_rate = parent.getItemAtPosition(position).toString();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        Toast.makeText(Add_Place_activity.this, "Select an unit", Toast.LENGTH_SHORT).show();
-    }
 
 
 }

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -24,6 +25,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +46,10 @@ public class Place_Details_activity extends AppCompatActivity {
     private ArrayList<image_model> image_models;
     private RecyclerView recyclerView;
     private MyImageAdapter myImageAdapter;
+    private FirebaseUser user;
+    private String owner_email;
+    private LinearLayout layout;
+    private boolean myplace = true;
 
 
 
@@ -60,11 +67,18 @@ public class Place_Details_activity extends AppCompatActivity {
                 this.place = (Place) place;
             }
         }
-
         binnUI();
+        if(!place.getOwner_email().equals(owner_email))
+        {
+            myplace = false;
+            invalidateOptionsMenu();
+            layout.setVisibility(View.VISIBLE);
+        }
+
 
         bindLabels();
     }
+
 
     private void binnUI() {
         place_name = findViewById(R.id.place_name);
@@ -81,6 +95,9 @@ public class Place_Details_activity extends AppCompatActivity {
         myImageAdapter = new MyImageAdapter(Place_Details_activity.this, image_models);
         recyclerView.setAdapter(myImageAdapter);
         ref = FirebaseDatabase.getInstance().getReference().child("Images").child(place.getName());
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        owner_email = user.getEmail();
+        layout = findViewById(R.id.layout_requestsButton);
 
     }
 
@@ -93,8 +110,9 @@ public class Place_Details_activity extends AppCompatActivity {
         number_of_guests.setText(Integer.toString(place.getMaxm_no_of_guests()));
         price_rate.setText("Tk " + Integer.toString(place.getAmount_of_charge()) + " " + place.getCharge_unit());
         category.setText(place.getCategory());
-        if(place.getDescription() != null){
-            description.setText(place.getDescription());
+        description.setText(place.getDescription());
+        if(place.getDescription().toString() == "none"){
+            description.setHintTextColor(Color.DKGRAY);
         }
 
         ref.addValueEventListener(new ValueEventListener() {
@@ -125,17 +143,32 @@ public class Place_Details_activity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.edit:
-//                onEdit();
-                return true;
-            case R.id.delete:
-//                onDelete();
-                return true;
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if(!myplace)
+        {
+            menu.findItem(R.id.delete).setVisible(false);
+            menu.findItem(R.id.edit).setVisible(false);
         }
-        return super.onOptionsItemSelected(item);
+        else{
+            menu.findItem(R.id.delete).setVisible(true);
+            menu.findItem(R.id.edit).setVisible(true);
+        }
+        return true;
     }
+
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.edit:
+////                onEdit();
+//                return true;
+//            case R.id.delete:
+////                onDelete();
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
 }

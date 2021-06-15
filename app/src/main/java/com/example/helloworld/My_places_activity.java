@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,9 +37,14 @@ public class My_places_activity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private MyPlacesAdapter myadapter;
     private ArrayList<Place> arrayList;
-    private String owner_email;
+    private String owner_email,category_string;
     private ImageView add_image;
     private TextView textView;
+    private Bundle extras;
+    private Integer pos_in_purpose_array;
+    private String[] purpose;
+    private boolean homepage = false;
+
 
 
     @Override
@@ -45,52 +52,87 @@ public class My_places_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_places);
 
-        setTitle("My Places");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String owner_email = user.getEmail();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Place");
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        String extras  =(String) getIntent().getExtras().get("Category");
 
-        arrayList = new ArrayList<>();
-        myadapter = new MyPlacesAdapter(this, arrayList);
-        recyclerView.setAdapter(myadapter);
+        if(extras != null){
+            homepage = true;
+            invalidateOptionsMenu();
+            Resources res = getResources();
+            purpose = res.getStringArray(R.array.purpose);
+            pos_in_purpose_array = Integer.parseInt(extras);
+            category_string = purpose[pos_in_purpose_array+1];
+            if(pos_in_purpose_array == 0)
+            {
+                setTitle("Social Events archive");
+            }
+            else{
+
+                setTitle(category_string + " archive");
+            }
+
+        }
+
+        else{
+            setTitle("My Places");
+        }
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            String owner_email = user.getEmail();
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("Place");
+            recyclerView = findViewById(R.id.recyclerView);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+            arrayList = new ArrayList<>();
+            myadapter = new MyPlacesAdapter(this, arrayList);
+            recyclerView.setAdapter(myadapter);
 
 
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Place place;
+                        if (snapshot.exists()) {
+                            String email = dataSnapshot.child("owner_email").getValue().toString();
+                            String place_name = dataSnapshot.child("name").getValue().toString();
+                            String address = dataSnapshot.child("address").getValue().toString();
+                            Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                            String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                            Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                            String category = dataSnapshot.child("category").getValue().toString();
+                            String description = dataSnapshot.child("description").getValue().toString();
+                            if(extras==null) {
+                                if (email.equals(owner_email)) {
+                                    place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category);
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    Place place;
-                    if(snapshot.exists()) {
-                        String email = dataSnapshot.child("owner_email").getValue().toString();
-                        String place_name = dataSnapshot.child("name").getValue().toString();
-                        String address = dataSnapshot.child("address").getValue().toString();
-                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
-                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
-                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
-                        String category = dataSnapshot.child("category").getValue().toString();
+                                    place.setImage(R.drawable.logo);
+                                    arrayList.add(place);
+                                }
+                            }
+                            else
+                            {
+                                if(category_string.equals(category)){
+                                    place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category);
 
-                        if (email.equals(owner_email)) {
-                            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, category);
-
-                            place.setImage(R.drawable.logo);
-                            arrayList.add(place);
+                                    place.setImage(R.drawable.logo);
+                                    arrayList.add(place);
+                                }
+                            }
                         }
                     }
+                    myadapter.notifyDataSetChanged();
                 }
-                myadapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+
     }
+
+
 
     public class MyPlacesAdapter extends RecyclerView.Adapter<MyPlacesHolder> {
 
@@ -155,8 +197,8 @@ public class My_places_activity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.my_places_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+            getMenuInflater().inflate(R.menu.my_places_menu, menu);
+            return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -167,5 +209,20 @@ public class My_places_activity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if(!homepage)
+        {
+            menu.findItem(R.id.my_place_add).setVisible(true);
+
+        }
+        else{
+            menu.findItem(R.id.my_place_add).setVisible(false);
+
+        }
+        return true;
     }
 }

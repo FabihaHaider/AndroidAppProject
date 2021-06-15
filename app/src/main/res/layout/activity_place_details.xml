@@ -12,7 +12,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView_SHOW_IMAGES"
                     android:layout_width="match_parent"
@@ -23,10 +23,10 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                         <TextView
@@ -88,19 +88,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Description" />
-
-                        <TextView
-                            android:id="@+id/description"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:textIsSelectable="true"
-                            tools:text="no parking allowed"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
                             android:text="Purpose" />
 
                         <TextView
@@ -110,6 +97,52 @@
                             android:textSize="20sp"
                             android:textIsSelectable="true"
                             tools:text = "Educational purposes"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Description" />
+
+                        <TextView
+                            android:id="@+id/description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:textIsSelectable="true"
+                            tools:text="no parking allowed"/>
+
+                        <LinearLayout
+                            android:id="@+id/layout_requestsButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+
+
+                        <Button
+                            android:id="@+id/btn_sendRequest"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="5dp"
+                            android:text="Send Request"/>
+
+                        <Button
+                            android:id="@+id/btn_addToWishlist"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:text="Add to wishlist"/>
+
+
+                        </LinearLayout>
+
+
+
                 </LinearLayout>
 
         </ScrollView>

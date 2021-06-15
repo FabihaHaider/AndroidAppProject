@@ -18,4 +18,12 @@
         <item>Hourly</item>
         <item>Daily</item>
     </string-array>
+    <string-array name="purpose">
+        <item>Let the customers know what they can use your place for</item>
+        <item>Social Events(e.g weddings, birthdays, performance, bridal showers)</item>
+        <item>Educational Purpose</item>
+        <item>Official Meetings</item>
+        <item>Workshops</item>
+        <item>Rent To Tourists</item>
+    </string-array>
 </resources>

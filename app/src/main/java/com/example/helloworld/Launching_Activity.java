@@ -11,21 +11,20 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.ClipData;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.denzcoskun.imageslider.ImageSlider;
-import com.denzcoskun.imageslider.constants.ActionTypes;
-import com.denzcoskun.imageslider.constants.ScaleTypes;
-import com.denzcoskun.imageslider.interfaces.ItemClickListener;
-import com.denzcoskun.imageslider.interfaces.TouchListener;
-import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +32,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.smarteist.autoimageslider.SliderView;
+import com.smarteist.autoimageslider.SliderViewAdapter;
 
 
 import org.jetbrains.annotations.NotNull;
@@ -45,16 +46,17 @@ import static android.content.ContentValues.TAG;
 
 public class Launching_Activity extends AppCompatActivity {
     private TextView textView;
-    private ImageSlider imageSlider;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-
+    private SliderView sliderView;
+    int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+
 
         drawerLayout = findViewById(R.id.drawerLayout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
@@ -64,8 +66,11 @@ public class Launching_Activity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        imageSlider = findViewById(R.id.image_slider);
-        List<SlideModel> slidingImagesArray = new ArrayList<>();
+
+        sliderView = findViewById(R.id.imageSlider);
+        MySliderAdapter mySliderAdapter = new MySliderAdapter(images, Launching_Activity.this);
+        sliderView.setSliderAdapter(mySliderAdapter);
+        sliderView.setAutoCycle(true);
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -81,28 +86,6 @@ public class Launching_Activity extends AppCompatActivity {
         TextView navEmail = (TextView) headerView.findViewById(R.id.header_email);
         navEmail.setText(email);
 
-        FirebaseDatabase.getInstance().getReference().child("Images").child("cry")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-
-
-                        for(DataSnapshot data: snapshot.getChildren())
-                        {
-                            String s =  data.getValue().toString();
-                            String d = data.getValue().toString().substring(data.getValue().toString().indexOf('=')+1, data.getValue().toString().length()-1);
-
-                            slidingImagesArray.add(new SlideModel(d, "image1", ScaleTypes.FIT));
-
-                        }
-                        imageSlider.setImageList(slidingImagesArray, ScaleTypes.FIT);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                    }
-                });
 
     }
 
@@ -119,6 +102,7 @@ public class Launching_Activity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }
 

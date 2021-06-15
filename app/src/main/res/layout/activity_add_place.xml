@@ -149,7 +149,7 @@
             android:textSize="14sp" />
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/spinner_charge_rate"
             android:layout_width="348dp"
             android:layout_height="21dp"
             android:layout_marginStart="30dp"
@@ -180,27 +180,15 @@
             android:textColor="#7E7676"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/textView_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
-            android:text="Purpose"
-            android:textColor="#020202"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/plainText_category"
-            android:layout_width="349dp"
-            android:layout_height="43dp"
+        <Spinner
+            android:id="@+id/spinner_purpose"
+            android:layout_width="348dp"
+            android:layout_height="21dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
-            android:ems="10"
-            android:hint="Enter possible reason customers can rent this place for"
-            android:inputType="textMultiLine|textCapSentences"
-            android:textColor="#7E7676"
-            android:textSize="16sp" />
+            android:spinnerMode="dropdown"
+            android:backgroundTint="@color/black"
+            android:text="choose an unit" />
 
         <TextView
             android:id="@+id/textView_description"
