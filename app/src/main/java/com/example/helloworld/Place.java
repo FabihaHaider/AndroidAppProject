@@ -6,6 +6,7 @@ import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Place implements Serializable {
     private String name;
@@ -16,9 +17,21 @@ public class Place implements Serializable {
     private int maxm_no_of_guests;
     private String description;
     private String category;
-    private int image;
+    private String image;
 
     public Place() {
+    }
+
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, String category, String image) {
+        this.name = name;
+        this.address = address;
+        this.owner_email = owner_email;
+        this.amount_of_charge = amount_of_charge;
+        this.charge_unit = charge_unit;
+        this.maxm_no_of_guests = maxm_no_of_guests;
+        this.description = description;
+        this.category = category;
+        this.image = image;
     }
 
     public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, String category) {
@@ -90,11 +103,11 @@ public class Place implements Serializable {
         this.description = description;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

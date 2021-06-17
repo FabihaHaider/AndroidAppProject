@@ -71,6 +71,8 @@ public class logout_Fragment extends Fragment {
                 })
                 .setNegativeButton("No", null)
                 .show();
-        return inflater.inflate(R.layout.fragment_logout, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_logout, container, false);
+        return  view;
     }
 }

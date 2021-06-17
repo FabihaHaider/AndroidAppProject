@@ -5,43 +5,35 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
-public class RequestAdapter extends FragmentPagerAdapter {
+public class RequestAdapter extends FragmentStateAdapter {
     private Context context;
-    int totalTabs;
-    public RequestAdapter(@NonNull @NotNull FragmentManager fm, Context context, int totalTabs) {
-        super(fm);
-        this.context=context;
-        this.totalTabs=totalTabs;
-    }
-
-    // tab titles
+    private int totalTabs;
     private String[] tabTitles = new String[]{"Sent Requests", "Received Requests"};
 
-    // overriding getPageTitle()
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return tabTitles[position];
+
+    public RequestAdapter(@NonNull @NotNull FragmentManager fragmentManager, @NonNull @NotNull Lifecycle lifecycle) {
+        super(fragmentManager, lifecycle);
     }
+
 
     @NonNull
     @NotNull
     @Override
-    public Fragment getItem(int position) {
-        if(position==0){
-            return new SentRequestFragment();
+    public Fragment createFragment(int position) {
+        switch (position){
+            case 1:
+                return new ReceivedRequestFragment();
         }
-        else if(position==1)
-            return new ReceivedRequestFragment();
-        else return null;
-
+        return new SentRequestFragment();
     }
 
     @Override
-    public int getCount() {
-        return totalTabs;
+    public int getItemCount() {
+        return 2;
     }
 }

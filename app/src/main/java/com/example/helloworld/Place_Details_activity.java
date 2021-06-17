@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -51,7 +53,7 @@ public class Place_Details_activity extends AppCompatActivity {
     private FirebaseUser user;
     private String owner_email;
     private LinearLayout layout;
-    private boolean myplace = true;
+    private boolean isMyplace = true;
 
 
 
@@ -62,6 +64,10 @@ public class Place_Details_activity extends AppCompatActivity {
 
         setTitle("Place Details");
 
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        String source = extras.getString("source");
+
 
         if (getIntent().getExtras() != null) {
             Object place = getIntent().getExtras().get("place");
@@ -71,11 +77,13 @@ public class Place_Details_activity extends AppCompatActivity {
         }
 
         binnUI();
-        if(!place.getOwner_email().equals(owner_email))
+        if(!place.getOwner_email().equals(owner_email) || source.equals("notMyPlacesList"))
         {
-            myplace = false;
-            invalidateOptionsMenu();
-            layout.setVisibility(View.VISIBLE);
+
+                isMyplace = false;
+                invalidateOptionsMenu();
+                layout.setVisibility(View.VISIBLE);
+
         }
 
 
@@ -118,7 +126,6 @@ public class Place_Details_activity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void bindLabels() {
 
-
         place_name.setText(place.getName());
         address.setText(place.getAddress());
         number_of_guests.setText(Integer.toString(place.getMaxm_no_of_guests()));
@@ -159,7 +166,7 @@ public class Place_Details_activity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if(!myplace)
+        if(!isMyplace)
         {
             menu.findItem(R.id.delete).setVisible(false);
             menu.findItem(R.id.edit).setVisible(false);
@@ -171,18 +178,67 @@ public class Place_Details_activity extends AppCompatActivity {
         return true;
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.edit:
-////                onEdit();
-//                return true;
-//            case R.id.delete:
-////                onDelete();
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit:
+                onEdit();
+                return true;
+            case R.id.delete:
+                onDelete();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    private void onEdit() {
+        Intent intent = new Intent(Place_Details_activity.this, Add_Place_activity.class).putExtra("place", place);
+        startActivity(intent);
+    }
 
+    private void onDelete() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete place record?")
+                .setMessage("Are you sure you want to delete the record?")
+                .setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deletePlace();
+                            }
+                        })
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+    private void deletePlace() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Place");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    String name = dataSnapshot.child("name").getValue().toString();
+                    String place_name = dataSnapshot.child("name").getValue().toString();
+                    Log.i("fabiha", "onDataChange: datasnaphot name " + name + " place name "+ place.getName());
+                    if(name.equals(place.getName())){
+                        dataSnapshot.getRef().removeValue();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("Images").child(place.getName());
+
+        databaseReference1.removeValue();
+
+        Toast.makeText(this, "Place deleted", Toast.LENGTH_LONG).show();
+
+        finish();
+    }
 }

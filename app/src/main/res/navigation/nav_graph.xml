@@ -9,11 +9,13 @@
         android:name="com.example.helloworld.HomePageFragment"
         android:label="home_page"
         tools:layout="@layout/fragment_home_page" />
+
     <fragment
         android:id="@+id/logout"
         android:name="com.example.helloworld.logout_Fragment"
-        android:label="logout"
+        android:label="log_out"
         tools:layout="@layout/fragment_logout" />
+
     <activity
         android:id="@+id/add_a_place"
         android:name="com.example.helloworld.Add_Place_activity"

@@ -34,6 +34,7 @@ public class SentRequestFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup root =(ViewGroup) inflater.inflate(R.layout.fragment_sent_request, container, false);
 
+
         // Add the following lines to create RecyclerView
         recyclerView = root.findViewById(R.id.sentRequestRecyclerView);
         recyclerView.setHasFixedSize(true);
@@ -61,7 +62,7 @@ public class SentRequestFragment extends Fragment {
 
         public SentRequestFragment.ReqPlaceHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, null);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
             return new SentRequestFragment.ReqPlaceHolder(view);
         }
 
@@ -108,7 +109,6 @@ public class SentRequestFragment extends Fragment {
             //this.state = itemView.findViewById(R.id.cardview_state);
         }
     }
-
 
 
 

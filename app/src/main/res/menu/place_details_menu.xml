@@ -11,6 +11,6 @@
         android:id="@+id/delete"
         android:icon="@android:drawable/ic_menu_delete"
         app:showAsAction="ifRoom"
-        android:title="delete place record" />
+        android:title="delete place record?" />
 
 </menu>

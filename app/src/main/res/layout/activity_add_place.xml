@@ -21,8 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="31dp"
             android:layout_marginTop="5dp"
-            android:text="Select between 3 to 5 images"
-            android:textColor="#727171"
+            android:text="Click the icon below to insert images"
+            android:textColor="#070707"
             android:textSize="16sp" />
 
         <LinearLayout
@@ -43,30 +43,29 @@
                 android:id="@+id/image_added1"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:layout_marginStart="31dp"
                 android:layout_marginTop="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="2dp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_photo" />
+                android:src="@drawable/ic_baseline_add_photo"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/image_added2"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:layout_marginStart="31dp"
                 android:layout_marginTop="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="2dp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_photo" />
+                android:src="@drawable/ic_baseline_add_photo"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/show_extra_image"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginStart="31dp"
                 android:text="one more"
                 android:gravity="center"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 
