@@ -123,12 +123,12 @@
 
 
                         <Button
-                            android:id="@+id/btn_sendRequest"
+                            android:id="@+id/btn_bookNow"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_margin="5dp"
-                            android:text="Send Request"/>
+                            android:text="Book Now"/>
 
                         <Button
                             android:id="@+id/btn_addToWishlist"
