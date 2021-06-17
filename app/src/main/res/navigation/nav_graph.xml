@@ -26,5 +26,11 @@
         android:label="activity_my_places"
         tools:layout="@layout/activity_my_places" />
 
+    <activity
+        android:id="@+id/requests"
+        android:name="com.example.helloworld.Requests_Activity"
+        android:label="activity_requests"
+        tools:layout="@layout/activity_requests"/>
+
 
 </navigation>

@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 
 public class Place_Details_activity extends AppCompatActivity {
     private TextView place_name, address, price_rate, number_of_guests, description, category;
+    private Button bookNow;
     private Place place;
     private DatabaseReference ref;
     private ArrayList<image_model> image_models;
@@ -67,6 +69,7 @@ public class Place_Details_activity extends AppCompatActivity {
                 this.place = (Place) place;
             }
         }
+
         binnUI();
         if(!place.getOwner_email().equals(owner_email))
         {
@@ -77,6 +80,15 @@ public class Place_Details_activity extends AppCompatActivity {
 
 
         bindLabels();
+
+
+        bookNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Place_Details_activity.this, BookingActivity.class).putExtra("place", place);
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -98,6 +110,8 @@ public class Place_Details_activity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         owner_email = user.getEmail();
         layout = findViewById(R.id.layout_requestsButton);
+
+        bookNow=findViewById(R.id.btn_bookNow);
 
     }
 

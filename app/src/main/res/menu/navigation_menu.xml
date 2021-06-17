@@ -8,15 +8,18 @@
     <item android:id="@+id/notification"
         android:icon="@drawable/ic_baseline_notifications"
         android:title="notifications"/>
+    <item android:id="@+id/requests"
+        android:icon="@drawable/ic_baseline_requests"
+        android:title="requests"/>
     <item android:id="@+id/add_a_place"
         android:icon="@drawable/ic_baseline_add"
         android:title="add a place"/>
     <item android:id="@+id/my_places"
         android:icon="@drawable/ic_baseline_apartment"
         android:title="my places"/>
-    <item android:id="@+id/selected_places"
+    <item android:id="@+id/wishlist"
         android:icon="@drawable/ic_baseline_shopping_cart"
-        android:title="selected places for booking"/>
+        android:title="wishlist"/>
 
 
     <item
