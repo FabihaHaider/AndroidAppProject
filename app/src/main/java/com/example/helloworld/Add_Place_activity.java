@@ -2,7 +2,6 @@ package com.example.helloworld;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,10 +10,8 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,20 +40,18 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Add_Place_activity extends AppCompatActivity{
 
 
     private EditText name, location, amount_of_charge, guests_no, description;
-    private TextView show_extra_image;
+    private TextView show_extra_image, imageText;
     private Button add_place, upload_btn;
-    private ImageView image;
+    private ImageView image, place_first_pic;
     private ImageView added_image1, added_image2;
     private Spinner spinner_charge_rate, spinner_purpose;
     private Uri imageUri;
@@ -68,6 +63,7 @@ public class Add_Place_activity extends AppCompatActivity{
     private String url;
     private FirebaseUser user;
     private Place getPlace;
+    private boolean updatePlaceDetails = false;
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -76,15 +72,18 @@ public class Add_Place_activity extends AppCompatActivity{
 
         bindUI();
 
+
+
         if (getIntent().getExtras() != null) {
             Object place = getIntent().getExtras().get("place");
             if (place != null) {
                 this.getPlace = (Place) place;
+                updatePlaceDetails = true;
             }
         }
         
         bindValues();
-
+        onClickingSpinner();
         add_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +98,49 @@ public class Add_Place_activity extends AppCompatActivity{
             }
         });
 
+        place_first_pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Add_Place_activity.this, ImageFolder.class).putExtra("place", getPlace);
+                startActivity(intent);
+            }
+        });
+
+
+    }
+
+    private void onClickingSpinner() {
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(Add_Place_activity.this,R.array.charge_rate, android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_charge_rate.setAdapter(arrayAdapter);
+
+        ArrayAdapter<CharSequence> arrayAdapter1 = ArrayAdapter.createFromResource(Add_Place_activity.this, R.array.purpose, android.R.layout.simple_spinner_item);
+        arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_purpose.setAdapter(arrayAdapter1);
+
+        spinner_charge_rate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                charge_rate =parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinner_purpose.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                purpose = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 
@@ -117,14 +159,9 @@ public class Add_Place_activity extends AppCompatActivity{
         description = findViewById(R.id.description);
         spinner_purpose = findViewById(R.id.spinner_purpose);
         user = FirebaseAuth.getInstance().getCurrentUser();
+        imageText = findViewById(R.id.textView_uploadPicture);
+        place_first_pic = findViewById(R.id.place_first_pic);
 
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(Add_Place_activity.this,R.array.charge_rate, android.R.layout.simple_spinner_item);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_charge_rate.setAdapter(arrayAdapter);
-
-        ArrayAdapter<CharSequence> arrayAdapter1 = ArrayAdapter.createFromResource(Add_Place_activity.this, R.array.purpose, android.R.layout.simple_spinner_item);
-        arrayAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_purpose.setAdapter(arrayAdapter1);
     }
 
     @SuppressLint("SetTextI18n")
@@ -136,6 +173,11 @@ public class Add_Place_activity extends AppCompatActivity{
             amount_of_charge.setText(Integer.toString(getPlace.getAmount_of_charge()));
             guests_no.setText(Integer.toString(getPlace.getMaxm_no_of_guests()));
             description.setText(getPlace.getDescription());
+            name.setEnabled(false);
+            image.setVisibility(View.GONE);
+            add_place.setText("Update Place Details");
+            place_first_pic.setVisibility(View.VISIBLE);
+            Picasso.get().load(getPlace.getImage()).into(place_first_pic);
         }
     }
 
@@ -215,12 +257,61 @@ public class Add_Place_activity extends AppCompatActivity{
 
         else {
 
-            storeToDatabase(createPlace());
+            if(updatePlaceDetails) {
 
-            Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, My_places_activity.class);
-            startActivity(intent);
+                final Place place;
+                place = createPlace();
+                updateDatabase(place);
+            }
+
+            else {
+                storeToDatabase(createPlace());
+                Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+
+
         }
+    }
+
+    private void updateDatabase(Place place) {
+        ref = FirebaseDatabase.getInstance().getReference().child("Place");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot: snapshot.getChildren())
+                {
+                    String name = dataSnapshot.child("name").getValue().toString();
+                    if(place.getName().equals(name))
+                    {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("address", place.getAddress());
+                        map.put("amount_of_charge", place.getAmount_of_charge());
+                        map.put("category", place.getCategory());
+                        map.put("charge_unit", place.getCharge_unit());
+                        map.put("description", place.getDescription());
+                        map.put("maxm_no_of_guests", place.getMaxm_no_of_guests());
+
+                        dataSnapshot.getRef().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                        break;
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     private boolean validateInput() {
@@ -239,7 +330,8 @@ public class Add_Place_activity extends AppCompatActivity{
             Toast.makeText(Add_Place_activity.this,"Please enter all values", Toast.LENGTH_LONG).show();
             allInputsValid = false;
         }
-        if(imageList.size()<3){
+
+        if(imageList.size()<3 && !updatePlaceDetails ){
             Toast.makeText(Add_Place_activity.this,"Please select atleast 3 images", Toast.LENGTH_LONG).show();
             allInputsValid = false;
         }
@@ -284,8 +376,6 @@ public class Add_Place_activity extends AppCompatActivity{
         String description_text = description.getText().toString();
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
 
-        charge_rate = spinner_charge_rate.getSelectedItem().toString();
-        purpose = spinner_purpose.getSelectedItem().toString();
 
         int charge_amount = 0;
         int number_of_guests = 0;

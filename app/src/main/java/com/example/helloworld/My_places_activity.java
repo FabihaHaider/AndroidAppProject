@@ -85,7 +85,6 @@ public class My_places_activity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         retrieveDataFromFirebase();
     }
 
@@ -130,6 +129,7 @@ public class My_places_activity extends AppCompatActivity {
                         if(extras==null) {
                             if (email.equals(owner_email)) {
                                 place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category);
+                                place.setKey(dataSnapshot.getKey());
                                 place.setImage(image);
                                 arrayList.add(place);
                             }

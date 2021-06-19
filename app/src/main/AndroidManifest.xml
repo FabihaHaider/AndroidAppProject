@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld"
         tools:replace="android:label">
-        <activity android:name=".BookingActivity"></activity>
+        <activity android:name=".UpdatePicture"></activity>
+        <activity android:name=".ImageFolder" />
+        <activity android:name=".BookingActivity" />
         <activity android:name=".Requests_Activity" />
         <activity android:name=".Place_Details_activity" />
         <activity android:name=".ResetPassword" />

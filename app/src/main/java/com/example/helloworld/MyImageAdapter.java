@@ -1,7 +1,10 @@
 package com.example.helloworld;
 
 import android.content.Context;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,6 +22,7 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.MyImageH
 
     private ArrayList<image_model>List;
     private Context context;
+    private OnItemClickListener listener;
 
     public MyImageAdapter(Context context, ArrayList<image_model> list) {
         List = list;
@@ -42,12 +46,68 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.MyImageH
     public int getItemCount() {
         return List.size();
     }
-    public static class MyImageHolder extends RecyclerView.ViewHolder{
+
+    class MyImageHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
         ImageView imageView;
 
         public MyImageHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             this.imageView = itemView.findViewById(R.id.my_place_imageView);
+            itemView.setOnClickListener(this);
+            itemView.setOnCreateContextMenuListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(listener != null)
+            {
+                int position = getBindingAdapterPosition();
+                if(position != RecyclerView.NO_POSITION)
+                {
+                    listener.onItemClick(position);
+                }
+            }
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle("Select option");
+            MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete");
+            MenuItem selectIconImage = menu.add(Menu.NONE, 2, 2, "Select as your label image");
+            delete.setOnMenuItemClickListener(this);
+            selectIconImage.setOnMenuItemClickListener(this);
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            if(listener != null)
+            {
+                int position = getBindingAdapterPosition();
+                if(position != RecyclerView.NO_POSITION)
+                {
+                    switch (item.getItemId())
+                    {
+                        case 1:
+                            listener.onDeleteClick(position);
+                            return true;
+
+                        case 2:
+                            listener.onLabelImageClick(position);
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+        void onDeleteClick(int position);
+        void onLabelImageClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
     }
 }
