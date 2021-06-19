@@ -10,8 +10,11 @@ public class Request {
     String endTime;
     String bookingPurpose;
     String guestNum;
+    int state;
 
-    public Request(String placeName, String ownerMail, String senderMail, String startDate, String endDate, String startTime, String endTime, String bookingPurpose, String guestNum) {
+
+
+    public Request(String placeName, String ownerMail, String senderMail, String startDate, String endDate, String startTime, String endTime, String bookingPurpose, String guestNum, int state) {
         this.placeName = placeName;
         this.ownerMail = ownerMail;
         this.senderMail = senderMail;
@@ -21,6 +24,7 @@ public class Request {
         this.endTime = endTime;
         this.bookingPurpose = bookingPurpose;
         this.guestNum = guestNum;
+        this.state = state;
     }
 
     public String getPlaceName() {
@@ -92,6 +96,14 @@ public class Request {
     }
 
     public void setGuestNum(String guestNum){ this.guestNum= guestNum; }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
 
 }

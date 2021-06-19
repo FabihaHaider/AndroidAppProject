@@ -194,12 +194,13 @@ public class BookingActivity extends AppCompatActivity {
         String sToTime= toTime.getText().toString().trim();
         String sPurpose= purpose.getText().toString().trim();
         String sGuestNum= guestNum.getText().toString().trim();
+        int state = 0;//state 0= not reviewed, state 1= confirmed, state 2 = declined;
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String sUserEmail = user.getEmail();
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Request");
-        Request request = new Request(place.getName(), place.getOwner_email(), sUserEmail, sFromDate, sToDate, sFromTime, sToTime, sPurpose, sGuestNum);
+        Request request = new Request(place.getName(), place.getOwner_email(), sUserEmail, sFromDate, sToDate, sFromTime, sToTime, sPurpose, sGuestNum, state);
         String key = mDatabase.push().getKey();
         mDatabase.child(key).setValue(request);
 

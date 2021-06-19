@@ -15,7 +15,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +33,7 @@ public class SentRequestFragment extends Fragment {
     private RecyclerView recyclerView;
     private DatabaseReference databaseReference;
     private ArrayList<Place> arrayList;
+    ReqPlacesAdapter reqAdapter;
 
 
     @Override
@@ -34,26 +41,65 @@ public class SentRequestFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup root =(ViewGroup) inflater.inflate(R.layout.fragment_sent_request, container, false);
 
+        arrayList = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("request");
 
         // Add the following lines to create RecyclerView
         recyclerView = root.findViewById(R.id.sentRequestRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerView.setAdapter(new ReqPlacesAdapter(getContext()));
+        reqAdapter =new ReqPlacesAdapter(getContext(), arrayList);
+        recyclerView.setAdapter(reqAdapter);
 
 
         return root;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        retrieveData();
+    }
+
+    private void retrieveData() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String currentUserMail = user.getEmail();
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Request request;
+                    if (snapshot.exists()) {
+                        String senderMail = dataSnapshot.child("senderMail").getValue().toString();
+                        String reqPlaceName = dataSnapshot.child("placeName").getValue().toString();
+                        String state = dataSnapshot.child("placeName").getValue().toString();
+
+                        if(senderMail.equals(currentUserMail)){
+                            Place place = new Place(reqPlaceName, " ", " ", 0, " ", 0, " ", "");
+                            arrayList.add(place);
+                        }
+                    }
+                }
+                reqAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
 
     public class ReqPlacesAdapter extends RecyclerView.Adapter<SentRequestFragment.ReqPlaceHolder> {
 
         Context context;
-        //ArrayList<Place> models;
+        ArrayList<Place> models;
 
-        public ReqPlacesAdapter(Context context) {
+        public ReqPlacesAdapter(Context context, ArrayList<Place> models) {
             this.context = context;
-            //this.models = models;
+            this.models = models;
         }
 
         @NonNull
@@ -69,27 +115,21 @@ public class SentRequestFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull @NotNull SentRequestFragment.ReqPlaceHolder holder, int position) {
 
-            //final Place place = models.get(position);
+            final Place place = models.get(position);
 
             //holder.image.setImageResource(models.get(position).getImage());
-            holder.place_name.setText("Name: " );
+            holder.place_name.setText("Name: "+place.getName() );
             holder.location.setText("Location: " );
             //Integer amount = models.get(position).getAmount_of_charge();
             holder.charge.setText("Price rate: Tk ");
             //holder.rate.setText(" " + models.get(position).getCharge_unit());
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Intent intent = new Intent(getContext(), DetailsActivity.class);
-                    //startActivity(intent);
-                }
-            });
+
         }
 
         @Override
         public int getItemCount() {
-            return 10;
+           return models.size();
         }
     }
 
@@ -108,7 +148,11 @@ public class SentRequestFragment extends Fragment {
             this.rate = itemView.findViewById(R.id.rate);
             //this.state = itemView.findViewById(R.id.cardview_state);
         }
+
+
     }
+
+
 
 
 
