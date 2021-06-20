@@ -70,7 +70,10 @@ public class BookingActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                fromDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                String zDate="", zMonth="";
+                                if(dayOfMonth<10) zDate="0";
+                                if(monthOfYear<10) zMonth="0";
+                                fromDate.setText(zDate+dayOfMonth + "-" +zMonth+(monthOfYear + 1) + "-" + year);
                                 gCalendar.set(year,monthOfYear,dayOfMonth);
                             }
                         }, year, month, day);
@@ -92,7 +95,10 @@ public class BookingActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                toDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                String zDate="", zMonth="";
+                                if(dayOfMonth<10) zDate="0";
+                                if(monthOfYear<10) zMonth="0";
+                                toDate.setText(zDate+dayOfMonth + "-" +zMonth+(monthOfYear + 1) + "-" + year);
 
                             }
                         }, year, month, day);
@@ -111,7 +117,7 @@ public class BookingActivity extends AppCompatActivity {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                fromTime.setText(sHour + "-" + sMinute);
+                                fromTime.setText(sHour + ":" + sMinute);
                             }
                         }, hour, minutes, true);
 
@@ -129,7 +135,7 @@ public class BookingActivity extends AppCompatActivity {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                toTime.setText(sHour + "-" + sMinute);
+                                toTime.setText(sHour + ":" + sMinute);
                             }
                         }, hour, minutes, true);
 
@@ -166,7 +172,7 @@ public class BookingActivity extends AppCompatActivity {
         String sGuestNum= guestNum.getText().toString().trim();
 
         SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat stFormat = new SimpleDateFormat("HH-mm");
+        SimpleDateFormat stFormat = new SimpleDateFormat("HH:mm");
         Date dFromDate= sdFormat.parse(sFromDate);
         Date dToDate = sdFormat.parse(sToDate);
         Date dFromTime = stFormat.parse(sFromTime);
@@ -174,7 +180,7 @@ public class BookingActivity extends AppCompatActivity {
 
         Log.i("date",sFromDate+" "+sToDate);
 
-        if(sFromDate.isEmpty() || sToDate.isEmpty() || sFromTime.isEmpty() || sToTime.isEmpty() ||sPurpose.isEmpty() || sGuestNum.isEmpty()){
+        if(sFromDate==null || sToDate==null || sFromTime==null || sToTime==null ||sPurpose.isEmpty() || sGuestNum.isEmpty()){
             Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -194,13 +200,13 @@ public class BookingActivity extends AppCompatActivity {
         String sToTime= toTime.getText().toString().trim();
         String sPurpose= purpose.getText().toString().trim();
         String sGuestNum= guestNum.getText().toString().trim();
-        int state = 0;//state 0= not reviewed, state 1= confirmed, state 2 = declined;
+        String state="0";//state 0= not reviewed, state 1= confirmed, state 2 = declined;
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String sUserEmail = user.getEmail();
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Request");
-        Request request = new Request(place.getName(), place.getOwner_email(), sUserEmail, sFromDate, sToDate, sFromTime, sToTime, sPurpose, sGuestNum, state);
+        Request request = new Request(place.getName(),place.getAddress(), place.getOwner_email(), sUserEmail, sFromDate, sToDate, sFromTime, sToTime, sPurpose, sGuestNum, state);
         String key = mDatabase.push().getKey();
         mDatabase.child(key).setValue(request);
 
