@@ -1,11 +1,19 @@
 package com.example.helloworld;
 
+import androidx.core.app.RemoteInput;
+
+import com.google.firebase.database.Exclude;
+
 public class UserAccount {
     private String username;
     private String password;
     private String email;
     private String profession;
     private String phone_number;
+    private String key;
+
+    public UserAccount() {
+    }
 
     public UserAccount(String username, String password, String email, String profession, String phone_number) {
         this.username = username;
@@ -54,4 +62,14 @@ public class UserAccount {
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
     }
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+    @Exclude
+    public void setKey(String key) {
+        this.key = key;
+    }
+
 }

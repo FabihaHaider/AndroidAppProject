@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class SentRequestFragment extends Fragment {
         ViewGroup root =(ViewGroup) inflater.inflate(R.layout.fragment_sent_request, container, false);
 
         arrayList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("request");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Request");
 
         // Add the following lines to create RecyclerView
         recyclerView = root.findViewById(R.id.sentRequestRecyclerView);
@@ -78,6 +79,7 @@ public class SentRequestFragment extends Fragment {
 
                         if(senderMail.equals(currentUserMail)){
                             Place place = new Place(reqPlaceName, " ", " ", 0, " ", 0, " ", "");
+                            Log.i("fabiha", "onDataChange: "+reqPlaceName);
                             arrayList.add(place);
                         }
                     }

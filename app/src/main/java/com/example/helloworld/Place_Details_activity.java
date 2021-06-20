@@ -5,12 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -28,6 +36,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,21 +51,30 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 
 public class Place_Details_activity extends AppCompatActivity {
-    private TextView place_name, address, price_rate, number_of_guests, description, category;
+    private TextView place_name, address, price_rate, number_of_guests, description, category, phone_number;
     private Button bookNow;
     private Place place;
-    private DatabaseReference ref;
+    private DatabaseReference ref, databaseReference_user;
     private ArrayList<image_model> image_models;
     private RecyclerView recyclerView;
     private MyImageAdapter myImageAdapter;
     private FirebaseUser user;
-    private String owner_email;
+    private String owner_email, number, email, password, username, prof;
     private LinearLayout layout;
     private boolean isMyplace = true;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private Double latitude, longitude;
+    private Geocoder geocoder;
+    private List<Address> addresses;
+
+
 
 
 
@@ -107,6 +128,7 @@ public class Place_Details_activity extends AppCompatActivity {
         price_rate = findViewById(R.id.price_rate);
         description = findViewById(R.id.description);
         category = findViewById(R.id.textview_category);
+        phone_number = findViewById(R.id.textview_phone_number);
         recyclerView = findViewById(R.id.recyclerView_SHOW_IMAGES);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -115,16 +137,45 @@ public class Place_Details_activity extends AppCompatActivity {
         myImageAdapter = new MyImageAdapter(Place_Details_activity.this, image_models);
         recyclerView.setAdapter(myImageAdapter);
         ref = FirebaseDatabase.getInstance().getReference().child("Images").child(place.getName());
+        databaseReference_user = FirebaseDatabase.getInstance().getReference().child("UserAccount");
         user = FirebaseAuth.getInstance().getCurrentUser();
         owner_email = user.getEmail();
         layout = findViewById(R.id.layout_requestsButton);
 
         bookNow=findViewById(R.id.btn_bookNow);
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Place_Details_activity.this);
+
+        geocoder = new Geocoder(Place_Details_activity.this, Locale.getDefault());
+
     }
 
     @SuppressLint("SetTextI18n")
     private void bindLabels() {
+
+        databaseReference_user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot: snapshot.getChildren())
+                {
+                    email = dataSnapshot.child("email").getValue().toString();
+                    number = dataSnapshot.child("phone_number").getValue().toString();
+                    
+
+                    if(email.equals(place.getOwner_email()))
+                    {
+                        phone_number.setText(number);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
 
         place_name.setText(place.getName());
         address.setText(place.getAddress());
@@ -132,6 +183,7 @@ public class Place_Details_activity extends AppCompatActivity {
         price_rate.setText("Tk " + Integer.toString(place.getAmount_of_charge()) + " " + place.getCharge_unit());
         category.setText(place.getCategory());
         description.setText(place.getDescription());
+
         if(place.getDescription().toString() == "none"){
             description.setHintTextColor(Color.DKGRAY);
         }
@@ -220,7 +272,6 @@ public class Place_Details_activity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                     String name = dataSnapshot.child("name").getValue().toString();
                     String place_name = dataSnapshot.child("name").getValue().toString();
-                    Log.i("fabiha", "onDataChange: datasnaphot name " + name + " place name "+ place.getName());
                     if(name.equals(place.getName())){
                         dataSnapshot.getRef().removeValue();
                         break;
@@ -240,5 +291,108 @@ public class Place_Details_activity extends AppCompatActivity {
         Toast.makeText(this, "Place deleted", Toast.LENGTH_LONG).show();
 
         finish();
+    }
+
+
+    public void onLocationClick(View view) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(getApplicationContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                    //location here
+                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                            if(location != null){
+                                longitude = location.getLongitude();
+                                latitude = location.getLatitude();
+
+                                String src = getCompleteAddressString(latitude, longitude);
+                                showLocation(src.trim());
+//                                Log.i("fabiha", "onLocationClick: "+ src);
+                            }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+
+                    }
+                });
+            }else{
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+            }
+        }else {
+            //permission granted
+        }
+
+    }
+
+    private void showLocation(String completeAddressString) {
+
+        try{
+
+            Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + completeAddressString + "/" + address.getText().toString().trim());
+            //initialize intent with action view
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            //set package
+            intent.setPackage("com.google.android.apps.maps");
+            //set flag
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //start activity
+            startActivity(intent);
+        }
+        catch (ActivityNotFoundException e){
+            //when google map is not installed initialize uri
+            Uri uri = Uri.parse("https//play.google.com/store/apps/details?id=com.google.android.apps.maps");
+            //initialise intent with action view
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            //set package
+            intent.setPackage("com.google.android.apps.maps");
+            //set flag
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //start activity
+            startActivity(intent);
+        }
+    }
+
+
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.i("locationAddress", strReturnedAddress.toString());
+            } else {
+                Log.i("locationAddress", "Address not found!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("locationAddress", "Canont get Address!" + e.getMessage().toString());
+        }
+        String[] addressArray = strAdd.trim().split(",");
+
+        return addressArray[3];
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == 200){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(Place_Details_activity.this, "Permission granted", Toast.LENGTH_LONG).show();
+            }else {
+                Toast.makeText(Place_Details_activity.this, "Permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

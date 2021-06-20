@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -55,15 +56,15 @@ public class Add_Place_activity extends AppCompatActivity{
     private ImageView added_image1, added_image2;
     private Spinner spinner_charge_rate, spinner_purpose;
     private Uri imageUri;
-    private ArrayList<Uri> imageList = new ArrayList<Uri>();
+    private final ArrayList<Uri> imageList = new ArrayList<Uri>();
     private DatabaseReference ref;
     private int upload_count = 0, img_cnt = 0;
     private String charge_rate, purpose;
-    private HashMap<String, String> hashMap = new HashMap<>();
+    private final HashMap<String, String> hashMap = new HashMap<>();
     private String url;
     private FirebaseUser user;
     private Place getPlace;
-    private boolean updatePlaceDetails = false;
+    private boolean updatePlaceDetails = false, uniqueName;
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -149,7 +150,7 @@ public class Add_Place_activity extends AppCompatActivity{
         location = findViewById(R.id.plainText_address);
         amount_of_charge = findViewById(R.id.plainText_charge);
         guests_no = findViewById(R.id.plainText_number_of_guests);
-        add_place = (Button) findViewById(R.id.button_add_place);
+        add_place = findViewById(R.id.button_add_place);
         spinner_charge_rate = findViewById(R.id.spinner_charge_rate);
         image = findViewById(R.id.add_image);
         added_image1 = findViewById(R.id.image_added1);
@@ -250,7 +251,7 @@ public class Add_Place_activity extends AppCompatActivity{
             });
 
     private void insertHouseData() {
-
+        uniqueName = true;
         if(!validateInput()){
             Toast.makeText(this, "Enter all details",Toast.LENGTH_LONG).show();
         }
@@ -265,15 +266,42 @@ public class Add_Place_activity extends AppCompatActivity{
             }
 
             else {
-                storeToDatabase(createPlace());
-                Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
-                finish();
+                String place_name = name.getText().toString();
+                ref = FirebaseDatabase.getInstance().getReference().child("Place");
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            String name = dataSnapshot.child("name").getValue().toString();
+                            if(place_name.equals(name)){
+                                uniqueName = false;
+                                break;
+                            }
+                        }
+                       if(uniqueName)
+                       {
+                           storeToDatabase(createPlace());
+                           Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
+                           finish();
+                       }
+                       else
+                       {
+                           Toast.makeText(Add_Place_activity.this, "Choose a unique name", Toast.LENGTH_LONG).show();
+                       }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                }
             }
 
 
 
-        }
+
     }
+
 
     private void updateDatabase(Place place) {
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
@@ -297,9 +325,9 @@ public class Add_Place_activity extends AppCompatActivity{
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
+                                finish();
                             }
                         });
-
                         break;
 
                     }
@@ -312,6 +340,7 @@ public class Add_Place_activity extends AppCompatActivity{
 
             }
         });
+        finish();
     }
 
     private boolean validateInput() {
@@ -332,7 +361,7 @@ public class Add_Place_activity extends AppCompatActivity{
         }
 
         if(imageList.size()<3 && !updatePlaceDetails ){
-            Toast.makeText(Add_Place_activity.this,"Please select atleast 3 images", Toast.LENGTH_LONG).show();
+            Toast.makeText(Add_Place_activity.this,"Please select at least 3 images", Toast.LENGTH_LONG).show();
             allInputsValid = false;
         }
         return allInputsValid;
@@ -418,7 +447,12 @@ public class Add_Place_activity extends AppCompatActivity{
         if(img_cnt==0)
         {
             place.setImage(url);
-            ref.push().setValue(place);
+            ref.push().setValue(place).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull @NotNull Exception e) {
+                    Log.i("fabiha", "onFailure: "+e.toString());
+                }
+            });
         }
 
     }
