@@ -2,6 +2,7 @@ package com.example.helloworld;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,8 +35,8 @@ public class SentRequestFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private DatabaseReference databaseReference;
-    private ArrayList<Place> arrayList;
-    ReqPlacesAdapter reqAdapter;
+    private ArrayList<Request> arrayList;
+    private ReqPlacesAdapter reqAdapter;
 
 
     @Override
@@ -69,19 +71,33 @@ public class SentRequestFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if(arrayList.size() != 0){
+                    arrayList.clear();
+                }
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Request request;
                     if (snapshot.exists()) {
                         String senderMail = dataSnapshot.child("senderMail").getValue().toString();
-                        String reqPlaceName = dataSnapshot.child("placeName").getValue().toString();
-                        String state = dataSnapshot.child("placeName").getValue().toString();
+
+                        String placeName = dataSnapshot.child("placeName").getValue().toString();
+                        String location = dataSnapshot.child("location").getValue().toString();
+                        String ownerMail = dataSnapshot.child("ownerMail").getValue().toString();
+                        String startDate = dataSnapshot.child("startDate").getValue().toString();
+                        String endDate = dataSnapshot.child("endDate").getValue().toString();
+                        String startTime = dataSnapshot.child("startTime").getValue().toString();
+                        String endTime = dataSnapshot.child("endTime").getValue().toString();
+                        String purpose = dataSnapshot.child("bookingPurpose").getValue().toString();
+                        String guestNum = dataSnapshot.child("guestNum").getValue().toString();
+                        String state = dataSnapshot.child("state").getValue().toString();
 
                         if(senderMail.equals(currentUserMail)){
-                            Place place = new Place(reqPlaceName, " ", " ", 0, " ", 0, " ", "");
-                            Log.i("fabiha", "onDataChange: "+reqPlaceName);
-                            arrayList.add(place);
+
+                            request= new Request(placeName,location, ownerMail, senderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state);
+                            arrayList.add(request);
+
                         }
+
                     }
                 }
                 reqAdapter.notifyDataSetChanged();
@@ -97,9 +113,9 @@ public class SentRequestFragment extends Fragment {
     public class ReqPlacesAdapter extends RecyclerView.Adapter<SentRequestFragment.ReqPlaceHolder> {
 
         Context context;
-        ArrayList<Place> models;
+        ArrayList<Request> models;
 
-        public ReqPlacesAdapter(Context context, ArrayList<Place> models) {
+        public ReqPlacesAdapter(Context context, ArrayList<Request> models) {
             this.context = context;
             this.models = models;
         }
@@ -117,14 +133,40 @@ public class SentRequestFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull @NotNull SentRequestFragment.ReqPlaceHolder holder, int position) {
 
-            final Place place = models.get(position);
+            final Request request = models.get(position);
 
-            //holder.image.setImageResource(models.get(position).getImage());
-            holder.place_name.setText("Name: "+place.getName() );
-            holder.location.setText("Location: " );
+            //Glide.with(context).load(place.getImage()).into(holder.image);
+            holder.place_name.setText("Name: "+request.getPlaceName() );
+            holder.location.setText("Location: " + request.getLocation());
             //Integer amount = models.get(position).getAmount_of_charge();
-            holder.charge.setText("Price rate: Tk ");
-            //holder.rate.setText(" " + models.get(position).getCharge_unit());
+            holder.charge.setText("");
+
+            if(request.getState().equals("0")) {
+                holder.charge.setText("Not reviewed");
+                holder.charge.setTextColor(Color.BLACK);
+            }
+            else if(request.getState().equals("1")) {
+                holder.charge.setText("Accepted");
+                holder.charge.setTextColor(Color.GREEN);
+            }
+            else if(request.getState().equals("2")) {
+                holder.charge.setText("Declined");
+                holder.charge.setTextColor(Color.RED);
+            }
+            holder.rate.setText("");
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ReviewRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("fromActivity", "SentRequest");
+                    intent.putExtra("request", request);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
+
 
 
         }

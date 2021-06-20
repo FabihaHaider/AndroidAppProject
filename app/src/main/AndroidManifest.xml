@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld"
         tools:replace="android:label">
+
+        <activity android:name=".ReviewRequestActivity"></activity>
+
         <activity android:name=".UpdatePicture"></activity>
         <activity android:name=".ImageFolder" />
         <activity android:name=".BookingActivity" />
