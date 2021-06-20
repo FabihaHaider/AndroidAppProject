@@ -16,12 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld"
         tools:replace="android:label">
-<<<<<<< HEAD
+
         <activity android:name=".ReviewRequestActivity"></activity>
-=======
+
         <activity android:name=".UpdatePicture"></activity>
         <activity android:name=".ImageFolder" />
->>>>>>> 09734c3a757eeb2b2aa45692d1281d7b19dddd6a
         <activity android:name=".BookingActivity" />
         <activity android:name=".Requests_Activity" />
         <activity android:name=".Place_Details_activity" />
