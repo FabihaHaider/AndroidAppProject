@@ -304,16 +304,14 @@ public class Place_Details_activity extends AppCompatActivity {
                             if(location != null){
                                 longitude = location.getLongitude();
                                 latitude = location.getLatitude();
+                                showLocation(latitude+","+longitude);
 
-                                String src = getCompleteAddressString(latitude, longitude);
-                                showLocation(src.trim());
-//                                Log.i("fabiha", "onLocationClick: "+ src);
                             }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull @NotNull Exception e) {
-
+                        Toast.makeText(Place_Details_activity.this, "failed", Toast.LENGTH_LONG).show();
                     }
                 });
             }else{
@@ -353,35 +351,7 @@ public class Place_Details_activity extends AppCompatActivity {
         }
     }
 
-
-
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null) {
-                Address returnedAddress = addresses.get(0);
-
-                StringBuilder strReturnedAddress = new StringBuilder("");
-
-                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                }
-                strAdd = strReturnedAddress.toString();
-                Log.i("locationAddress", strReturnedAddress.toString());
-            } else {
-                Log.i("locationAddress", "Address not found!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i("locationAddress", "Canont get Address!" + e.getMessage().toString());
-        }
-        String[] addressArray = strAdd.trim().split(",");
-
-        return addressArray[3];
-
-    }
+    
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
