@@ -1,7 +1,10 @@
 package com.example.helloworld;
 
+import com.google.firebase.database.Exclude;
+
 public class image_model {
     private String ImgLink;
+    private String key;
 
     public image_model() {
     }
@@ -16,5 +19,15 @@ public class image_model {
 
     public void setImageUrl(String imgLink) {
         ImgLink = imgLink;
+    }
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+
+    @Exclude
+    public void setKey(String key) {
+        this.key = key;
     }
 }

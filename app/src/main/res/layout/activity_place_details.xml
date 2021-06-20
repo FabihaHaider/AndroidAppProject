@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +8,12 @@
     android:layout_margin="20dp"
     android:orientation="vertical">
 
-
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+                android:orientation="vertical">
+    android:layout_height=""
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -19,9 +23,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <ScrollView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -48,13 +52,28 @@
                             android:text="Address"
                             android:layout_marginTop="8dp"/>
 
-                        <TextView
-                            android:id="@+id/address"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:textIsSelectable="true"
-                            tools:text="Shekhertek"/>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/address"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:textIsSelectable="true"
+                                tools:text="Shekhertek" />
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentRight="true"
+                                android:src="@drawable/ic_baseline_location_on_24"
+                                android:onClick="onLocationClick"/>
+
+                        </RelativeLayout>
+
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -102,7 +121,23 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
+                            android:text="Owner Phone Number" />
+
+                        <TextView
+                            android:id="@+id/textview_phone_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:textIsSelectable="true"
+                            tools:text = "0111111"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
                             android:text="Description" />
+
+
 
                         <TextView
                             android:id="@+id/description"
@@ -145,10 +180,10 @@
 
                 </LinearLayout>
 
-        </ScrollView>
+        </RelativeLayout>
 
+        </LinearLayout>
 
-
-</LinearLayout>
+</ScrollView>
 
 

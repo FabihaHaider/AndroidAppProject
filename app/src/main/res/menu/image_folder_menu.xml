@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/my_picture_add"
+        app:showAsAction="ifRoom"
+        android:title="Add picture"
+        android:icon="@drawable/ic_baseline_add">
+    </item>
+
+    <item
+        android:id="@+id/my_picture_save"
+        app:showAsAction="ifRoom"
+        android:title="Save"
+        android:icon="@android:drawable/ic_menu_save">
+    </item>
+
+</menu>

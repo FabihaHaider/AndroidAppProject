@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UpdatePicture">
+
+    <Button
+        android:id="@+id/button_choose_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Image"
+        android:layout_margin="20dp"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/button_choose_image"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:layout_margin="20dp">
+
+        <ImageView
+            android:id="@+id/row_update_picture_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            />
+
+        <Button android:id="@+id/button_recyclerview_delete_images"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/trasparent"
+            android:layout_alignParentBottom="true"
+            android:text="Delete"
+            android:textColor="@color/black"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

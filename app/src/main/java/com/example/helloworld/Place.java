@@ -2,6 +2,8 @@ package com.example.helloworld;
 
 import android.net.Uri;
 
+import com.google.firebase.database.Exclude;
+
 import org.w3c.dom.Text;
 
 import java.io.Serializable;
@@ -18,6 +20,8 @@ public class Place implements Serializable {
     private String description;
     private String category;
     private String image;
+    private String key;
+
 
     public Place() {
     }
@@ -117,5 +121,14 @@ public class Place implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    @Exclude
+    public String getKey() {
+        return key;
+    }
+    @Exclude
+    public void setKey(String key) {
+        this.key = key;
     }
 }
