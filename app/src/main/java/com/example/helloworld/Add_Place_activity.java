@@ -3,9 +3,9 @@ package com.example.helloworld;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,9 @@ public class Add_Place_activity extends AppCompatActivity{
     private FirebaseUser user;
     private Place getPlace;
     private boolean updatePlaceDetails = false, uniqueName;
+    private ScrollView scrollView;
+    private ProgressDialog progressDialog;
+
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -86,12 +90,14 @@ public class Add_Place_activity extends AppCompatActivity{
                 updatePlaceDetails = true;
             }
         }
-        
+        setTitle(updatePlaceDetails? "Update Place Details" : "Add New Place");
         bindValues();
         onClickingSpinner();
         add_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.setMessage(updatePlaceDetails? "Updating place details" : "Adding new place");
+                progressDialog.show();
                 insertHouseData();
             }
         });
@@ -179,7 +185,7 @@ public class Add_Place_activity extends AppCompatActivity{
 
     private void bindUI() {
         name = findViewById(R.id.plainText_name);
-        location = findViewById(R.id.plainText_address);
+        location = findViewById(R.id.plainText_house_no);
         amount_of_charge = findViewById(R.id.plainText_charge);
         guests_no = findViewById(R.id.plainText_number_of_guests);
         add_place = findViewById(R.id.button_add_place);
@@ -194,6 +200,9 @@ public class Add_Place_activity extends AppCompatActivity{
         user = FirebaseAuth.getInstance().getCurrentUser();
         imageText = findViewById(R.id.textView_uploadPicture);
         place_first_pic = findViewById(R.id.place_first_pic);
+        scrollView = findViewById(R.id.scrollView_add_place);
+        scrollView.smoothScrollTo(0,0);
+        progressDialog = new ProgressDialog(this);
 
     }
 
@@ -310,24 +319,25 @@ public class Add_Place_activity extends AppCompatActivity{
                                 break;
                             }
                         }
-                       if(uniqueName)
-                       {
-                           storeToDatabase(createPlace());
-                           Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
-                           finish();
-                       }
-                       else
-                       {
-                           Toast.makeText(Add_Place_activity.this, "Choose a unique name", Toast.LENGTH_LONG).show();
-                       }
+                        if(uniqueName)
+                        {
+                            storeToDatabase(createPlace());
+                            progressDialog.dismiss();
+                            Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(Add_Place_activity.this, "Choose a unique name", Toast.LENGTH_LONG).show();
+                        }
                     }
                     @Override
                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
                     }
                 });
 
-                }
             }
+        }
 
 
 
@@ -356,6 +366,7 @@ public class Add_Place_activity extends AppCompatActivity{
                         dataSnapshot.getRef().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
+                                progressDialog.dismiss();
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
                                 finish();
                             }
@@ -372,7 +383,6 @@ public class Add_Place_activity extends AppCompatActivity{
 
             }
         });
-        finish();
     }
 
     private boolean validateInput() {

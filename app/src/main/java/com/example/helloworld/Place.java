@@ -21,9 +21,23 @@ public class Place implements Serializable {
     private String category;
     private String image;
     private String key;
+    private String area;
 
 
     public Place() {
+    }
+
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, String category, String image, String area) {
+        this.name = name;
+        this.address = address;
+        this.owner_email = owner_email;
+        this.amount_of_charge = amount_of_charge;
+        this.charge_unit = charge_unit;
+        this.maxm_no_of_guests = maxm_no_of_guests;
+        this.description = description;
+        this.category = category;
+        this.image = image;
+        this.area = area;
     }
 
     public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, String category, String image) {
@@ -130,5 +144,13 @@ public class Place implements Serializable {
     @Exclude
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }
