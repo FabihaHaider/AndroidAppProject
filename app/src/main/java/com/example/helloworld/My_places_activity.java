@@ -124,11 +124,15 @@ public class My_places_activity extends AppCompatActivity {
                         String category = dataSnapshot.child("category").getValue().toString();
                         String description = dataSnapshot.child("description").getValue().toString();
                         String image = dataSnapshot.child("image").getValue().toString();
+                        String house_number = dataSnapshot.child("house_no").getValue().toString();
+                        String area = dataSnapshot.child("area").getValue().toString();
+                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+
 
 
                         if(extras==null) {
                             if (email.equals(owner_email)) {
-                                place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category);
+                                place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
                                 place.setKey(dataSnapshot.getKey());
                                 place.setImage(image);
                                 arrayList.add(place);
@@ -137,7 +141,7 @@ public class My_places_activity extends AppCompatActivity {
                         else
                         {
                             if(category_string.equals(category)){
-                                place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category);
+                                place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
                                 place.setImage(image);
                                 arrayList.add(place);
                             }

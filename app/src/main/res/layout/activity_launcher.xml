@@ -22,6 +22,7 @@
 
             </fragment>
     <ScrollView
+        android:id="@+id/scrollView_launcher_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -113,7 +114,7 @@
                     android:id="@+id/featured_heading"
                     android:layout_width="170dp"
                     android:layout_height="280dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_margin="20dp"
                     android:background="@color/white"
                     android:orientation="vertical">
 
@@ -139,10 +140,55 @@
                     android:id="@+id/recyclerView_featured_places"
                     android:layout_width="match_parent"
                     android:layout_height="280dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
+
+
                     android:layout_toRightOf="@id/featured_heading"/>
 
 
             </RelativeLayout>
+
+             <LinearLayout
+                 android:id="@+id/places_near_you"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/search"
+                android:layout_margin="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="20dp"
+                        android:text="Places near you"
+                        android:textSize="20sp"
+                        android:textAllCaps="true"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_margin="20dp">
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView_near_places"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                       />
+
+
+                </RelativeLayout>
+
+               </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

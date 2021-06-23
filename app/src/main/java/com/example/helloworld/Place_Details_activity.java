@@ -101,9 +101,9 @@ public class Place_Details_activity extends AppCompatActivity {
         if(!place.getOwner_email().equals(owner_email) || source.equals("notMyPlacesList"))
         {
 
-                isMyplace = false;
-                invalidateOptionsMenu();
-                layout.setVisibility(View.VISIBLE);
+            isMyplace = false;
+            invalidateOptionsMenu();
+            layout.setVisibility(View.VISIBLE);
 
         }
 
@@ -160,7 +160,7 @@ public class Place_Details_activity extends AppCompatActivity {
                 {
                     email = dataSnapshot.child("email").getValue().toString();
                     number = dataSnapshot.child("phone_number").getValue().toString();
-                    
+
 
                     if(email.equals(place.getOwner_email()))
                     {
@@ -297,16 +297,16 @@ public class Place_Details_activity extends AppCompatActivity {
     public void onLocationClick(View view) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if(getApplicationContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                    //location here
+                //location here
                 fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                            if(location != null){
-                                longitude = location.getLongitude();
-                                latitude = location.getLatitude();
-                                showLocation(latitude+","+longitude);
+                        if(location != null){
+                            longitude = location.getLongitude();
+                            latitude = location.getLatitude();
+                            showLocation(latitude+","+longitude);
 
-                            }
+                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -351,7 +351,7 @@ public class Place_Details_activity extends AppCompatActivity {
         }
     }
 
-    
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {

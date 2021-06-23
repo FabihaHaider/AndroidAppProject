@@ -21,10 +21,29 @@ public class Place implements Serializable {
     private String category;
     private String image;
     private String key;
+    private String area;
+    private String house_no;
+    private String postal_code;
 
 
     public Place() {
     }
+
+    public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, String category, String image, String house_no, String area, String postal_code) {
+        this.name = name;
+        this.address = address;
+        this.owner_email = owner_email;
+        this.amount_of_charge = amount_of_charge;
+        this.charge_unit = charge_unit;
+        this.maxm_no_of_guests = maxm_no_of_guests;
+        this.description = description;
+        this.category = category;
+        this.image = image;
+        this.area = area;
+        this.house_no = house_no;
+        this.postal_code = postal_code;
+    }
+
 
     public Place(String name, String address, String owner_email, int amount_of_charge, String charge_unit, int maxm_no_of_guests, String description, String category, String image) {
         this.name = name;
@@ -130,5 +149,29 @@ public class Place implements Serializable {
     @Exclude
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getHouse_no() {
+        return house_no;
+    }
+
+    public void setHouse_no(String house_no) {
+        this.house_no = house_no;
+    }
+
+    public String getPostal_code() {
+        return postal_code;
+    }
+
+    public void setPostal_code(String postal_code) {
+        this.postal_code = postal_code;
     }
 }

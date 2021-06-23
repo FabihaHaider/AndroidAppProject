@@ -3,9 +3,9 @@ package com.example.helloworld;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +54,7 @@ import java.util.Map;
 public class Add_Place_activity extends AppCompatActivity{
 
 
-    private EditText name, location, amount_of_charge, guests_no, description;
+    private EditText name, house_no, area, postal_code, amount_of_charge, guests_no, description;
     private TextView show_extra_image, imageText;
     private Button add_place, upload_btn;
     private ImageView image, place_first_pic;
@@ -69,6 +70,9 @@ public class Add_Place_activity extends AppCompatActivity{
     private FirebaseUser user;
     private Place getPlace;
     private boolean updatePlaceDetails = false, uniqueName;
+    private ScrollView scrollView;
+    private ProgressDialog progressDialog;
+
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -86,12 +90,14 @@ public class Add_Place_activity extends AppCompatActivity{
                 updatePlaceDetails = true;
             }
         }
-        
+        setTitle(updatePlaceDetails? "Update Place Details" : "Add New Place");
         bindValues();
         onClickingSpinner();
         add_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.setMessage(updatePlaceDetails? "Updating place details" : "Adding new place");
+                progressDialog.show();
                 insertHouseData();
             }
         });
@@ -154,7 +160,9 @@ public class Add_Place_activity extends AppCompatActivity{
 
     private void bindUI() {
         name = findViewById(R.id.plainText_name);
-        location = findViewById(R.id.plainText_address);
+        house_no = findViewById(R.id.plainText_house_no);
+        area = findViewById(R.id.plainText_area);
+        postal_code = findViewById(R.id.plainText_postal_code);
         amount_of_charge = findViewById(R.id.plainText_charge);
         guests_no = findViewById(R.id.plainText_number_of_guests);
         add_place = findViewById(R.id.button_add_place);
@@ -169,6 +177,9 @@ public class Add_Place_activity extends AppCompatActivity{
         user = FirebaseAuth.getInstance().getCurrentUser();
         imageText = findViewById(R.id.textView_uploadPicture);
         place_first_pic = findViewById(R.id.place_first_pic);
+        scrollView = findViewById(R.id.scrollView_add_place);
+        scrollView.smoothScrollTo(0,0);
+        progressDialog = new ProgressDialog(this);
 
     }
 
@@ -177,7 +188,9 @@ public class Add_Place_activity extends AppCompatActivity{
     private void bindValues() {
         if (getPlace != null) {
             name.setText(getPlace.getName());
-            location.setText(getPlace.getAddress());
+            house_no.setText(getPlace.getHouse_no());
+            area.setText(getPlace.getArea());
+            postal_code.setText(getPlace.getPostal_code());
             amount_of_charge.setText(Integer.toString(getPlace.getAmount_of_charge()));
             guests_no.setText(Integer.toString(getPlace.getMaxm_no_of_guests()));
             description.setText(getPlace.getDescription());
@@ -186,6 +199,7 @@ public class Add_Place_activity extends AppCompatActivity{
             add_place.setText("Update Place Details");
             place_first_pic.setVisibility(View.VISIBLE);
             Picasso.get().load(getPlace.getImage()).into(place_first_pic);
+
         }
     }
 
@@ -285,24 +299,25 @@ public class Add_Place_activity extends AppCompatActivity{
                                 break;
                             }
                         }
-                       if(uniqueName)
-                       {
-                           storeToDatabase(createPlace());
-                           Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
-                           finish();
-                       }
-                       else
-                       {
-                           Toast.makeText(Add_Place_activity.this, "Choose a unique name", Toast.LENGTH_LONG).show();
-                       }
+                        if(uniqueName)
+                        {
+                            storeToDatabase(createPlace());
+                            progressDialog.dismiss();
+                            Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(Add_Place_activity.this, "Choose a unique name", Toast.LENGTH_LONG).show();
+                        }
                     }
                     @Override
                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
                     }
                 });
 
-                }
             }
+        }
 
 
 
@@ -321,7 +336,10 @@ public class Add_Place_activity extends AppCompatActivity{
                     if(place.getName().equals(name))
                     {
                         Map<String, Object> map = new HashMap<>();
-                        map.put("address", place.getAddress());
+                        map.put("house_no", place.getHouse_no());
+                        map.put("area", place.getArea());
+                        map.put("postal_code", place.getPostal_code());
+                        map.put("address", place.getHouse_no() + " " + place.getArea() + " " +place.getPostal_code());
                         map.put("amount_of_charge", place.getAmount_of_charge());
                         map.put("category", place.getCategory());
                         map.put("charge_unit", place.getCharge_unit());
@@ -331,6 +349,7 @@ public class Add_Place_activity extends AppCompatActivity{
                         dataSnapshot.getRef().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
+                                progressDialog.dismiss();
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
                                 finish();
                             }
@@ -347,14 +366,13 @@ public class Add_Place_activity extends AppCompatActivity{
 
             }
         });
-        finish();
     }
 
     private boolean validateInput() {
         boolean allInputsValid = true;
 
         for(EditText input
-                : new EditText[]{name, location, amount_of_charge, guests_no}) {
+                : new EditText[]{name, house_no, area, postal_code, amount_of_charge, guests_no}) {
             if (input.getText().toString().isEmpty()) {
                 input.setText("Please enter a value");
                 allInputsValid = false;
@@ -406,7 +424,10 @@ public class Add_Place_activity extends AppCompatActivity{
     private Place createPlace() {
 
         String place_name = name.getText().toString();
-        String address = location.getText().toString();
+        String user_house_no = house_no.getText().toString();
+        String user_area = area.getText().toString();
+        String user_postal_code = postal_code.getText().toString();
+        String address = user_house_no + " " + user_area + " " + user_postal_code;
         String price = amount_of_charge.getText().toString().trim();
         String crowd = guests_no.getText().toString().trim();
         String description_text = description.getText().toString();
@@ -424,9 +445,9 @@ public class Add_Place_activity extends AppCompatActivity{
         Place place;
 
         if (description_text.isEmpty()) {
-            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, "none", purpose, "none");
+            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, "none", purpose, "none", user_house_no, user_area, user_postal_code);
         } else {
-            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description_text, purpose, "none");
+            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description_text, purpose, "none", user_house_no, user_area, user_postal_code);
         }
 
         return place;
