@@ -209,8 +209,8 @@ public class Launching_Activity extends AppCompatActivity {
                 arrayList1.clear();
                 for (DataSnapshot dataSnapshot: snapshot.getChildren())
                 {
-                    String address = dataSnapshot.child("address").getValue().toString().trim();
-                    LatLng latLng = getLocationFromAddress(Launching_Activity.this, address);
+                    String area = dataSnapshot.child("area").getValue().toString().trim();
+                    LatLng latLng = getLocationFromAddress(Launching_Activity.this, area);
 
                     if(latLng!=null) {
                         float lat2 = (float) latLng.latitude;
@@ -258,11 +258,15 @@ public class Launching_Activity extends AppCompatActivity {
                     String category = dataSnapshot.child("category").getValue().toString();
                     String description = dataSnapshot.child("description").getValue().toString();
                     String image = dataSnapshot.child("image").getValue().toString();
+                    String address = dataSnapshot.child("address").getValue().toString();
+                    String house_no = dataSnapshot.child("house_no").getValue().toString();
+                    String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+
 
 
                     if(dist<=3000.0)
                     {
-                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category);
+                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category,image, house_no, area, postal_code);
                         place.setImage(image);
                         arrayList1.add(place);
                     }

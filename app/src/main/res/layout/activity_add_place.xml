@@ -126,6 +126,7 @@
             android:textColor="#070707"
             android:textSize="16sp" />
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -145,7 +146,7 @@
 
 
             <EditText
-                android:id="@+id/plainText_house_no."
+                android:id="@+id/plainText_house_no"
                 android:layout_width="348dp"
                 android:layout_height="43dp"
                 android:layout_marginStart="30dp"

@@ -54,7 +54,7 @@ import java.util.Map;
 public class Add_Place_activity extends AppCompatActivity{
 
 
-    private EditText name, location, amount_of_charge, guests_no, description;
+    private EditText name, house_no, area, postal_code, amount_of_charge, guests_no, description;
     private TextView show_extra_image, imageText;
     private Button add_place, upload_btn;
     private ImageView image, place_first_pic;
@@ -185,7 +185,9 @@ public class Add_Place_activity extends AppCompatActivity{
 
     private void bindUI() {
         name = findViewById(R.id.plainText_name);
-        location = findViewById(R.id.plainText_house_no);
+        house_no = findViewById(R.id.plainText_house_no);
+        area = findViewById(R.id.plainText_area);
+        postal_code = findViewById(R.id.plainText_postal_code);
         amount_of_charge = findViewById(R.id.plainText_charge);
         guests_no = findViewById(R.id.plainText_number_of_guests);
         add_place = findViewById(R.id.button_add_place);
@@ -211,7 +213,9 @@ public class Add_Place_activity extends AppCompatActivity{
     private void bindValues() {
         if (getPlace != null) {
             name.setText(getPlace.getName());
-            location.setText(getPlace.getAddress());
+            house_no.setText(getPlace.getHouse_no());
+            area.setText(getPlace.getArea());
+            postal_code.setText(getPlace.getPostal_code());
             amount_of_charge.setText(Integer.toString(getPlace.getAmount_of_charge()));
             guests_no.setText(Integer.toString(getPlace.getMaxm_no_of_guests()));
             description.setText(getPlace.getDescription());
@@ -220,6 +224,7 @@ public class Add_Place_activity extends AppCompatActivity{
             add_place.setText("Update Place Details");
             place_first_pic.setVisibility(View.VISIBLE);
             Picasso.get().load(getPlace.getImage()).into(place_first_pic);
+
         }
     }
 
@@ -356,7 +361,10 @@ public class Add_Place_activity extends AppCompatActivity{
                     if(place.getName().equals(name))
                     {
                         Map<String, Object> map = new HashMap<>();
-                        map.put("address", place.getAddress());
+                        map.put("house_no", place.getHouse_no());
+                        map.put("area", place.getArea());
+                        map.put("postal_code", place.getPostal_code());
+                        map.put("address", place.getHouse_no() + " " + place.getArea() + " " +place.getPostal_code());
                         map.put("amount_of_charge", place.getAmount_of_charge());
                         map.put("category", place.getCategory());
                         map.put("charge_unit", place.getCharge_unit());
@@ -389,7 +397,7 @@ public class Add_Place_activity extends AppCompatActivity{
         boolean allInputsValid = true;
 
         for(EditText input
-                : new EditText[]{name, location, amount_of_charge, guests_no}) {
+                : new EditText[]{name, house_no, area, postal_code, amount_of_charge, guests_no}) {
             if (input.getText().toString().isEmpty()) {
                 input.setText("Please enter a value");
                 allInputsValid = false;
@@ -441,7 +449,10 @@ public class Add_Place_activity extends AppCompatActivity{
     private Place createPlace() {
 
         String place_name = name.getText().toString();
-        String address = location.getText().toString();
+        String user_house_no = house_no.getText().toString();
+        String user_area = area.getText().toString();
+        String user_postal_code = postal_code.getText().toString();
+        String address = user_house_no + " " + user_area + " " + user_postal_code;
         String price = amount_of_charge.getText().toString().trim();
         String crowd = guests_no.getText().toString().trim();
         String description_text = description.getText().toString();
@@ -459,9 +470,9 @@ public class Add_Place_activity extends AppCompatActivity{
         Place place;
 
         if (description_text.isEmpty()) {
-            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, "none", purpose, "none");
+            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, "none", purpose, "none", user_house_no, user_area, user_postal_code);
         } else {
-            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description_text, purpose, "none");
+            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description_text, purpose, "none", user_house_no, user_area, user_postal_code);
         }
 
         return place;
