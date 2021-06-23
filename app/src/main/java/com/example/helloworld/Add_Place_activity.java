@@ -105,7 +105,6 @@ public class Add_Place_activity extends AppCompatActivity{
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getPermission();
                 insertImage();
             }
         });
@@ -121,32 +120,8 @@ public class Add_Place_activity extends AppCompatActivity{
 
     }
 
-    private void getPermission(){
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-            if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(Add_Place_activity.this, "Permission granted", Toast.LENGTH_SHORT).show();
 
-            }
-            else{
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-            }
 
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull @org.jetbrains.annotations.NotNull String[] permissions, @NonNull @org.jetbrains.annotations.NotNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==1){
-            if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(Add_Place_activity.this, "Permission accepted", Toast.LENGTH_SHORT).show();
-
-            }
-            else
-                Toast.makeText(Add_Place_activity.this, "Permission denied", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void onClickingSpinner() {
         ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(Add_Place_activity.this,R.array.charge_rate, android.R.layout.simple_spinner_item);
