@@ -27,10 +27,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.audiofx.BassBoost;
+import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -47,7 +51,11 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.allyants.chipview.ChipView;
+import com.allyants.chipview.SimpleChipAdapter;
 import com.bumptech.glide.Glide;
+import com.doodle.android.chips.ChipsView;
+import com.doodle.android.chips.model.Contact;
 import com.facebook.shimmer.Shimmer;
 import com.facebook.shimmer.ShimmerDrawable;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -61,6 +69,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -88,6 +97,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -117,13 +127,26 @@ public class Launching_Activity extends AppCompatActivity {
     private LinearLayout linearLayout;
     private ScrollView scrollView;
 
+    ChipView chipView;
+
+    private void populateTags(){
+        ArrayList tags = new ArrayList();
+        SimpleChipAdapter chipAdapter = new SimpleChipAdapter(tags);
+        chipView.setAdapter(chipAdapter);
+        tags.add("Name");
+        tags.add("Area");
+
+        chipView.notifyDataSetChanged();
+    }
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-
+        chipView = findViewById(R.id.chipview);
+        this.populateTags();
         scrollView = findViewById(R.id.scrollView_launcher_activity);
         scrollView.smoothScrollTo(0,0);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -182,6 +205,7 @@ public class Launching_Activity extends AppCompatActivity {
 
         getLastLocation();
         //not a user no near places
+
     }
 
     @Override
@@ -217,11 +241,6 @@ public class Launching_Activity extends AppCompatActivity {
                         float lon2 = (float) latLng.longitude;
                         double theta = lon1 - lon2;
 
-//                        dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
-//                        dist = Math.acos(dist);
-//                        dist = Math.toDegrees(dist);
-//                        dist = dist * 60 * 1.1515;
-//                        dist = dist * 1.609344;
 
                         Location loc1 = new Location("");
                         loc1.setLatitude(lat1);
@@ -365,6 +384,7 @@ public class Launching_Activity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
 
                             linearLayout.setVisibility(View.GONE);
+                            return;
                         }
                     });
 
@@ -372,6 +392,7 @@ public class Launching_Activity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             linearLayout.setVisibility(View.GONE);
+                            return;
                         }
                     });
 
@@ -465,7 +486,7 @@ public class Launching_Activity extends AppCompatActivity {
         }
     }
 
-    public class MyPlacesAdapter extends RecyclerView.Adapter<Launching_Activity.MyPlacesHolder> {
+   public class MyPlacesAdapter extends RecyclerView.Adapter<Launching_Activity.MyPlacesHolder> {
 
         Context context;
         ArrayList<Place> models;
@@ -538,6 +559,9 @@ public class Launching_Activity extends AppCompatActivity {
 
         }
     }
+
+
+
 
 }
 

@@ -441,7 +441,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     diff= diff/(24*60*60*1000);
                     diff++;
                     long amount = diff * place.getAmount_of_charge();
-                    duration.setText("Duration: "+diff + " day/s");
+                    duration.setText("Duration: "+diff + " day(s)");
                     cost.setText("Cost: BDT "+amount);
                     alert.setText("");
 
@@ -454,7 +454,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     fdiff= (double) round(fdiff*100)/100;
                     double ceilFdiff= ceil(fdiff);
                     long amount = (long) (ceilFdiff * place.getAmount_of_charge());
-                    duration.setText("Duration: "+fdiff + " hour/s (considered as "+ceilFdiff+" hour/s)");
+                    duration.setText("Duration: "+fdiff + " hour(s) (considered as "+ceilFdiff+" hour(s))");
                     cost.setText("Cost: BDT "+amount);
                     alert.setText("");
 
