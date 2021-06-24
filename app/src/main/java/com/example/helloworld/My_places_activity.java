@@ -78,7 +78,6 @@ public class My_places_activity extends AppCompatActivity {
         }
 
 
-
     }
     //
     @SuppressWarnings("ConstantConditions")

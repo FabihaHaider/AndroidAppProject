@@ -101,7 +101,6 @@ public class Place_Details_activity extends AppCompatActivity {
         binnUI();
         if(!place.getOwner_email().equals(owner_email) || source.equals("notMyPlacesList"))
         {
-
             isMyplace = false;
             invalidateOptionsMenu();
             layout.setVisibility(View.VISIBLE);
@@ -245,7 +244,6 @@ public class Place_Details_activity extends AppCompatActivity {
                 {
                     email = dataSnapshot.child("email").getValue().toString();
                     number = dataSnapshot.child("phone_number").getValue().toString();
-
 
                     if(email.equals(place.getOwner_email()))
                     {
