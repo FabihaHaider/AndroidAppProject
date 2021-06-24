@@ -116,20 +116,20 @@ public class Launching_Activity<mLocationCallback> extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
 
         bindUI();
-        getLastLocation();
+//        getLastLocation();
         searchProcess();
 
         //not a user no near places
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (checkPermissions()) {
-            getLastLocation();
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (checkPermissions()) {
+//            getLastLocation();
+//        }
+//    }
 
     private void bindUI() {
         scrollView = findViewById(R.id.scrollView_launcher_activity);
