@@ -5,8 +5,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -19,10 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld"
         tools:replace="android:label">
-
-        <activity android:name=".ReviewRequestActivity"></activity>
-
-        <activity android:name=".UpdatePicture"></activity>
+        <activity android:name=".WishlistActivity"></activity>
+        <activity android:name=".ReviewRequestActivity" />
+        <activity android:name=".UpdatePicture" />
         <activity android:name=".ImageFolder" />
         <activity android:name=".BookingActivity" />
         <activity android:name=".Requests_Activity" />

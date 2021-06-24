@@ -86,6 +86,7 @@ public class My_places_activity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         retrieveDataFromFirebase();
+
     }
 
     private void bindUI() {
