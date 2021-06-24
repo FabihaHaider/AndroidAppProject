@@ -10,33 +10,55 @@
         android:id="@+id/button_choose_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose Image"
-        android:layout_margin="20dp"
-        android:visibility="gone"/>
+        android:text="Select picture"
+        android:layout_margin="20dp" />
 
     <RelativeLayout
         android:layout_below="@+id/button_choose_image"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_margin="20dp">
+        android:layout_margin="20dp"
+        android:elevation="10dp">
 
         <ImageView
-            android:id="@+id/row_update_picture_imageView"
+            android:id="@+id/update_picture_imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             />
 
-        <Button android:id="@+id/button_recyclerview_delete_images"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/trasparent"
-            android:layout_alignParentBottom="true"
-            android:text="Delete"
-            android:textColor="@color/black"
-            android:layout_centerInParent="true" />
-
     </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/button_upload_picture"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/button_upload_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp"
+        android:text="Upload"
+        android:layout_marginStart="10dp"/>
+
+    <Button
+        android:id="@+id/button_image_folder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_upload_picture"
+        android:layout_alignBottom="@+id/button_upload_picture"
+        android:layout_marginStart="154dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@id/button_upload_picture"
+        android:text="Image Folder"
+        android:gravity="center"/>
 
 </RelativeLayout>

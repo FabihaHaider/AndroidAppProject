@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,24 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ClipData;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.audiofx.BassBoost;
-import android.net.Uri;
-import android.nfc.Tag;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,24 +33,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.allyants.chipview.ChipView;
-import com.allyants.chipview.SimpleChipAdapter;
 import com.bumptech.glide.Glide;
-import com.doodle.android.chips.ChipsView;
-import com.doodle.android.chips.model.Contact;
-import com.facebook.shimmer.Shimmer;
-import com.facebook.shimmer.ShimmerDrawable;
-import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -66,10 +49,9 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -78,40 +60,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.maps.android.SphericalUtil;
 import com.smarteist.autoimageslider.SliderView;
-import com.smarteist.autoimageslider.SliderViewAdapter;
 
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import okhttp3.OkHttpClient;
-
 import static android.content.ContentValues.TAG;
 
-public class Launching_Activity extends AppCompatActivity {
+public class Launching_Activity<mLocationCallback> extends AppCompatActivity {
     private TextView textView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private SliderView sliderView;
-    int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
+    private int[] images;
 
     private MyImageAdapter adapter;
     private Launching_Activity.MyPlacesAdapter adapter1;
@@ -121,34 +87,53 @@ public class Launching_Activity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
     private DatabaseReference ref;
 
-    private Double latitude, longitude,dist;
+    private Double latitude, longitude, dist;
     int PERMISSION_ID = 44;
     private boolean first = true;
     private LinearLayout linearLayout;
     private ScrollView scrollView;
+    private ProgressDialog progressBar;
+    private ChipGroup chipGroup, chipGroup_category;
+    private Chip chip_area, chip_name, chip_category;
+    private ArrayList<String> selectedChipData;
+    private FlexboxLayout flexbox_layout_area;
 
-    ChipView chipView;
 
-    private void populateTags(){
-        ArrayList tags = new ArrayList();
-        SimpleChipAdapter chipAdapter = new SimpleChipAdapter(tags);
-        chipView.setAdapter(chipAdapter);
-        tags.add("Name");
-        tags.add("Area");
 
-        chipView.notifyDataSetChanged();
-    }
-    
+    private LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+            Log.i(TAG, "onLocationResult: "+mLastLocation.getLatitude());
+        }
+    };
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-        chipView = findViewById(R.id.chipview);
-        this.populateTags();
+        bindUI();
+        getLastLocation();
+        searchProcess();
+
+        //not a user no near places
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (checkPermissions()) {
+            getLastLocation();
+        }
+    }
+
+    private void bindUI() {
         scrollView = findViewById(R.id.scrollView_launcher_activity);
-        scrollView.smoothScrollTo(0,0);
+        scrollView.smoothScrollTo(0, 0);
         drawerLayout = findViewById(R.id.drawerLayout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         linearLayout = findViewById(R.id.places_near_you);
@@ -158,6 +143,7 @@ public class Launching_Activity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
 
         sliderView = findViewById(R.id.imageSlider);
         MySliderAdapter mySliderAdapter = new MySliderAdapter(images, Launching_Activity.this);
@@ -173,8 +159,8 @@ public class Launching_Activity extends AppCompatActivity {
         adapter = new MyImageAdapter(this, arrayList);
         recyclerView.setAdapter(adapter);
 
-        for(int i = 0; i<3; i++)
-        {
+
+        for (int i = 0; i < 3; i++) {
             image_model imageModel = new image_model("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
             arrayList.add(imageModel);
         }
@@ -203,9 +189,62 @@ public class Launching_Activity extends AppCompatActivity {
         adapter1 = new MyPlacesAdapter(Launching_Activity.this, arrayList1);
         recyclerView1.setAdapter(adapter1);
 
-        getLastLocation();
-        //not a user no near places
+        progressBar = new ProgressDialog(Launching_Activity.this);
+        progressBar.setMessage("Loading places near you");
 
+        chipGroup = findViewById(R.id.chip_group);
+        chip_area = findViewById(R.id.chipArea);
+        chip_name = findViewById(R.id.chipName);
+        chip_category = findViewById(R.id.chipCategory);
+        flexbox_layout_area = findViewById(R.id.flexbox_layout_area);
+
+        chipGroup_category = findViewById(R.id.chip_group_category);
+
+        selectedChipData = new ArrayList<String>();
+
+    }
+
+    private void searchProcess() {
+        CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    selectedChipData.add(buttonView.getText().toString());
+
+                    if(buttonView.getText().toString().equals("Category"))
+                    {
+                        chipGroup_category.setVisibility(View.VISIBLE);
+                    }
+                    if(buttonView.getText().toString().equals("Area"))
+                    {
+                        flexbox_layout_area.setVisibility(View.VISIBLE);
+                    }
+
+//                    chipGroup.removeView(buttonView);
+//                    chipView.addView(buttonView);
+                }
+                else {
+                    selectedChipData.remove(buttonView.getText().toString());
+
+                    if(buttonView.getText().toString().equals("Category"))
+                    {
+                        chipGroup_category.setVisibility(View.GONE);
+                    }
+                    if(buttonView.getText().toString().equals("Area"))
+                    {
+                        flexbox_layout_area.setVisibility(View.GONE);
+                    }
+//                    chipView.removeView(buttonView);
+//                    chipGroup.addView(buttonView);
+
+                }
+            }
+        };
+
+        chip_area.setOnCheckedChangeListener(onCheckedChangeListener);
+        chip_name.setOnCheckedChangeListener(onCheckedChangeListener);
+        chip_category.setOnCheckedChangeListener(onCheckedChangeListener);
     }
 
     @Override
@@ -216,7 +255,7 @@ public class Launching_Activity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(actionBarDrawerToggle.onOptionsItemSelected(item)){
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -231,12 +270,11 @@ public class Launching_Activity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 arrayList1.clear();
-                for (DataSnapshot dataSnapshot: snapshot.getChildren())
-                {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String area = dataSnapshot.child("area").getValue().toString().trim();
                     LatLng latLng = getLocationFromAddress(Launching_Activity.this, area);
 
-                    if(latLng!=null) {
+                    if (latLng != null) {
                         float lat2 = (float) latLng.latitude;
                         float lon2 = (float) latLng.longitude;
                         double theta = lon1 - lon2;
@@ -250,7 +288,7 @@ public class Launching_Activity extends AppCompatActivity {
                         loc2.setLongitude(lon2);
 //                        dist =  (loc1.distanceTo(loc2) / 1000.0);
 
-                        float pk = (float) (180.f/Math.PI);
+                        float pk = (float) (180.f / Math.PI);
 
                         float a1 = (float) (lat1 / pk);
                         float a2 = (float) (lon1 / pk);
@@ -282,10 +320,8 @@ public class Launching_Activity extends AppCompatActivity {
                     String postal_code = dataSnapshot.child("postal_code").getValue().toString();
 
 
-
-                    if(dist<=3000.0)
-                    {
-                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category,image, house_no, area, postal_code);
+                    if (dist <= 3000.0) {
+                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
                         place.setImage(image);
                         arrayList1.add(place);
                     }
@@ -296,14 +332,14 @@ public class Launching_Activity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
+                Log.i(TAG, "onCancelled: "+error.getMessage());
             }
         });
-
+        progressBar.dismiss();
     }
 
-
-    public LatLng getLocationFromAddress(Context context,String strAddress){
+    @SuppressWarnings("ConstantConditions")
+    public LatLng getLocationFromAddress(Context context, String strAddress) {
 
 //        public void getLocationFromAddress(){
         Geocoder coder = new Geocoder(context, Locale.getDefault());
@@ -318,8 +354,7 @@ public class Launching_Activity extends AppCompatActivity {
             }
             if (address.size() < 1) {
                 //
-            }
-            else {
+            } else {
                 Address location = address.get(0);
                 p1 = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -356,17 +391,16 @@ public class Launching_Activity extends AppCompatActivity {
                         } else {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            distance(latitude, longitude);
+                            LatLng latLng1 = new LatLng(latitude, longitude);
                             Log.i(TAG, "onComplete: latitude "+latitude+" longitude "+longitude);
+                            distance(latitude, longitude);
                         }
                     }
                 });
 
             } else {
-//                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                startActivity(intent);
 
-                if(first) {
+                if (first) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(Launching_Activity.this);
                     builder.setIcon(R.drawable.ic_baseline_location_on_24);
                     builder.setTitle("Use location?");
@@ -374,6 +408,7 @@ public class Launching_Activity extends AppCompatActivity {
 
                     builder.setPositiveButton("Turn on", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+                            progressBar.show();
                             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(intent);
                         }
@@ -399,10 +434,7 @@ public class Launching_Activity extends AppCompatActivity {
                     // show the alert dialog
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
-
                     alertDialog.getWindow().setGravity(Gravity.TOP);
-
-
                     first = false;
                 }
 
@@ -432,22 +464,11 @@ public class Launching_Activity extends AppCompatActivity {
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
 
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-        }
-    };
 
 
     // method to check for permissions
     private boolean checkPermissions() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-
-        // If we want background location
-        // on Android 10.0 and higher,
-        // use:
-//         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
     // method to request for permissions
@@ -478,15 +499,8 @@ public class Launching_Activity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (checkPermissions()) {
-            getLastLocation();
-        }
-    }
 
-   public class MyPlacesAdapter extends RecyclerView.Adapter<Launching_Activity.MyPlacesHolder> {
+    public class MyPlacesAdapter extends RecyclerView.Adapter<Launching_Activity.MyPlacesHolder> {
 
         Context context;
         ArrayList<Place> models;
@@ -562,6 +576,9 @@ public class Launching_Activity extends AppCompatActivity {
 
 
 
+    public void onChipViewClick(View view) {
+        chipGroup.setVisibility(View.VISIBLE);
+    }
 
 }
 

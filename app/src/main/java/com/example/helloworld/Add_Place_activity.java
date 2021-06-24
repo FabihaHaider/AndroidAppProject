@@ -71,7 +71,6 @@ public class Add_Place_activity extends AppCompatActivity{
     private Place getPlace;
     private boolean updatePlaceDetails = false, uniqueName;
     private ScrollView scrollView;
-    private ProgressDialog progressDialog;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -96,8 +95,6 @@ public class Add_Place_activity extends AppCompatActivity{
         add_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(updatePlaceDetails? "Updating place details" : "Adding new place");
-                progressDialog.show();
                 insertHouseData();
             }
         });
@@ -179,7 +176,6 @@ public class Add_Place_activity extends AppCompatActivity{
         place_first_pic = findViewById(R.id.place_first_pic);
         scrollView = findViewById(R.id.scrollView_add_place);
         scrollView.smoothScrollTo(0,0);
-        progressDialog = new ProgressDialog(this);
 
     }
 
@@ -243,33 +239,34 @@ public class Add_Place_activity extends AppCompatActivity{
     }
 
 
-    ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode() == Activity.RESULT_OK){
-                        Intent data = result.getData();
+    ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult
+    (
+    new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if(result.getResultCode() == Activity.RESULT_OK){
+                Intent data = result.getData();
 
-                        if(data.getClipData().getItemCount() < 3){
-                            Toast.makeText(Add_Place_activity.this,"Please select at least 3 images", Toast.LENGTH_LONG).show();
-                        }
+                if(data.getClipData().getItemCount() < 3){
+                    Toast.makeText(Add_Place_activity.this,"Please select at least 3 images", Toast.LENGTH_LONG).show();
+                }
 
-                        if(data != null && data.getClipData().getItemCount() >=3){
-                            int count_data = data.getClipData().getItemCount();
-                            int currentImage = 0;
+                if(data != null && data.getClipData().getItemCount() >=3){
+                    int count_data = data.getClipData().getItemCount();
+                    int currentImage = 0;
 
-                            while(currentImage < count_data){
-                                imageUri = data.getClipData().getItemAt(currentImage).getUri();
-                                imageList.add(imageUri);
-                                currentImage++;
-                            }
-                        }
-                        else{
-                            Toast.makeText(Add_Place_activity.this,"No file selected", Toast.LENGTH_SHORT).show();
-                        }
+                    while(currentImage < count_data){
+                        imageUri = data.getClipData().getItemAt(currentImage).getUri();
+                        imageList.add(imageUri);
+                        currentImage++;
                     }
                 }
-            });
+                else{
+                    Toast.makeText(Add_Place_activity.this,"No file selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    });
 
     private void insertHouseData() {
         uniqueName = true;
@@ -302,7 +299,6 @@ public class Add_Place_activity extends AppCompatActivity{
                         if(uniqueName)
                         {
                             storeToDatabase(createPlace());
-                            progressDialog.dismiss();
                             Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
                             finish();
                         }
@@ -336,6 +332,7 @@ public class Add_Place_activity extends AppCompatActivity{
                     if(place.getName().equals(name))
                     {
                         Map<String, Object> map = new HashMap<>();
+                        map.clear();
                         map.put("house_no", place.getHouse_no());
                         map.put("area", place.getArea());
                         map.put("postal_code", place.getPostal_code());
@@ -349,12 +346,12 @@ public class Add_Place_activity extends AppCompatActivity{
                         dataSnapshot.getRef().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                progressDialog.dismiss();
+                                map.clear();
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
-                                finish();
+                                Intent intent = new Intent(Add_Place_activity.this, My_places_activity.class);
+                                startActivity(intent);
                             }
                         });
-                        break;
 
                     }
 
@@ -408,7 +405,7 @@ public class Add_Place_activity extends AppCompatActivity{
                         @Override
                         public void onSuccess(Uri uri) {
                             url = String.valueOf(uri);
-                            StorePicUri(ref, url, place);
+                            StorePicUri(ref, url, place, upload_count);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -454,25 +451,12 @@ public class Add_Place_activity extends AppCompatActivity{
     }
 
 
-    private void StorePicUri(DatabaseReference ref, String url, Place place) {
+    private void StorePicUri(DatabaseReference ref, String url, Place place, int upload_count) {
         DatabaseReference Images = FirebaseDatabase.getInstance().getReference().child("Images").child(name.getText().toString());
-        Images.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    img_cnt = (int) snapshot.getChildrenCount();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
         hashMap.put("ImgLink", url);
-        Images.child(String.valueOf(img_cnt+1)).setValue(hashMap);
+        Images.push().setValue(hashMap);
 
-        if(img_cnt==0)
+        if(upload_count==0)
         {
             place.setImage(url);
             ref.push().setValue(place).addOnFailureListener(new OnFailureListener() {

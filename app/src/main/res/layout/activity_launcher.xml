@@ -36,29 +36,193 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginTop="40dp">
 <!--                android:layout_margin="20dp">-->
 
-                <com.allyants.chipview.ChipView
-                    android:id="@+id/chipview"
+<!--                <com.doodle.android.chips.ChipsView-->
+<!--                    android:id="@+id/cv_contacts"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:overScrollMode="never"-->
+<!--                    app:cv_max_height="120dp"-->
+<!--                    app:cv_vertical_spacing="2dp"-->
+<!--                    />-->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:elevation="8dp"
-                    android:padding="10dp"/>
+                    android:focusableInTouchMode="true"
+                    android:layout_below="@+id/flexbox_layout"
+                    android:visibility="gone"
+                    app:singleSelection="false"
+                    >
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="40dp"
-                    android:src="@android:drawable/ic_search_category_default"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerInParent="true"
-                    android:background="@color/spinner_bg"/>
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Area"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Category"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipViewAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View all"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
+                </com.google.android.material.chip.ChipGroup>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:focusableInTouchMode="true"
+                    android:layout_below="@+id/flexbox_layout_area"
+                    app:singleSelection="true"
+                    android:visibility="gone"
+                    >
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCategory0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Social Events"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCategory1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Educational Purpose"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCategory2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Official Meetings"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCategory3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Workshops"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCategory4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rent To Tourists"
+                        android:layout_marginLeft="10dp"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"/>
+                </com.google.android.material.chip.ChipGroup>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/flexbox_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/spinner_bg"
+                    android:gravity="center"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="40dp"
+                        android:paddingTop="10dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginEnd="1dp"
+                        android:layout_marginRight="1dp"
+                        android:background="@color/spinner_bg"
+                        android:src="@android:drawable/ic_search_category_default" />
+
+
+                    <EditText
+                        android:id="@+id/search_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:onClick="onChipViewClick"
+                        android:textIsSelectable="true"
+                        app:layout_flexGrow="1"
+                        android:hint="Search by area, name or category"
+                        />
+
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_below="@+id/chip_group"
+                    android:id="@+id/flexbox_layout_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/spinner_bg"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="40dp"
+                        android:paddingTop="10dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginEnd="1dp"
+                        android:layout_marginRight="1dp"
+                        android:background="@color/spinner_bg"
+                        android:src="@android:drawable/ic_search_category_default" />
+
+
+                    <EditText
+                        android:id="@+id/seacrh_area"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:onClick="onChipViewClick"
+                        android:textIsSelectable="true"
+                        app:layout_flexGrow="1"
+                        android:hint="Search by area"
+                        />
+
+
+                </com.google.android.flexbox.FlexboxLayout>
 
 
             </RelativeLayout>
@@ -109,9 +273,13 @@
                             app:sliderIndicatorSelectedColor="#5A5A5A"
                             app:sliderIndicatorUnselectedColor="#FFF"
                             app:sliderScrollTimeInSec="1"
-                            app:sliderStartAutoCycle="true" />
+                            app:sliderStartAutoCycle="true" >
+
+                        </com.smarteist.autoimageslider.SliderView>
 
                     </androidx.cardview.widget.CardView>
+
+
                 </RelativeLayout>
 
 
