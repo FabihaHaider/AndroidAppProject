@@ -112,6 +112,7 @@ public class WishlistActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
@@ -126,7 +127,7 @@ public class WishlistActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         arrayList = new ArrayList<>();
-        adapter = new PlacesAdapter(this, arrayList);
+        adapter = new PlacesAdapter(this, arrayList, "WishlistActivity");
         recyclerView.setAdapter(adapter);
     }
 

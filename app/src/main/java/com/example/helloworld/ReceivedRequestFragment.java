@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +53,9 @@ public class ReceivedRequestFragment extends Fragment {
         recyclerView = root.findViewById(R.id.receivedRequestRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        Log.i("rec_req_size1", String.valueOf(arrayList.size()));
         reqAdapter =new ReceivedRequestFragment.ReceivedReqPlacesAdapter(getContext(), arrayList);
         recyclerView.setAdapter(reqAdapter);
-
 
         return root;
     }
@@ -81,18 +82,18 @@ public class ReceivedRequestFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Request request;
                     if (snapshot.exists()) {
-                        String ownerMail = dataSnapshot.child("ownerMail").getValue().toString();
+                        String ownerMail = dataSnapshot.child("ownerMail").getValue().toString().trim();
 
-                        String placeName = dataSnapshot.child("placeName").getValue().toString();
-                        String location = dataSnapshot.child("location").getValue().toString();
-                        String senderMail = dataSnapshot.child("senderMail").getValue().toString();
-                        String startDate = dataSnapshot.child("startDate").getValue().toString();
-                        String endDate = dataSnapshot.child("endDate").getValue().toString();
-                        String startTime = dataSnapshot.child("startTime").getValue().toString();
-                        String endTime = dataSnapshot.child("endTime").getValue().toString();
-                        String purpose = dataSnapshot.child("bookingPurpose").getValue().toString();
-                        String guestNum = dataSnapshot.child("guestNum").getValue().toString();
-                        String state = dataSnapshot.child("state").getValue().toString();
+                        String placeName = dataSnapshot.child("placeName").getValue().toString().trim();
+                        String location = dataSnapshot.child("location").getValue().toString().trim();
+                        String senderMail = dataSnapshot.child("senderMail").getValue().toString().trim();
+                        String startDate = dataSnapshot.child("startDate").getValue().toString().trim();
+                        String endDate = dataSnapshot.child("endDate").getValue().toString().trim();
+                        String startTime = dataSnapshot.child("startTime").getValue().toString().trim();
+                        String endTime = dataSnapshot.child("endTime").getValue().toString().trim();
+                        String purpose = dataSnapshot.child("bookingPurpose").getValue().toString().trim();
+                        String guestNum = dataSnapshot.child("guestNum").getValue().toString().trim();
+                        String state = dataSnapshot.child("state").getValue().toString().trim();
 
                         if(ownerMail.equals(currentUserMail)){
 
@@ -101,6 +102,7 @@ public class ReceivedRequestFragment extends Fragment {
                         }
                     }
                 }
+                Log.i("rec_req_size2", String.valueOf(arrayList.size()));
                 reqAdapter.notifyDataSetChanged();
             }
 
@@ -109,6 +111,7 @@ public class ReceivedRequestFragment extends Fragment {
 
             }
         });
+        Log.i("rec_req_size3", String.valueOf(arrayList.size()));
     }
     public class ReceivedReqPlacesAdapter extends RecyclerView.Adapter<ReceivedRequestFragment.ReceivedReqPlaceHolder> {
 

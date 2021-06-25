@@ -29,14 +29,18 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class SentRequestFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private DatabaseReference databaseReference;
-    private ArrayList<Request> arrayList;
-    private ReqPlacesAdapter reqAdapter;
+    private DatabaseReference reqRef, placeRef;
+    private ArrayList<Place> arrayList;
+    private ArrayList<Request> requestList;
+    //private ReqPlacesAdapter reqAdapter;
+    private PlacesAdapter adapter;
+    //private String state;
 
 
     @Override
@@ -45,30 +49,41 @@ public class SentRequestFragment extends Fragment {
         ViewGroup root =(ViewGroup) inflater.inflate(R.layout.fragment_sent_request, container, false);
 
         arrayList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Request");
+        requestList = new ArrayList<>();
+        reqRef = FirebaseDatabase.getInstance().getReference().child("Request");
+        placeRef= FirebaseDatabase.getInstance().getReference().child("Place");
+
+
+
 
         // Add the following lines to create RecyclerView
         recyclerView = root.findViewById(R.id.sentRequestRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        reqAdapter =new ReqPlacesAdapter(getContext(), arrayList);
-        recyclerView.setAdapter(reqAdapter);
-
-
+        adapter =new PlacesAdapter(getContext(), arrayList, requestList, "SentRequestFragment");
+        recyclerView.setAdapter(adapter);
         return root;
+
+        //Log.i("sent_req_size1", requestList.size()+" "+ arrayList.size());
+
+
+
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         retrieveData();
+
+
     }
 
     private void retrieveData() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String currentUserMail = user.getEmail();
+        String currentUserMail = user.getEmail().trim();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        reqRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if(arrayList.size() != 0){
@@ -78,29 +93,33 @@ public class SentRequestFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Request request;
                     if (snapshot.exists()) {
-                        String senderMail = dataSnapshot.child("senderMail").getValue().toString();
+                        String dbSenderMail = dataSnapshot.child("senderMail").getValue().toString().trim();
+                        String dbPlaceName = dataSnapshot.child("placeName").getValue().toString().trim();
+                        String location = dataSnapshot.child("location").getValue().toString().trim();
+                        String ownerMail = dataSnapshot.child("ownerMail").getValue().toString().trim();
+                        String startDate = dataSnapshot.child("startDate").getValue().toString().trim();
+                        String endDate = dataSnapshot.child("endDate").getValue().toString().trim();
+                        String startTime = dataSnapshot.child("startTime").getValue().toString().trim();
+                        String endTime = dataSnapshot.child("endTime").getValue().toString().trim();
+                        String purpose = dataSnapshot.child("bookingPurpose").getValue().toString().trim();
+                        String guestNum = dataSnapshot.child("guestNum").getValue().toString().trim();
+                        String state = dataSnapshot.child("state").getValue().toString().trim().trim();
 
-                        String placeName = dataSnapshot.child("placeName").getValue().toString();
-                        String location = dataSnapshot.child("location").getValue().toString();
-                        String ownerMail = dataSnapshot.child("ownerMail").getValue().toString();
-                        String startDate = dataSnapshot.child("startDate").getValue().toString();
-                        String endDate = dataSnapshot.child("endDate").getValue().toString();
-                        String startTime = dataSnapshot.child("startTime").getValue().toString();
-                        String endTime = dataSnapshot.child("endTime").getValue().toString();
-                        String purpose = dataSnapshot.child("bookingPurpose").getValue().toString();
-                        String guestNum = dataSnapshot.child("guestNum").getValue().toString();
-                        String state = dataSnapshot.child("state").getValue().toString();
+                        if(dbSenderMail.equals(currentUserMail)){
 
-                        if(senderMail.equals(currentUserMail)){
+                            request= new Request(dbPlaceName,location, ownerMail, dbSenderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state);
+                            requestList.add(request);
 
-                            request= new Request(placeName,location, ownerMail, senderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state);
-                            arrayList.add(request);
+                            retrievePlace(dbPlaceName);
+                            ////////////////////////////
+
 
                         }
 
                     }
                 }
-                reqAdapter.notifyDataSetChanged();
+
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -108,9 +127,59 @@ public class SentRequestFragment extends Fragment {
 
             }
         });
+
     }
 
-    public class ReqPlacesAdapter extends RecyclerView.Adapter<SentRequestFragment.ReqPlaceHolder> {
+
+    private void retrievePlace(String placeName){
+        placeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Place place;
+                    if (snapshot.exists()) {
+                        String db_place_name = dataSnapshot.child("name").getValue().toString().trim();
+                        if(db_place_name.equals(placeName)) {
+
+                            String email = dataSnapshot.child("owner_email").getValue().toString().trim();
+                            String address = dataSnapshot.child("address").getValue().toString().trim();
+                            Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString().trim());
+                            String charge_rate = dataSnapshot.child("charge_unit").getValue().toString().trim();
+                            Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString().trim());
+                            String category = dataSnapshot.child("category").getValue().toString().trim();
+                            String description = dataSnapshot.child("description").getValue().toString().trim();
+                            String image = dataSnapshot.child("image").getValue().toString().trim();
+                            String house_number = dataSnapshot.child("house_no").getValue().toString().trim();
+                            String area = dataSnapshot.child("area").getValue().toString().trim();
+                            String postal_code = dataSnapshot.child("postal_code").getValue().toString().trim();
+
+
+                            place = new Place(db_place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                            place.setImage(image);
+                            arrayList.add(place);
+
+
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private interface FirebaseCallback{
+        void onCallback(ArrayList<Request> list1, ArrayList<Place> list2);
+    }
+
+
+    /*public class ReqPlacesAdapter extends RecyclerView.Adapter<SentRequestFragment.ReqPlaceHolder> {
 
         Context context;
         ArrayList<Request> models;
@@ -194,7 +263,7 @@ public class SentRequestFragment extends Fragment {
         }
 
 
-    }
+    }*/
 
 
 
