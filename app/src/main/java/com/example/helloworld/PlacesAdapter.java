@@ -31,7 +31,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
         this.context = context;
         this.models = models;
         this.source = source;
-        //this.reqModels = new ArrayList<>();
     }
 
     public PlacesAdapter(Context context, ArrayList<Place> models, ArrayList<Request> reqModels,String source) {
@@ -55,7 +54,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
     @Override
     public void onBindViewHolder(@NonNull @NotNull PlacesHolder holder, int position) {
         final Place place = models.get(position);
-        //final Request request = reqModels.get(position);
 
 
         Glide.with(context).load(place.getImage()).into(holder.image);
@@ -65,7 +63,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
         holder.charge.setText("Price rate: Tk " + Integer.toString(amount));
         holder.rate.setText(" " + place.getCharge_unit());
 
-        if(source.equals("SentRequestFragment")){
+        if(source.equals("SentRequestFragment") || source.equals("ReceivedRequestFragment")){
            final Request request = reqModels.get(position);
             holder.charge.setText("");
             holder.rate.setText("");
@@ -97,11 +95,22 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
-                else if(source.equals("SentRequestFragment")){
+                else if(source.equals("SentRequestFragment" ) ){
                     final Request request = reqModels.get(position);
                     Intent intent = new Intent(context, ReviewRequestActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("fromActivity", "SentRequest");
+                    intent.putExtra("request", request);
+                    intent.putExtras(bundle);
+
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+                else if(source.equals("ReceivedRequestFragment" ) ){
+                    final Request request = reqModels.get(position);
+                    Intent intent = new Intent(context, ReviewRequestActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("fromActivity", "ReceivedRequest");
                     intent.putExtra("request", request);
                     intent.putExtras(bundle);
 
@@ -114,7 +123,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
 
     @Override
     public int getItemCount() {
-        //Log.i("model_size", reqModels.size()+" "+ models.size());
         return models.size();
     }
 }
