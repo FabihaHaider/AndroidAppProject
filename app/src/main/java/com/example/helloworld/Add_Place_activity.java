@@ -279,7 +279,6 @@ public class Add_Place_activity extends AppCompatActivity{
         else {
 
             if(updatePlaceDetails) {
-
                 final Place place;
                 place = createPlace();
                 updateDatabase(place);
@@ -325,7 +324,7 @@ public class Add_Place_activity extends AppCompatActivity{
 
     private void updateDatabase(Place place) {
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot: snapshot.getChildren())
@@ -358,6 +357,7 @@ public class Add_Place_activity extends AppCompatActivity{
                     }
 
                 }
+
             }
 
             @Override
@@ -365,6 +365,8 @@ public class Add_Place_activity extends AppCompatActivity{
 
             }
         });
+
+
     }
 
     private boolean validateInput() {

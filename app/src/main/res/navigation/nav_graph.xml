@@ -34,5 +34,11 @@
         android:label="activity_requests"
         tools:layout="@layout/activity_requests"/>
 
+    <activity
+        android:id="@+id/wishlist"
+        android:name="com.example.helloworld.WishlistActivity"
+        android:label="activity_requests"
+        tools:layout="@layout/activity_requests"/>
+
 
 </navigation>

@@ -59,9 +59,9 @@ import java.util.Locale;
 
 public class Place_Details_activity extends AppCompatActivity {
     private TextView place_name, address, price_rate, number_of_guests, description, category, phone_number;
-    private Button bookNow;
+    private Button bookNow, wishlist;
     private Place place;
-    private DatabaseReference ref, databaseReference_user;
+    private DatabaseReference ref, databaseReference_user, wishlistRef;
     private ArrayList<image_model> image_models;
     private RecyclerView recyclerView;
     private MyImageAdapter myImageAdapter;
@@ -73,6 +73,7 @@ public class Place_Details_activity extends AppCompatActivity {
     private Double latitude, longitude;
     private Geocoder geocoder;
     private List<Address> addresses;
+    private String source;
 
 
 
@@ -87,7 +88,7 @@ public class Place_Details_activity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        String source = extras.getString("source");
+        source = extras.getString("source");
 
 
         if (getIntent().getExtras() != null) {
@@ -117,7 +118,90 @@ public class Place_Details_activity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        
+        readData();
+
+
     }
+
+
+    private void readData(){
+        wishlistRef= FirebaseDatabase.getInstance().getReference().child("Wishlist");
+
+        wishlistRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                boolean added= false;
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                    String dbPlaceName = dataSnapshot.child("placeName").getValue().toString().trim();
+                    String dbUserMail = dataSnapshot.child("userMail").getValue().toString().trim();
+                    if(dbPlaceName.equals(place.getName().trim()) && dbUserMail.equals(user.getEmail().trim())){
+                        added=true;
+                        break;
+                    }
+                }
+
+                if(!added){
+                    wishlist.setText("Add to wishlist");
+                    wishlist.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            WishList wishList = new WishList(place.getName(), user.getEmail());
+                            String key = wishlistRef.push().getKey();
+                            wishlistRef.child(key).setValue(wishList);
+
+                            Toast.makeText(Place_Details_activity.this, "Added to wishList successfully",Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(Place_Details_activity.this, Place_Details_activity.class).putExtra("place", place);
+                            Bundle extras = new Bundle();
+                            extras.putString("source", source);
+                            intent.putExtras(extras);
+                            startActivity(intent);
+                            finish();
+
+                        }
+                    });
+
+                }
+                else{  //added
+                    wishlist.setText("Remove from wishlist");
+                    wishlist.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                                String dbPlaceName = dataSnapshot.child("placeName").getValue().toString().trim();
+                                String dbUserMail = dataSnapshot.child("userMail").getValue().toString().trim();
+                                if(dbPlaceName.equals(place.getName().trim()) && dbUserMail.equals(user.getEmail().trim())){
+
+                                    dataSnapshot.getRef().removeValue();
+                                }
+                            }
+
+
+                            Toast.makeText(Place_Details_activity.this, "Removed from wishlist successfully",Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(Place_Details_activity.this, Place_Details_activity.class).putExtra("place", place);
+                            Bundle extras = new Bundle();
+                            extras.putString("source", source);
+                            //else extras.putString("source", "notMyPlacesList");
+                            intent.putExtras(extras);
+                            startActivity(intent);
+                            finish();
+
+                        }
+                    });
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
 
 
     private void binnUI() {
@@ -142,6 +226,7 @@ public class Place_Details_activity extends AppCompatActivity {
         layout = findViewById(R.id.layout_requestsButton);
 
         bookNow=findViewById(R.id.btn_bookNow);
+        wishlist = findViewById(R.id.btn_addToWishlist);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Place_Details_activity.this);
 

@@ -20,11 +20,13 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 public class ReviewRequestActivity extends AppCompatActivity {
-    TextView dateTime, purpose, guestNum, state;
+    TextView dateTime, purpose, guestNum, state, placeName, location, personDetails;
     Button accept, decline;
     Request request;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference, userRef;
     String fromActivity;
+    View divider;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +120,8 @@ public class ReviewRequestActivity extends AppCompatActivity {
     }
 
     private void bindUI(){
+        placeName = findViewById(R.id.tvReviewPlaceName);
+        location = findViewById(R.id.tvReviewPlaceLocation);
         dateTime = findViewById(R.id.tvReviewDateTime);
         purpose = findViewById(R.id.tvReviewPurpose);
         guestNum = findViewById(R.id.tvReviewGuestNum);
@@ -125,10 +129,22 @@ public class ReviewRequestActivity extends AppCompatActivity {
         accept = findViewById(R.id.btReviewAccept);
         decline = findViewById(R.id.btReviewDecline);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Request");
+        userRef = FirebaseDatabase.getInstance().getReference().child("UserAccount");
+        divider = findViewById(R.id.viewDivider);
+        personDetails = findViewById(R.id.tvPersonDetails);
 
+
+        placeName.setText(request.getPlaceName());
+        location.setText(request.getLocation());
         dateTime.setText("From "+request.getStartDate()+", "+request.getStartTime()+"\n"+"to "+request.getEndDate()+", "+request.getEndTime());
         purpose.setText("Purpose: "+ request.getBookingPurpose());
         guestNum.setText("Number of Guests:"+ request.getGuestNum());
+
+        if(fromActivity.equals("SentRequest"))
+            showDetail(request.getOwnerMail(), "Owner");
+        else
+            showDetail(request.getSenderMail(), "Sender");
+
 
 
         if(request.getState().equals("1") || request.getState().equals("2")){
@@ -145,9 +161,13 @@ public class ReviewRequestActivity extends AppCompatActivity {
                 state.setTextColor(Color.RED);
 
             }
+
+
+
         }
 
         else{// state 0;
+
             if(fromActivity.equals("SentRequest")){
                 accept.setEnabled(false);
                 accept.setVisibility(View.INVISIBLE);
@@ -161,6 +181,40 @@ public class ReviewRequestActivity extends AppCompatActivity {
                 state.setText("");
             }
         }
+
+    }
+
+    private void showDetail(String mail, String person) {
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (snapshot.exists()) {
+                        String dbMail= dataSnapshot.child("email").getValue().toString().trim();
+                        if(dbMail.equals(mail)){
+                            String username= dataSnapshot.child("username").getValue().toString().trim();
+                            String profession= dataSnapshot.child("profession").getValue().toString().trim();
+                            String phoneNumber= dataSnapshot.child("phone_number").getValue().toString().trim();
+
+                            personDetails.setText(person+" Details:\nUsername: "+username+"\n" +"Profession: "+ profession + "\nEmail: " + dbMail+ "\nPhone Number: "+ phoneNumber+"\n");
+                            break;
+                        }
+
+
+                    }
+
+
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
 
     }
 }
