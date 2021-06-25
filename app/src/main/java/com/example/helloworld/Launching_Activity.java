@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -66,13 +67,17 @@ import com.smarteist.autoimageslider.SliderView;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import static android.content.ContentValues.TAG;
 
-public class Launching_Activity<mLocationCallback> extends AppCompatActivity {
+public class Launching_Activity extends AppCompatActivity {
     private TextView textView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -94,9 +99,13 @@ public class Launching_Activity<mLocationCallback> extends AppCompatActivity {
     private ScrollView scrollView;
     private ProgressDialog progressBar;
     private ChipGroup chipGroup, chipGroup_category;
-    private Chip chip_area, chip_name, chip_category;
-    private ArrayList<String> selectedChipData;
+    private Chip chip_area, chip_name, chip_category, chip_view_all, getChip_category0, getChip_category1, getChip_category2, getChip_category3, getChip_category4;
+    private ArrayList<String> selectedChipData, selectedCategory, chipgroup1, chipgroup2;
     private FlexboxLayout flexbox_layout_area;
+    private ImageView seacrh_icon;
+
+    private EditText search_name, search_area;
+
 
 
 
@@ -117,11 +126,28 @@ public class Launching_Activity<mLocationCallback> extends AppCompatActivity {
 
         bindUI();
 //        getLastLocation();
-        searchProcess();
+
+
+        readData(new MyCallback() {
+            @Override
+            public void onCallback(ArrayList<String> group1, ArrayList<String> group2) {
+                chipgroup1 = new ArrayList<>(group1);
+                chipgroup2 = new ArrayList<>(group2);
+            }
+        });
+
+        seacrh_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchPlaces();
+            }
+        });
 
         //not a user no near places
 
     }
+
+
 
 //    @Override
 //    public void onResume() {
@@ -192,60 +218,176 @@ public class Launching_Activity<mLocationCallback> extends AppCompatActivity {
         progressBar = new ProgressDialog(Launching_Activity.this);
         progressBar.setMessage("Loading places near you");
 
+        seacrh_icon = findViewById(R.id.search_icon);
+
         chipGroup = findViewById(R.id.chip_group);
+
         chip_area = findViewById(R.id.chipArea);
         chip_name = findViewById(R.id.chipName);
         chip_category = findViewById(R.id.chipCategory);
+        chip_view_all = findViewById(R.id.chipViewAll);
+
         flexbox_layout_area = findViewById(R.id.flexbox_layout_area);
 
         chipGroup_category = findViewById(R.id.chip_group_category);
 
-        selectedChipData = new ArrayList<String>();
+        selectedChipData = new ArrayList<>();
+
+        getChip_category0 = findViewById(R.id.chipCategory0);
+        getChip_category1 = findViewById(R.id.chipCategory1);
+        getChip_category2 = findViewById(R.id.chipCategory2);
+        getChip_category3 = findViewById(R.id.chipCategory3);
+        getChip_category4 = findViewById(R.id.chipCategory4);
+
+        selectedCategory = new ArrayList<>();
+
+        search_name = findViewById(R.id.search_name);
+        search_area = findViewById(R.id.seacrh_area);
 
     }
 
-    private void searchProcess() {
-        CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                {
-                    selectedChipData.add(buttonView.getText().toString());
 
-                    if(buttonView.getText().toString().equals("Category"))
-                    {
-                        chipGroup_category.setVisibility(View.VISIBLE);
-                    }
-                    if(buttonView.getText().toString().equals("Area"))
-                    {
-                        flexbox_layout_area.setVisibility(View.VISIBLE);
-                    }
 
-//                    chipGroup.removeView(buttonView);
-//                    chipView.addView(buttonView);
+    private void searchPlaces()
+    {
+
+        Intent intent = new Intent(Launching_Activity.this, My_places_activity.class);
+
+        Set<String> set = new HashSet<String>(chipgroup1);
+
+        boolean isThereName = set.contains("Name");
+        boolean isThereArea = set.contains("Area");
+        boolean isThereCategory = set.contains("Category");
+        boolean isThereViewAll = set.contains("View all");
+
+
+        if(chipgroup1.size() == 0 && chipgroup2.size() == 0)
+        {
+//            Toast.makeText(Launching_Activity.this, "Type what you are looking for", Toast.LENGTH_LONG).show();
+        }
+
+
+        if(!isThereName && !search_name.getText().toString().isEmpty())
+        {
+            Toast.makeText(Launching_Activity.this, "Please select the Name tag first and enter the name", Toast.LENGTH_LONG).show();
+            chipGroup.setVisibility(View.VISIBLE);
+        }
+
+
+
+        else if(!isThereArea && !search_area.getText().toString().isEmpty())
+        {
+            Toast.makeText(Launching_Activity.this, "Please select the Area tag first and enter the area", Toast.LENGTH_LONG).show();
+        }
+
+        else {
+            if (isThereName) {
+                if (chipgroup1.size() > 1) {
+                    Toast.makeText(Launching_Activity.this, "Name is unique. You can only look for a place by its name or by its area and/or category or you can view all places", Toast.LENGTH_LONG).show();
                 }
-                else {
-                    selectedChipData.remove(buttonView.getText().toString());
+                if (search_name.getText().toString().isEmpty()) {
+                    Toast.makeText(Launching_Activity.this, "Please enter a name or check off the Name tag", Toast.LENGTH_LONG).show();
+                } else {
+                    String name = search_name.getText().toString();
+                    intent.putExtra("Name", name);
+                    startActivity(intent);
+                }
+            } else if (isThereArea || isThereCategory) {
+                if (search_area.getText().toString().isEmpty()  || !isThereArea && chipgroup2.size() == 0) {
+                    Toast.makeText(Launching_Activity.this, "Please enter area or check off the Area tag", Toast.LENGTH_LONG).show();
+                } else {
+                    String area = search_area.getText().toString();
+                    intent.putExtra("Area", area);
+                }
 
-                    if(buttonView.getText().toString().equals("Category"))
-                    {
-                        chipGroup_category.setVisibility(View.GONE);
-                    }
-                    if(buttonView.getText().toString().equals("Area"))
-                    {
-                        flexbox_layout_area.setVisibility(View.GONE);
-                    }
-//                    chipView.removeView(buttonView);
-//                    chipGroup.addView(buttonView);
 
+                if (chipgroup2.size() == 0 && isThereCategory) {
+                    Toast.makeText(Launching_Activity.this, "Please select a category or check off the Category tag", Toast.LENGTH_LONG).show();
+                    isThereCategory = false;
+                } else if (chipgroup2.size() == 1 && isThereCategory) {
+                    String category = chipgroup2.get(0);
+                    Integer position;
+                    if (category.equals("Social Events")) {
+                        position = 0;
+                    } else {
+                        String[] purpose = getResources().getStringArray(R.array.purpose);
+                        position = Arrays.asList(purpose).indexOf(category) - 1;
+                    }
+                    intent.putExtra("Category", Integer.toString(position));
+                }
+
+                if(isThereArea || isThereCategory)
+                    startActivity(intent);
+            } else if (isThereViewAll) {
+                if (chipgroup1.size() > 1) {
+                    Toast.makeText(Launching_Activity.this, "Not sure", Toast.LENGTH_LONG).show();
+                } else {
+                    String view_all = "";
+                    intent.putExtra("View all", view_all);
+                    startActivity(intent);
                 }
             }
-        };
+        }
 
-        chip_area.setOnCheckedChangeListener(onCheckedChangeListener);
-        chip_name.setOnCheckedChangeListener(onCheckedChangeListener);
-        chip_category.setOnCheckedChangeListener(onCheckedChangeListener);
+
+        /*for (int i = 0; i<chipgroup1.size(); i++)
+        {
+            if(chipgroup1.get(i).equals("Name"))
+            {
+                if(search_name.getText().toString().isEmpty())
+                {
+                    Toast.makeText(Launching_Activity.this, "Please enter a name or check off the Name tag", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    String name = search_name.getText().toString();
+                    intent.putExtra("Name", name);
+                }
+            }
+
+            if(chipgroup1.get(i).equals("Area"))
+            {
+                if(search_area.getText().toString().isEmpty())
+                {
+                    Toast.makeText(Launching_Activity.this, "Please enter area or check off the Area tag", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    String area = search_area.getText().toString();
+                    intent.putExtra("Area", area);
+                }
+
+            }
+
+            if(chipgroup1.get(i).equals("Category"))
+            {
+                if(chipgroup2.size() == 0)
+                {
+                    Toast.makeText(Launching_Activity.this, "Please select a category or check off the Category tag", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    String category = chipgroup2.get(0);
+                    Integer position;
+                    if(category.equals("Social Events")){
+                        position = 0;
+                    }
+                    else {
+                        String[] purpose = getResources().getStringArray(R.array.purpose);
+                        position = Arrays.asList(purpose).indexOf(category) - 1;
+                    }
+                    intent.putExtra("Category", Integer.toString(position));
+                }
+            }
+
+            if(chipgroup1.get(i).equals("View all"))
+            {
+                String view_all="";
+                intent.putExtra("View all", view_all);
+            }
+        }*/
+
     }
+
 
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
@@ -578,6 +720,96 @@ public class Launching_Activity<mLocationCallback> extends AppCompatActivity {
 
     public void onChipViewClick(View view) {
         chipGroup.setVisibility(View.VISIBLE);
+    }
+
+
+
+    private void readData(MyCallback myCallback) {
+
+        CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    selectedChipData.add(buttonView.getText().toString());
+
+                    if(buttonView.getText().toString().equals("Name"))
+                    {
+                        search_name.setHint("Search by name");
+                    }
+
+                    if(buttonView.getText().toString().equals("Category"))
+                    {
+                        chipGroup_category.setVisibility(View.VISIBLE);
+                    }
+                    if(buttonView.getText().toString().equals("Area"))
+                    {
+                        flexbox_layout_area.setVisibility(View.VISIBLE);
+                    }
+
+
+                }
+                else {
+                    selectedChipData.remove(buttonView.getText().toString());
+
+                    if(buttonView.getText().toString().equals("Category"))
+                    {
+                        chipGroup_category.setVisibility(View.GONE);
+                        chipGroup_category.clearCheck();
+                    }
+                    if(buttonView.getText().toString().equals("Area"))
+                    {
+                        flexbox_layout_area.setVisibility(View.GONE);
+                        search_area.setText("");
+                    }
+
+                }
+
+                chipgroup1 = new ArrayList<>(selectedChipData);
+                chipgroup2 = new ArrayList<>();
+                myCallback.onCallback(chipgroup1, chipgroup2);
+
+                Log.i(TAG, "onCheckedChanged: chipgroup1" + chipgroup1.size());
+            }
+        };
+
+        chip_area.setOnCheckedChangeListener(onCheckedChangeListener);
+        chip_name.setOnCheckedChangeListener(onCheckedChangeListener);
+        chip_category.setOnCheckedChangeListener(onCheckedChangeListener);
+        chip_view_all.setOnCheckedChangeListener(onCheckedChangeListener);
+
+
+
+        CompoundButton.OnCheckedChangeListener onCheckedChangeListener1 = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    selectedCategory.add(buttonView.getText().toString());
+                }
+                else {
+                    selectedCategory.remove(buttonView.getText().toString());
+
+                }
+                chipgroup2.clear();
+                chipgroup2 = new ArrayList<>(selectedCategory);
+                myCallback.onCallback(chipgroup1, chipgroup2);
+
+                Log.i(TAG, "onCheckedChanged: chipgroup2 "+chipgroup2.size());
+            }
+        };
+
+        getChip_category0.setOnCheckedChangeListener(onCheckedChangeListener1);
+        getChip_category1.setOnCheckedChangeListener(onCheckedChangeListener1);
+        getChip_category2.setOnCheckedChangeListener(onCheckedChangeListener1);
+        getChip_category3.setOnCheckedChangeListener(onCheckedChangeListener1);
+        getChip_category4.setOnCheckedChangeListener(onCheckedChangeListener1);
+    }
+
+
+
+    private interface MyCallback {
+        void onCallback(ArrayList<String>group1, ArrayList<String> group2 );
     }
 
 }

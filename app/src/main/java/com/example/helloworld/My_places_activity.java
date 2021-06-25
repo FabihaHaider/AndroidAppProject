@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class My_places_activity extends AppCompatActivity {
     private DatabaseReference databaseReference, databaseReference_image;
     private MyPlacesAdapter myadapter;
     private ArrayList<Place> arrayList;
-    private String owner_email,category_string, extras, imgURL;
+    private String owner_email,category_string, Category, imgURL, name, Area, view_all;
     private Integer pos_in_purpose_array;
     private String[] purpose;
     private boolean myPlacesList = true;
@@ -54,29 +55,75 @@ public class My_places_activity extends AppCompatActivity {
         bindUI();
 
         if(getIntent().getExtras() != null) {
-            extras = (String) getIntent().getExtras().get("Category");
+
+            Category = (String) getIntent().getExtras().get("Category");
+            name = (String) getIntent().getExtras().get("Name");
+            Area = (String) getIntent().getExtras().get("Area");
+            view_all = (String) getIntent().getExtras().get("View all");
 
 
-            if (extras != null) {
+            if(name != null)
+            {
+                //search by name
                 myPlacesList = false;
                 invalidateOptionsMenu();
+                setTitle(name.toUpperCase());
+            }
 
-                Resources resources = getResources();
-                purpose = resources.getStringArray(R.array.purpose);
 
-                pos_in_purpose_array = Integer.parseInt(extras);
+            else if (Category != null || Area != null) {
+                if(Category != null && Area == null) {
+                    myPlacesList = false;
+                    invalidateOptionsMenu();
 
-                category_string = purpose[pos_in_purpose_array + 1];
+                    Resources resources = getResources();
+                    purpose = resources.getStringArray(R.array.purpose);
 
-                setTitle(pos_in_purpose_array == 0 ? "Social Events archive" : category_string + " archive");
+                    pos_in_purpose_array = Integer.parseInt(Category);
 
+                    category_string = purpose[pos_in_purpose_array + 1];
+
+                    setTitle(pos_in_purpose_array == 0 ? "Social Events archive" : category_string + " archive");
+                }
+
+                else if(Area != null && Category == null)
+                {
+                    myPlacesList = false;
+                    invalidateOptionsMenu();
+                    setTitle("Places in area " + Area.toUpperCase());
+                }
+
+                else if(Area != null && Category != null)
+                {
+                    myPlacesList = false;
+                    invalidateOptionsMenu();
+
+                    Resources resources = getResources();
+                    purpose = resources.getStringArray(R.array.purpose);
+
+                    pos_in_purpose_array = Integer.parseInt(Category);
+
+                    category_string = purpose[pos_in_purpose_array + 1];
+
+                    if(pos_in_purpose_array == 0)
+                        category_string = "Social Events";
+
+                    setTitle("Places in area " + Area.toUpperCase() + " for " + category_string);
+                }
+
+            }
+
+
+            else if(view_all != null){
+                myPlacesList = false;
+                invalidateOptionsMenu();
+                setTitle("All Places");
             }
 
             else {
                 setTitle("My Places");
             }
         }
-
 
     }
     //
@@ -127,20 +174,104 @@ public class My_places_activity extends AppCompatActivity {
                         String area = dataSnapshot.child("area").getValue().toString();
                         String postal_code = dataSnapshot.child("postal_code").getValue().toString();
 
-
-
-                        if(extras==null) {
-                            if (email.equals(owner_email)) {
+                        if(name != null)
+                        {
+                            if(name.toLowerCase().trim().equals(place_name.toLowerCase().trim()) )
+                            {
                                 place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
-                                place.setKey(dataSnapshot.getKey());
                                 place.setImage(image);
                                 arrayList.add(place);
                             }
                         }
-                        else
+
+
+                        else if(Category != null || Area != null)
                         {
-                            if(category_string.equals(category)){
+
+                            if(Category != null && Area == null)  {
+                                if (category_string.equals(category)) {
+                                    place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                                    place.setImage(image);
+                                    arrayList.add(place);
+                                }
+                            }
+
+                            else if(Area != null && Category == null)
+                            {
                                 place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                                place.setImage(image);
+                                place.setKey("null");
+                                String[] words = Area.split(" ");
+
+                                for (int i = 0; i<words.length; i++)
+                                {
+
+                                    words[i] = words[i].replaceAll("[0-9]","");
+                                    words[i] = words[i].replaceAll("[\\s\\-()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\:()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\/()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\#()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\=()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\_()]", "");
+                                    words[i] = words[i].replaceAll(" ", "");
+
+
+                                    if(StringUtils.contains(address.toLowerCase(), words[i].toLowerCase().trim()) && !words[i].isEmpty())
+                                    {
+                                        if(place.getKey().equals("null")) {
+                                            place.setKey(dataSnapshot.getKey());
+                                            arrayList.add(place);
+                                        }
+
+                                    }
+                                }
+
+                            }
+
+                            else
+                            {
+                                place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                                place.setImage(image);
+                                place.setKey("null");
+                                String[] words = Area.split(" ");
+
+                                for (int i = 0; i<words.length; i++)
+                                {
+
+                                    words[i] = words[i].replaceAll("[0-9]","");
+                                    words[i] = words[i].replaceAll("[\\s\\-()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\:()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\/()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\#()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\=()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\_()]", "");
+                                    words[i] = words[i].replaceAll(" ", "");
+
+
+                                    if(StringUtils.contains(address.toLowerCase(), words[i].toLowerCase().trim()) && !words[i].isEmpty() && category_string.equals(category))
+                                    {
+                                        if(place.getKey().equals("null")) {
+                                            place.setKey(dataSnapshot.getKey());
+                                            arrayList.add(place);
+                                        }
+
+                                    }
+                                }
+                            }
+
+                        }
+
+                        else if(view_all != null)
+                        {
+                            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                            place.setImage(image);
+                            arrayList.add(place);
+                        }
+
+                        else  {
+                            if (email.equals(owner_email)) {
+                                place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                                place.setKey(dataSnapshot.getKey());
                                 place.setImage(image);
                                 arrayList.add(place);
                             }

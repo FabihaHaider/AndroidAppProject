@@ -63,7 +63,7 @@ public class Add_Place_activity extends AppCompatActivity{
     private Uri imageUri;
     private final ArrayList<Uri> imageList = new ArrayList<Uri>();
     private DatabaseReference ref;
-    private int upload_count = 0, img_cnt = 0;
+    private int upload_count = 0, img_cnt;
     private String charge_rate, purpose;
     private final HashMap<String, String> hashMap = new HashMap<>();
     private String url;
@@ -92,6 +92,8 @@ public class Add_Place_activity extends AppCompatActivity{
         setTitle(updatePlaceDetails? "Update Place Details" : "Add New Place");
         bindValues();
         onClickingSpinner();
+
+
         add_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,7 +301,7 @@ public class Add_Place_activity extends AppCompatActivity{
                         if(uniqueName)
                         {
                             storeToDatabase(createPlace());
-                            Toast.makeText(Add_Place_activity.this, "Inserted place successfully", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
                             finish();
                         }
                         else
@@ -390,6 +392,7 @@ public class Add_Place_activity extends AppCompatActivity{
     }
 
     private void storeToDatabase(Place place) {
+        place.setKey("");
 
         StorageReference imageFolderName = FirebaseStorage.getInstance().getReference().child(user.getEmail()).child(place.getName());
 
@@ -410,7 +413,7 @@ public class Add_Place_activity extends AppCompatActivity{
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull @NotNull Exception e) {
-
+                            Log.i("fabiha", "onFailure: '"+e.getMessage());
                         }
                     });
                 }
@@ -456,18 +459,20 @@ public class Add_Place_activity extends AppCompatActivity{
         hashMap.put("ImgLink", url);
         Images.push().setValue(hashMap);
 
-        if(upload_count==0)
-        {
+
+        if(place.getKey().isEmpty()) {
             place.setImage(url);
-            ref.push().setValue(place).addOnFailureListener(new OnFailureListener() {
+            ref.push().setValue(place).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
-                public void onFailure(@NonNull @NotNull Exception e) {
-                    Log.i("fabiha", "onFailure: "+e.toString());
+                public void onSuccess(Void unused) {
+                    place.setKey("done");
+//                    Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
                 }
             });
         }
 
     }
+
 
 }
 
