@@ -125,7 +125,7 @@ public class UpdatePicture extends AppCompatActivity {
                         public void run() {
                             progressBar.setProgress(0);
                         }
-                    }, 5000);
+                    }, 3000);
 
                     imageName.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override

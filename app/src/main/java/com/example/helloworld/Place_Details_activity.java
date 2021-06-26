@@ -57,7 +57,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class Place_Details_activity extends AppCompatActivity {
+public class Place_Details_activity extends AppCompatActivity implements MyImageAdapter.OnItemClickListener {
     private TextView place_name, address, price_rate, number_of_guests, description, category, phone_number;
     private Button bookNow, wishlist;
     private Place place;
@@ -447,5 +447,26 @@ public class Place_Details_activity extends AppCompatActivity {
                 Toast.makeText(Place_Details_activity.this, "Permission denied", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+
+    }
+
+    @Override
+    public void onLabelImageClick(int position) {
+
+    }
+
+    @Override
+    public void onViewImageClick(int position) {
+
     }
 }

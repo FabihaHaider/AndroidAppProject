@@ -160,7 +160,6 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
     public void onDeleteClick(int position) {
         image_model image_model = image_model_list.get(position);
         final String selectedKey = image_model.getKey();
-        Log.i(TAG, "onDeleteClick: "+img_cnt);
 
 
         if(place.getImage().equals(image_model.getImageUrl()))
@@ -203,7 +202,12 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
         databaseReference_place.child(key).updateChildren(map);
         place.setImage(selected_img_url);
 
-        Log.i("fabiha", "onLabelImageClick: "+key);
+
+
+    }
+
+    @Override
+    public void onViewImageClick(int position) {
 
     }
 

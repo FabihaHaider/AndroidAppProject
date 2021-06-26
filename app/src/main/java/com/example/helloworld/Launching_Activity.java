@@ -23,6 +23,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
@@ -50,6 +51,8 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -105,7 +108,7 @@ public class Launching_Activity extends AppCompatActivity {
     private ImageView seacrh_icon;
 
     private EditText search_name, search_area;
-
+    private LatLng latLng;
 
 
 
@@ -114,6 +117,7 @@ public class Launching_Activity extends AppCompatActivity {
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
             Log.i(TAG, "onLocationResult: "+mLastLocation.getLatitude());
+            distance(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
         }
     };
 
@@ -125,16 +129,17 @@ public class Launching_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
 
         bindUI();
-//        getLastLocation();
+        getLastLocation();
 
 
-        readData(new MyCallback() {
+        readSearch(new MySearchCallback() {
             @Override
             public void onCallback(ArrayList<String> group1, ArrayList<String> group2) {
                 chipgroup1 = new ArrayList<>(group1);
                 chipgroup2 = new ArrayList<>(group2);
             }
         });
+
 
         seacrh_icon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,17 +150,19 @@ public class Launching_Activity extends AppCompatActivity {
 
         //not a user no near places
 
+
     }
 
 
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (checkPermissions()) {
-//            getLastLocation();
-//        }
-//    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (checkPermissions()) {
+            getLastLocation();
+        }
+    }
 
     private void bindUI() {
         scrollView = findViewById(R.id.scrollView_launcher_activity);
@@ -403,12 +410,16 @@ public class Launching_Activity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void distance(double lat1, double lon1) {
-        dist = 1000000.0;
+
+   public void distance(LatLng latLng1)
+   {
+       dist = 1000000.0;
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
 
+        double lon1 = latLng1.longitude;
+        double lat1 = latLng1.latitude;
 
-        ref.addValueEventListener(new ValueEventListener() {
+       ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 arrayList1.clear();
@@ -535,7 +546,7 @@ public class Launching_Activity extends AppCompatActivity {
                             longitude = location.getLongitude();
                             LatLng latLng1 = new LatLng(latitude, longitude);
                             Log.i(TAG, "onComplete: latitude "+latitude+" longitude "+longitude);
-                            distance(latitude, longitude);
+                            distance(latLng1);
                         }
                     }
                 });
@@ -550,9 +561,10 @@ public class Launching_Activity extends AppCompatActivity {
 
                     builder.setPositiveButton("Turn on", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            progressBar.show();
                             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(intent);
+                            progressBar.show();
+                            getLastLocation();
                         }
                     });
                     // set the negative button to do some actions
@@ -587,6 +599,8 @@ public class Launching_Activity extends AppCompatActivity {
             // request for permissions
             requestPermissions();
         }
+
+
     }
 
     @SuppressLint("MissingPermission")
@@ -630,8 +644,7 @@ public class Launching_Activity extends AppCompatActivity {
 
     // If everything is alright then
     @Override
-    public void
-    onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == PERMISSION_ID) {
@@ -722,9 +735,7 @@ public class Launching_Activity extends AppCompatActivity {
         chipGroup.setVisibility(View.VISIBLE);
     }
 
-
-
-    private void readData(MyCallback myCallback) {
+    private void readSearch(MySearchCallback myCallback) {
 
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -808,7 +819,7 @@ public class Launching_Activity extends AppCompatActivity {
 
 
 
-    private interface MyCallback {
+    private interface MySearchCallback {
         void onCallback(ArrayList<String>group1, ArrayList<String> group2 );
     }
 

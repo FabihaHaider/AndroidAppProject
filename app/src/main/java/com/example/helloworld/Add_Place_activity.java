@@ -93,6 +93,13 @@ public class Add_Place_activity extends AppCompatActivity{
         bindValues();
         onClickingSpinner();
 
+        readName(new MyCallback() {
+            @Override
+            public void onCallback(boolean unique_place_name) {
+                uniqueName = unique_place_name;
+            }
+        });
+
 
         add_place.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -285,7 +292,18 @@ public class Add_Place_activity extends AppCompatActivity{
             }
 
             else {
-                String place_name = name.getText().toString();
+                if(uniqueName)
+                {
+                    storeToDatabase(createPlace());
+                    Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                else
+                {
+                    Toast.makeText(Add_Place_activity.this, "Choose a unique name", Toast.LENGTH_LONG).show();
+                }
+
+                /*String place_name = name.getText().toString();
                 ref = FirebaseDatabase.getInstance().getReference().child("Place");
                 ref.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -311,7 +329,7 @@ public class Add_Place_activity extends AppCompatActivity{
                     @Override
                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
                     }
-                });
+                });*/
 
             }
         }
@@ -474,7 +492,37 @@ public class Add_Place_activity extends AppCompatActivity{
         }
 
     }
+    private void readName(MyCallback myCallback) {
+        uniqueName = true;
+        {
+            String place_name = name.getText().toString();
+            ref = FirebaseDatabase.getInstance().getReference().child("Place");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        String name = dataSnapshot.child("name").getValue().toString();
+                        if(place_name.equals(name)){
+                            uniqueName = false;
+                            myCallback.onCallback(uniqueName);
+                            break;
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
 
+        }
+
+    }
+
+
+
+    private interface MyCallback {
+        void onCallback(boolean unique_place_name);
+    }
 
 }
 
