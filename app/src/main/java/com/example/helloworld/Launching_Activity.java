@@ -73,6 +73,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -92,11 +93,9 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     private RecyclerView recyclerView, recyclerView1;
     private ArrayList<image_model> arrayList;
     private ArrayList<Place> arrayList1, featured_places_array;
-    private FusedLocationProviderClient mFusedLocationClient;
     private DatabaseReference ref, featured_places;
 
     private Double latitude, longitude, dist;
-    int PERMISSION_ID = 44;
     private boolean first = true;
     private LinearLayout linearLayout;
     private ScrollView scrollView;
@@ -108,18 +107,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     private EditText search_name;
     private LatLng latLng;
-
-
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-            Log.i(TAG, "onLocationResult: "+mLastLocation.getLatitude());
-//            distance(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-        }
-    };
-
+    private String email;
 
 
     @Override
@@ -127,8 +115,15 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
+        if(getIntent().getExtras() != null)
+        {
+            Object latlng = getIntent().getExtras().get("location");
+            if (latlng != null) {
+                this.latLng = (LatLng) latlng;
+            }
+        }
         bindUI();
-//        getLastLocation();
+
 
 
         readSearch(new MySearchCallback() {
@@ -147,21 +142,70 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             }
         });
 
-        //not a user no near places
+        if(latLng == null)
+        {
+            checkCache();
+        }
+
+        else if (latLng != null) {
+            progressBar.show();
+            linearLayout.setVisibility(View.VISIBLE);
+            removeCache();
+            distance(latLng);
+        }
 
 
     }
 
+    private void checkCache() {
+        email = email.replace('.',' ');
+        DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
+        userlocation.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if(snapshot.exists())
+                {
+                    Place place;
+                    linearLayout.setVisibility(View.VISIBLE);
+                    for (DataSnapshot dataSnapshot: snapshot.getChildren())
+                    {
+                        String email = dataSnapshot.child("owner_email").getValue().toString();
+                        String place_name = dataSnapshot.child("name").getValue().toString();
+                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                        String category = dataSnapshot.child("category").getValue().toString();
+                        String description = dataSnapshot.child("description").getValue().toString();
+                        String image = dataSnapshot.child("image").getValue().toString();
+                        String address = dataSnapshot.child("address").getValue().toString();
+                        String house_no = dataSnapshot.child("house_no").getValue().toString();
+                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+                        String area = dataSnapshot.child("area").getValue().toString().trim();
 
+                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
+                        place.setImage(image);
+                        arrayList1.add(place);
+                    }
+                    adapter1.notifyDataSetChanged();
+                }
 
+                else
+                    Log.i(TAG, "onDataChange: deosn't exist");
+            }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (checkPermissions()) {
-//            getLastLocation();
-//        }
-//    }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void removeCache() {
+        email = email.replace('.',' ');
+        DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
+        userlocation.removeValue();
+    }
+
 
     private void bindUI() {
         scrollView = findViewById(R.id.scrollView_launcher_activity);
@@ -235,7 +279,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String email = user.getEmail();
+        email = user.getEmail();
 
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setItemIconTintList(null);
@@ -247,7 +291,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         TextView navEmail = (TextView) headerView.findViewById(R.id.header_email);
         navEmail.setText(email);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         recyclerView1 = findViewById(R.id.recyclerView_near_places);
         recyclerView1.setHasFixedSize(true);
@@ -415,8 +458,17 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
    public void distance(LatLng latLng1)
    {
-       dist = 1000000.0;
+        dist = 1000000.0;
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
+        email = email.replace('.',' ');
+        DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
+
+        HashMap<String, LatLng> hashMap = new HashMap<>();
+        hashMap.put("location", latLng1);
+
+//        userlocation.push().setValue(hashMap);
+
+
 
         double lon1 = latLng1.longitude;
         double lat1 = latLng1.latitude;
@@ -432,7 +484,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                     if (latLng != null) {
                         float lat2 = (float) latLng.latitude;
                         float lon2 = (float) latLng.longitude;
-                        double theta = lon1 - lon2;
 
 
                         Location loc1 = new Location("");
@@ -479,18 +530,21 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                         place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
                         place.setImage(image);
                         arrayList1.add(place);
+                        userlocation.push().setValue(place);
                     }
 
                 }
                 adapter1.notifyDataSetChanged();
+                progressBar.dismiss();
             }
+
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 Log.i(TAG, "onCancelled: "+error.getMessage());
             }
         });
-        progressBar.dismiss();
+
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -523,138 +577,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         return p1;
     }
 
-    @SuppressLint("MissingPermission")
-    private void getLastLocation() {
-        LatLng latLng = null;
-        // check if permissions are given
-        if (checkPermissions()) {
 
-            // check if location is enabled
-            if (isLocationEnabled()) {
-
-                // getting last
-                // location from
-                // FusedLocationClient
-                // object
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        linearLayout.setVisibility(View.VISIBLE);
-                        Location location = task.getResult();
-                        if (location == null) {
-                            requestNewLocationData();
-                        } else {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            LatLng latLng1 = new LatLng(latitude, longitude);
-                            Log.i(TAG, "onComplete: latitude "+latitude+" longitude "+longitude);
-                            distance(latLng1);
-                        }
-                    }
-                });
-
-            } else {
-
-                if (first) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Launching_Activity.this);
-                    builder.setIcon(R.drawable.ic_baseline_location_on_24);
-                    builder.setTitle("Use location?");
-                    builder.setMessage("Turn your GPS on to suggest places near you");
-
-                    builder.setPositiveButton("Turn on", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(intent);
-                            progressBar.show();
-                            getLastLocation();
-                        }
-                    });
-                    // set the negative button to do some actions
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            linearLayout.setVisibility(View.GONE);
-                            return;
-                        }
-                    });
-
-                    builder.setNeutralButton("", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            linearLayout.setVisibility(View.GONE);
-                            return;
-                        }
-                    });
-
-                    // show the alert dialog
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                    alertDialog.getWindow().setGravity(Gravity.TOP);
-                    first = false;
-                }
-
-
-            }
-        } else {
-            // if permissions aren't available,
-            // request for permissions
-            requestPermissions();
-        }
-
-
-    }
-
-    @SuppressLint("MissingPermission")
-    private void requestNewLocationData() {
-
-        // Initializing LocationRequest
-        // object with appropriate methods
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5);
-        mLocationRequest.setFastestInterval(0);
-        mLocationRequest.setNumUpdates(1);
-
-        // setting LocationRequest
-        // on FusedLocationClient
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-    }
-
-
-
-    // method to check for permissions
-    private boolean checkPermissions() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    // method to request for permissions
-
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
-    }
-
-    // method to check
-    // if location is enabled
-    private boolean isLocationEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    // If everything is alright then
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PERMISSION_ID) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
-            }
-        }
-    }
 
     @Override
     public void onItemClick(int position) {

@@ -66,7 +66,7 @@ public class logout_Fragment extends Fragment {
                     public void onClick(DialogInterface dialog, int id) {
                         firebaseAuth.signOut();
                         getActivity().finish();
-                        startActivity(new Intent(getActivity(), SignInScreen.class));
+                        startActivity(new Intent(getActivity(), SignInScreen.class).putExtra("source", "logout"));
                     }
                 })
                 .setNegativeButton("No", null)
