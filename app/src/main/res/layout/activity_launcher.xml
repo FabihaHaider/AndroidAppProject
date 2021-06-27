@@ -38,16 +38,9 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="40dp">
-<!--                android:layout_margin="20dp">-->
 
-<!--                <com.doodle.android.chips.ChipsView-->
-<!--                    android:id="@+id/cv_contacts"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:overScrollMode="never"-->
-<!--                    app:cv_max_height="120dp"-->
-<!--                    app:cv_vertical_spacing="2dp"-->
-<!--                    />-->
+
+
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chip_group"
                     android:layout_width="match_parent"
@@ -98,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:focusableInTouchMode="true"
-                    android:layout_below="@+id/flexbox_layout_area"
+                    android:layout_below="@+id/chip_group"
                     app:singleSelection="true"
                     android:visibility="gone"
                     >
@@ -184,47 +177,34 @@
 
                 </com.google.android.flexbox.FlexboxLayout>
 
-                <com.google.android.flexbox.FlexboxLayout
-                    android:layout_below="@+id/chip_group"
-                    android:id="@+id/flexbox_layout_area"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/spinner_bg"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:visibility="gone"
-                    >
-
-<!--                    <ImageView-->
-<!--                        android:layout_width="32dp"-->
-<!--                        android:layout_height="40dp"-->
-<!--                        android:paddingTop="10dp"-->
-<!--                        android:layout_alignParentTop="true"-->
-<!--                        android:layout_alignParentEnd="true"-->
-<!--                        android:layout_alignParentRight="true"-->
-<!--                        android:layout_centerInParent="true"-->
-<!--                        android:layout_marginTop="1dp"-->
-<!--                        android:layout_marginEnd="1dp"-->
-<!--                        android:layout_marginRight="1dp"-->
-<!--                        android:background="@color/spinner_bg"-->
-<!--                        android:src="@android:drawable/ic_search_category_default" />-->
+<!--                <com.google.android.flexbox.FlexboxLayout-->
+<!--                    android:layout_below="@+id/chip_group"-->
+<!--                    android:id="@+id/flexbox_layout_area"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@color/spinner_bg"-->
+<!--                    android:gravity="center"-->
+<!--                    android:padding="10dp"-->
+<!--                   -->
+<!--                    >-->
+<!--                    -->
 
 
-                    <EditText
-                        android:id="@+id/seacrh_area"
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@android:color/transparent"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:onClick="onChipViewClick"
-                        android:textIsSelectable="true"
-                        app:layout_flexGrow="1"
-                        android:hint="Search by area"
-                        />
+<!--                    <EditText-->
+<!--                        android:id="@+id/seacrh_area"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="32dp"-->
+<!--                        android:background="@android:color/transparent"-->
+<!--                        android:imeOptions="actionDone"-->
+<!--                        android:inputType="text"-->
+<!--                        android:onClick="onChipViewClick"-->
+<!--                        android:textIsSelectable="true"-->
+<!--                        app:layout_flexGrow="1"-->
+<!--                        android:hint="Search by area"-->
+<!--                        />-->
 
 
-                </com.google.android.flexbox.FlexboxLayout>
+<!--                </com.google.android.flexbox.FlexboxLayout>-->
 
 
             </RelativeLayout>
@@ -290,30 +270,32 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp">
+                >
 
                 <LinearLayout
                     android:id="@+id/featured_heading"
                     android:layout_width="170dp"
-                    android:layout_height="280dp"
-                    android:layout_margin="20dp"
+                    android:layout_height="270dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@color/white"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="All Featured Places"
-                        android:textSize="25dp"
-                        android:layout_marginTop="40dp"
                         android:layout_marginLeft="10dp"
-                        android:textAllCaps="true"/>
+                        android:layout_marginTop="40dp"
+                        android:text="All Featured Places"
+                        android:textAllCaps="true"
+                        android:textSize="25dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:text="@string/featured_places_description"/>
+                        android:text="@string/featured_places_description" />
 
 
                 </LinearLayout>
@@ -322,10 +304,7 @@
                     android:id="@+id/recyclerView_featured_places"
                     android:layout_width="match_parent"
                     android:layout_height="280dp"
-                    android:layout_marginTop="20dp"
                     android:layout_marginRight="20dp"
-
-
                     android:layout_toRightOf="@id/featured_heading"/>
 
 

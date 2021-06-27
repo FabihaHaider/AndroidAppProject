@@ -208,8 +208,10 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
 
     @Override
     public void onViewImageClick(int position) {
-
+        Log.i(TAG, "onViewImageClick: clicked");
     }
+
+
 
     private void readData(MyCallback myCallback) {
         databaseReference.addValueEventListener(new ValueEventListener() {

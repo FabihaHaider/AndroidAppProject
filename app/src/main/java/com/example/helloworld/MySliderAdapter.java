@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.app.Activity;
@@ -33,7 +34,7 @@ public class MySliderAdapter extends SliderViewAdapter<MySliderAdapter.MyViewHol
     @Override
     public void onBindViewHolder(MyViewHolder viewHolder, int position) {
         viewHolder.imageView.setImageResource(images[position]);
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, My_places_activity.class).putExtra("Category", Integer.toString( position));
@@ -51,9 +52,11 @@ public class MySliderAdapter extends SliderViewAdapter<MySliderAdapter.MyViewHol
 
    class MyViewHolder extends SliderViewAdapter.ViewHolder {
         ImageView imageView;
+        Button button;
         public MyViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.slider_imageview);
+            button = itemView.findViewById(R.id.button_slider_button);
         }
     }
 }

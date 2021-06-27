@@ -56,8 +56,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static android.content.ContentValues.TAG;
 
-public class Place_Details_activity extends AppCompatActivity implements MyImageAdapter.OnItemClickListener {
+
+public class Place_Details_activity extends AppCompatActivity {
     private TextView place_name, address, price_rate, number_of_guests, description, category, phone_number;
     private Button bookNow, wishlist;
     private Place place;
@@ -449,24 +451,4 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
         }
     }
 
-
-    @Override
-    public void onItemClick(int position) {
-
-    }
-
-    @Override
-    public void onDeleteClick(int position) {
-
-    }
-
-    @Override
-    public void onLabelImageClick(int position) {
-
-    }
-
-    @Override
-    public void onViewImageClick(int position) {
-
-    }
 }

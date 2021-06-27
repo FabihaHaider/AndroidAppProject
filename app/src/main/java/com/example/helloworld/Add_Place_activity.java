@@ -292,7 +292,7 @@ public class Add_Place_activity extends AppCompatActivity{
             }
 
             else {
-                if(uniqueName)
+                /*if(uniqueName)
                 {
                     storeToDatabase(createPlace());
                     Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
@@ -301,9 +301,9 @@ public class Add_Place_activity extends AppCompatActivity{
                 else
                 {
                     Toast.makeText(Add_Place_activity.this, "Choose a unique name", Toast.LENGTH_LONG).show();
-                }
+                }*/
 
-                /*String place_name = name.getText().toString();
+                String place_name = name.getText().toString();
                 ref = FirebaseDatabase.getInstance().getReference().child("Place");
                 ref.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -329,7 +329,7 @@ public class Add_Place_activity extends AppCompatActivity{
                     @Override
                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
                     }
-                });*/
+                });
 
             }
         }
@@ -412,10 +412,10 @@ public class Add_Place_activity extends AppCompatActivity{
     }
 
     private void storeToDatabase(Place place) {
-        place.setKey("");
+
 
         StorageReference imageFolderName = FirebaseStorage.getInstance().getReference().child(user.getEmail()).child(place.getName());
-
+        place.setKey("");
         for (upload_count = 0; upload_count < imageList.size(); upload_count++) {
             Uri IndividualImage = imageList.get(upload_count);
             String imageNumber = Integer.toString(upload_count);
@@ -470,6 +470,8 @@ public class Add_Place_activity extends AppCompatActivity{
             place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description_text, purpose, "none", user_house_no, user_area, user_postal_code);
         }
 
+        place.setKey("");
+
         return place;
     }
 
@@ -480,15 +482,17 @@ public class Add_Place_activity extends AppCompatActivity{
         Images.push().setValue(hashMap);
 
 
-        if(place.getKey().isEmpty()) {
+        if(!place.getKey().equals("done")) {
+            Log.i("fabiha", "StorePicUri: "+place.getKey());
             place.setImage(url);
             ref.push().setValue(place).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
                     place.setKey("done");
-//                    Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
                 }
             });
+            place.setKey("done");
         }
 
     }

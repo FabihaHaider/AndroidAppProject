@@ -31,7 +31,7 @@
         <activity android:name=".Add_Place_activity" />
         <activity android:name=".Launching_Activity" />
         <activity android:name=".Registration" />
-        <activity android:name=".locationView" /> <!-- <activity android:name=".LandlordView" /> -->
+        <!-- <activity android:name=".LandlordView" /> -->
         <activity
             android:name=".SignInScreen"
             android:theme="@style/Theme.AppCompat.NoActionBar">

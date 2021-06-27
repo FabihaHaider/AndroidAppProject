@@ -80,7 +80,7 @@ import java.util.Set;
 
 import static android.content.ContentValues.TAG;
 
-public class Launching_Activity extends AppCompatActivity {
+public class Launching_Activity extends AppCompatActivity implements MyImageAdapter.OnItemClickListener {
     private TextView textView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -91,9 +91,9 @@ public class Launching_Activity extends AppCompatActivity {
     private Launching_Activity.MyPlacesAdapter adapter1;
     private RecyclerView recyclerView, recyclerView1;
     private ArrayList<image_model> arrayList;
-    private ArrayList<Place> arrayList1;
+    private ArrayList<Place> arrayList1, featured_places_array;
     private FusedLocationProviderClient mFusedLocationClient;
-    private DatabaseReference ref;
+    private DatabaseReference ref, featured_places;
 
     private Double latitude, longitude, dist;
     int PERMISSION_ID = 44;
@@ -104,10 +104,9 @@ public class Launching_Activity extends AppCompatActivity {
     private ChipGroup chipGroup, chipGroup_category;
     private Chip chip_area, chip_name, chip_category, chip_view_all, getChip_category0, getChip_category1, getChip_category2, getChip_category3, getChip_category4;
     private ArrayList<String> selectedChipData, selectedCategory, chipgroup1, chipgroup2;
-    private FlexboxLayout flexbox_layout_area;
     private ImageView seacrh_icon;
 
-    private EditText search_name, search_area;
+    private EditText search_name;
     private LatLng latLng;
 
 
@@ -117,7 +116,7 @@ public class Launching_Activity extends AppCompatActivity {
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
             Log.i(TAG, "onLocationResult: "+mLastLocation.getLatitude());
-            distance(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+//            distance(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
         }
     };
 
@@ -129,7 +128,7 @@ public class Launching_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
 
         bindUI();
-        getLastLocation();
+//        getLastLocation();
 
 
         readSearch(new MySearchCallback() {
@@ -156,13 +155,13 @@ public class Launching_Activity extends AppCompatActivity {
 
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (checkPermissions()) {
-            getLastLocation();
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (checkPermissions()) {
+//            getLastLocation();
+//        }
+//    }
 
     private void bindUI() {
         scrollView = findViewById(R.id.scrollView_launcher_activity);
@@ -191,13 +190,49 @@ public class Launching_Activity extends AppCompatActivity {
         arrayList = new ArrayList<image_model>();
         adapter = new MyImageAdapter(this, arrayList);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(Launching_Activity.this);
+
+        featured_places_array = new ArrayList<>();
+
+        featured_places = FirebaseDatabase.getInstance().getReference().child("Featured_places");
+        featured_places.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Place place;
+                for (DataSnapshot dataSnapshot: snapshot.getChildren())
+                {
+                    if(dataSnapshot.exists())
+                    {
+                        String email = dataSnapshot.child("owner_email").getValue().toString();
+                        String place_name = dataSnapshot.child("name").getValue().toString();
+                        String address = dataSnapshot.child("address").getValue().toString();
+                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                        String category = dataSnapshot.child("category").getValue().toString();
+                        String description = dataSnapshot.child("description").getValue().toString();
+                        String image = dataSnapshot.child("image").getValue().toString();
+                        String house_number = dataSnapshot.child("house_no").getValue().toString();
+                        String area = dataSnapshot.child("area").getValue().toString();
+                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+
+                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                        place.setImage(image);
+                        featured_places_array.add(place);
+                        image_model imageModel = new image_model(image);
+                        arrayList.add(imageModel);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
 
 
-        for (int i = 0; i < 3; i++) {
-            image_model imageModel = new image_model("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
-            arrayList.add(imageModel);
-        }
-        adapter.notifyDataSetChanged();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String email = user.getEmail();
@@ -225,6 +260,9 @@ public class Launching_Activity extends AppCompatActivity {
         progressBar = new ProgressDialog(Launching_Activity.this);
         progressBar.setMessage("Loading places near you");
 
+        chipgroup1 = new ArrayList<>();
+        chipgroup2 = new ArrayList<>();
+
         seacrh_icon = findViewById(R.id.search_icon);
 
         chipGroup = findViewById(R.id.chip_group);
@@ -234,7 +272,7 @@ public class Launching_Activity extends AppCompatActivity {
         chip_category = findViewById(R.id.chipCategory);
         chip_view_all = findViewById(R.id.chipViewAll);
 
-        flexbox_layout_area = findViewById(R.id.flexbox_layout_area);
+
 
         chipGroup_category = findViewById(R.id.chip_group_category);
 
@@ -249,7 +287,7 @@ public class Launching_Activity extends AppCompatActivity {
         selectedCategory = new ArrayList<>();
 
         search_name = findViewById(R.id.search_name);
-        search_area = findViewById(R.id.seacrh_area);
+
 
     }
 
@@ -260,138 +298,102 @@ public class Launching_Activity extends AppCompatActivity {
 
         Intent intent = new Intent(Launching_Activity.this, My_places_activity.class);
 
-        Set<String> set = new HashSet<String>(chipgroup1);
+        boolean isThereName = false;
+        boolean isThereArea = false;
+        boolean isThereCategory = false;
+        boolean isThereViewAll = false;
 
-        boolean isThereName = set.contains("Name");
-        boolean isThereArea = set.contains("Area");
-        boolean isThereCategory = set.contains("Category");
-        boolean isThereViewAll = set.contains("View all");
+//        Log.i("fabiha", "searchPlaces: "+chipgroup1.isEmpty() + " " + chipgroup2.isEmpty() + " " + search_name.getText().toString().isEmpty());
 
-
-        if(chipgroup1.size() == 0 && chipgroup2.size() == 0)
+        if(chipgroup1.isEmpty())
         {
-//            Toast.makeText(Launching_Activity.this, "Type what you are looking for", Toast.LENGTH_LONG).show();
+            Toast.makeText(Launching_Activity.this, "Select what you are looking for", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(chipgroup1.isEmpty() && !search_name.getText().toString().isEmpty())
+        {
+            Toast.makeText(Launching_Activity.this, "Select what you are looking for", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(chipgroup1.size()>2)
+        {
+            Toast.makeText(Launching_Activity.this, "You can only look for a place by its name or by its area and/or category or you can view all places", Toast.LENGTH_LONG).show();
+            return;
+        }
+        else if(!chipgroup1.isEmpty()) {
+            Set<String> set = new HashSet<String>(chipgroup1);
+            isThereName = set.contains("Name");
+            isThereArea = set.contains("Area");
+            isThereCategory = set.contains("Category");
+            isThereViewAll = set.contains("View all");
+        }
+        if(!search_name.getText().toString().isEmpty() && isThereName && isThereArea)
+        {
+            Toast.makeText(Launching_Activity.this, "Name is unique. You can only look for a place by its name or by its area and/or category or you can view all places", Toast.LENGTH_LONG).show();
         }
 
-
-        if(!isThereName && !search_name.getText().toString().isEmpty())
+        else if(!search_name.getText().toString().isEmpty() && !isThereArea && !isThereName)
         {
-            Toast.makeText(Launching_Activity.this, "Please select the Name tag first and enter the name", Toast.LENGTH_LONG).show();
+            Toast.makeText(Launching_Activity.this, "Select a tag to search by name or area", Toast.LENGTH_LONG).show();
             chipGroup.setVisibility(View.VISIBLE);
+            return;
         }
-
-
-
-        else if(!isThereArea && !search_area.getText().toString().isEmpty())
+        if(isThereName)
         {
-            Toast.makeText(Launching_Activity.this, "Please select the Area tag first and enter the area", Toast.LENGTH_LONG).show();
-        }
-
-        else {
-            if (isThereName) {
-                if (chipgroup1.size() > 1) {
-                    Toast.makeText(Launching_Activity.this, "Name is unique. You can only look for a place by its name or by its area and/or category or you can view all places", Toast.LENGTH_LONG).show();
-                }
-                if (search_name.getText().toString().isEmpty()) {
-                    Toast.makeText(Launching_Activity.this, "Please enter a name or check off the Name tag", Toast.LENGTH_LONG).show();
-                } else {
-                    String name = search_name.getText().toString();
-                    intent.putExtra("Name", name);
-                    startActivity(intent);
-                }
-            } else if (isThereArea || isThereCategory) {
-                if (search_area.getText().toString().isEmpty()  || !isThereArea && chipgroup2.size() == 0) {
-                    Toast.makeText(Launching_Activity.this, "Please enter area or check off the Area tag", Toast.LENGTH_LONG).show();
-                } else {
-                    String area = search_area.getText().toString();
-                    intent.putExtra("Area", area);
-                }
-
-
-                if (chipgroup2.size() == 0 && isThereCategory) {
-                    Toast.makeText(Launching_Activity.this, "Please select a category or check off the Category tag", Toast.LENGTH_LONG).show();
-                    isThereCategory = false;
-                } else if (chipgroup2.size() == 1 && isThereCategory) {
-                    String category = chipgroup2.get(0);
-                    Integer position;
-                    if (category.equals("Social Events")) {
-                        position = 0;
-                    } else {
-                        String[] purpose = getResources().getStringArray(R.array.purpose);
-                        position = Arrays.asList(purpose).indexOf(category) - 1;
-                    }
-                    intent.putExtra("Category", Integer.toString(position));
-                }
-
-                if(isThereArea || isThereCategory)
-                    startActivity(intent);
-            } else if (isThereViewAll) {
-                if (chipgroup1.size() > 1) {
-                    Toast.makeText(Launching_Activity.this, "Not sure", Toast.LENGTH_LONG).show();
-                } else {
-                    String view_all = "";
-                    intent.putExtra("View all", view_all);
-                    startActivity(intent);
-                }
+            if (chipgroup1.size() > 1) {
+                Toast.makeText(Launching_Activity.this, "Name is unique. You can only look for a place by its name or by its area and/or category or you can view all places", Toast.LENGTH_LONG).show();
+                return;
+            }
+            else if (search_name.getText().toString().isEmpty()) {
+                Toast.makeText(Launching_Activity.this, "Please enter a name or check off the Name tag", Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                String name = search_name.getText().toString();
+                intent.putExtra("Name", name);
+                startActivity(intent);
             }
         }
 
-
-        /*for (int i = 0; i<chipgroup1.size(); i++)
+        else if (isThereArea || isThereCategory)
         {
-            if(chipgroup1.get(i).equals("Name"))
-            {
-                if(search_name.getText().toString().isEmpty())
-                {
-                    Toast.makeText(Launching_Activity.this, "Please enter a name or check off the Name tag", Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    String name = search_name.getText().toString();
-                    intent.putExtra("Name", name);
-                }
+            if (search_name.getText().toString().isEmpty() && isThereArea) {
+                Toast.makeText(Launching_Activity.this, "Please enter area or check off the Area tag", Toast.LENGTH_LONG).show();
+                isThereArea = false;
+            }
+            else if(!search_name.getText().toString().isEmpty() && isThereArea){
+                String area = search_name.getText().toString();
+                intent.putExtra("Area", area);
             }
 
-            if(chipgroup1.get(i).equals("Area"))
-            {
-                if(search_area.getText().toString().isEmpty())
-                {
-                    Toast.makeText(Launching_Activity.this, "Please enter area or check off the Area tag", Toast.LENGTH_LONG).show();
-                }
-                else
-                {
-                    String area = search_area.getText().toString();
-                    intent.putExtra("Area", area);
-                }
 
+            if (chipgroup2.size() == 0 && isThereCategory) {
+                Toast.makeText(Launching_Activity.this, "Please select a category or check off the Category tag", Toast.LENGTH_LONG).show();
+                isThereCategory = false;
+            } else if (chipgroup2.size() == 1 && isThereCategory) {
+                String category = chipgroup2.get(0);
+                Integer position;
+                if (category.equals("Social Events")) {
+                    position = 0;
+                } else {
+                    String[] purpose = getResources().getStringArray(R.array.purpose);
+                    position = Arrays.asList(purpose).indexOf(category) - 1;
+                }
+                intent.putExtra("Category", Integer.toString(position));
             }
 
-            if(chipgroup1.get(i).equals("Category"))
-            {
-                if(chipgroup2.size() == 0)
-                {
-                    Toast.makeText(Launching_Activity.this, "Please select a category or check off the Category tag", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    String category = chipgroup2.get(0);
-                    Integer position;
-                    if(category.equals("Social Events")){
-                        position = 0;
-                    }
-                    else {
-                        String[] purpose = getResources().getStringArray(R.array.purpose);
-                        position = Arrays.asList(purpose).indexOf(category) - 1;
-                    }
-                    intent.putExtra("Category", Integer.toString(position));
-                }
-            }
-
-            if(chipgroup1.get(i).equals("View all"))
-            {
-                String view_all="";
+            if(isThereArea || isThereCategory)
+                startActivity(intent);
+        }
+        else if (isThereViewAll)
+        {
+            if (chipgroup1.size() > 1) {
+                Toast.makeText(Launching_Activity.this, "You can only look for a place by its name or by its area and/or category or you can view all places", Toast.LENGTH_LONG).show();
+            } else {
+                String view_all = "";
                 intent.putExtra("View all", view_all);
+                startActivity(intent);
             }
-        }*/
+        }
 
     }
 
@@ -654,6 +656,30 @@ public class Launching_Activity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onItemClick(int position) {
+        Log.i(TAG, "onItemClick: clicked " + featured_places_array.get(position).getName());
+        Intent intent = new Intent(Launching_Activity.this, Place_Details_activity.class).putExtra("place", featured_places_array.get(position));
+        Bundle extras = new Bundle();
+        extras.putString("source", "notMyPlacesList");
+        intent.putExtras(extras);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+
+    }
+
+    @Override
+    public void onLabelImageClick(int position) {
+
+    }
+
+    @Override
+    public void onViewImageClick(int position) {
+
+    }
 
     public class MyPlacesAdapter extends RecyclerView.Adapter<Launching_Activity.MyPlacesHolder> {
 
@@ -753,10 +779,7 @@ public class Launching_Activity extends AppCompatActivity {
                     {
                         chipGroup_category.setVisibility(View.VISIBLE);
                     }
-                    if(buttonView.getText().toString().equals("Area"))
-                    {
-                        flexbox_layout_area.setVisibility(View.VISIBLE);
-                    }
+
 
 
                 }
@@ -767,11 +790,6 @@ public class Launching_Activity extends AppCompatActivity {
                     {
                         chipGroup_category.setVisibility(View.GONE);
                         chipGroup_category.clearCheck();
-                    }
-                    if(buttonView.getText().toString().equals("Area"))
-                    {
-                        flexbox_layout_area.setVisibility(View.GONE);
-                        search_area.setText("");
                     }
 
                 }

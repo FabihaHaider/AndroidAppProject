@@ -42,6 +42,7 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.MyImageH
     @Override
     public void onBindViewHolder(@NonNull @NotNull MyImageAdapter.MyImageHolder holder, int position) {
         Glide.with(context).load(List.get(position).getImageUrl()).into(holder.imageView);
+
     }
 
 
@@ -79,6 +80,8 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.MyImageH
             MenuItem viewImage = menu.add(Menu.NONE, 1, 1, "View image");
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
             MenuItem selectIconImage = menu.add(Menu.NONE, 3, 3, "Select as your label image");
+
+
                 if(context.getClass().getSimpleName().equals(Place_Details_activity.class.getSimpleName()))
                 {
                     menu.clearHeader();
@@ -86,9 +89,18 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.MyImageH
                     menu.removeItem(3);
                 }
 
+                else if(context.getClass().getSimpleName().equals(Launching_Activity.class.getSimpleName()))
+                {
+                    menu.clearHeader();
+                    menu.removeItem(1);
+                    menu.removeItem(2);
+                    menu.removeItem(3);
+                }
+
                 viewImage.setOnMenuItemClickListener(this);
                 delete.setOnMenuItemClickListener(this);
                 selectIconImage.setOnMenuItemClickListener(this);
+
 
         }
 
