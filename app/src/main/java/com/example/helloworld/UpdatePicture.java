@@ -159,6 +159,7 @@ public class UpdatePicture extends AppCompatActivity {
     }
 
     private void back_to_image_folder() {
+        finish();
         Intent intent = new Intent(UpdatePicture.this, ImageFolder.class);
         intent.putExtra("place", place);
         startActivity(intent);

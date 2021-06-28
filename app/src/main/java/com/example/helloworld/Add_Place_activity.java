@@ -376,6 +376,7 @@ public class Add_Place_activity extends AppCompatActivity{
                                 map.clear();
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
                                 progressDialog.dismiss();
+                                finish();
                                 Intent intent = new Intent(Add_Place_activity.this, My_places_activity.class);
                                 startActivity(intent);
                             }

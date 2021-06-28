@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld"
         tools:replace="android:label">
-        <activity android:name=".WishlistActivity"></activity>
+        <activity android:name=".FullScreenImageActivity"></activity>
+        <activity android:name=".WishlistActivity" />
         <activity android:name=".ReviewRequestActivity" />
         <activity android:name=".UpdatePicture" />
         <activity android:name=".ImageFolder" />
@@ -29,10 +30,10 @@
         <activity android:name=".ResetPassword" />
         <activity android:name=".My_places_activity" />
         <activity android:name=".Add_Place_activity" />
-        <activity android:name=".Launching_Activity"
+        <activity
+            android:name=".Launching_Activity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Registration" />
-        <!-- <activity android:name=".LandlordView" /> -->
+        <activity android:name=".Registration" /> <!-- <activity android:name=".LandlordView" /> -->
         <activity
             android:name=".SignInScreen"
             android:theme="@style/Theme.AppCompat.NoActionBar">
