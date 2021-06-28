@@ -377,7 +377,7 @@ public class My_places_activity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull MyPlacesHolder holder, int position) {
-            final Place place = models.get(position);
+            final Place place = models.get(models.size() - position -1);
 
             Glide.with(context).load(place.getImage()).into(holder.image);
             holder.place_name.setText("Name: " + place.getName());

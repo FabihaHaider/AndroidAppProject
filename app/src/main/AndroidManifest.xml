@@ -29,7 +29,8 @@
         <activity android:name=".ResetPassword" />
         <activity android:name=".My_places_activity" />
         <activity android:name=".Add_Place_activity" />
-        <activity android:name=".Launching_Activity" />
+        <activity android:name=".Launching_Activity"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Registration" />
         <!-- <activity android:name=".LandlordView" /> -->
         <activity

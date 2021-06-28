@@ -34,6 +34,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -83,11 +85,9 @@ import java.util.Set;
 import static android.content.ContentValues.TAG;
 
 public class Launching_Activity extends AppCompatActivity implements MyImageAdapter.OnItemClickListener {
-    private TextView textView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private SliderView sliderView;
-    private int[] images;
 
     private MyImageAdapter adapter;
     private Launching_Activity.MyPlacesAdapter adapter1;
@@ -124,31 +124,20 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             }
         }
         bindUI();
-
+        search_name.requestFocus();
         inflateFeaturedplaces();
 
-        readSearch(new MySearchCallback() {
-            @Override
-            public void onCallback(ArrayList<String> group1, ArrayList<String> group2) {
-                chipgroup1 = new ArrayList<>(group1);
-                chipgroup2 = new ArrayList<>(group2);
-            }
+        readSearch((group1, group2) -> {
+            chipgroup1 = new ArrayList<>(group1);
+            chipgroup2 = new ArrayList<>(group2);
         });
 
 
-        seacrh_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchPlaces();
-            }
-        });
+        seacrh_icon.setOnClickListener(v -> searchPlaces());
 
-        button_featured_places.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Launching_Activity.this, My_places_activity.class).putExtra("featured_places", "featured_places");
-                startActivity(intent);
-            }
+        button_featured_places.setOnClickListener(v -> {
+            Intent intent = new Intent(Launching_Activity.this, My_places_activity.class).putExtra("featured_places", "featured_places");
+            startActivity(intent);
         });
 
         if(latLng == null)
@@ -341,6 +330,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         selectedCategory = new ArrayList<>();
 
         search_name = findViewById(R.id.search_name);
+        search_name.requestFocus();
 
         button_featured_places = findViewById(R.id.button_featured_places);
     }
@@ -403,6 +393,9 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                 return;
             } else {
                 String name = search_name.getText().toString();
+                search_name.getText().clear();
+                chipgroup1.clear();
+                chipgroup2.clear();
                 intent.putExtra("Name", name);
                 startActivity(intent);
             }
@@ -435,8 +428,12 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                 intent.putExtra("Category", Integer.toString(position));
             }
 
-            if(isThereArea || isThereCategory)
+            if(isThereArea || isThereCategory) {
+                search_name.getText().clear();
+                chipgroup1.clear();
+                chipgroup2.clear();
                 startActivity(intent);
+            }
         }
         else if (isThereViewAll)
         {
@@ -488,65 +485,67 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 arrayList1.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String address = dataSnapshot.child("address").getValue().toString();
-                    LatLng latLng = getLocationFromAddress(Launching_Activity.this, address);
+                if(snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String address = dataSnapshot.child("address").getValue().toString();
+                        LatLng latLng = getLocationFromAddress(Launching_Activity.this, address);
 
-                    if (latLng != null) {
-                        float lat2 = (float) latLng.latitude;
-                        float lon2 = (float) latLng.longitude;
+                        if (latLng != null) {
+                            float lat2 = (float) latLng.latitude;
+                            float lon2 = (float) latLng.longitude;
 
 
-                        Location loc1 = new Location("");
-                        loc1.setLatitude(lat1);
-                        loc1.setLongitude(lon1);
-                        Location loc2 = new Location("");
-                        loc2.setLatitude(lat2);
-                        loc2.setLongitude(lon2);
+                            Location loc1 = new Location("");
+                            loc1.setLatitude(lat1);
+                            loc1.setLongitude(lon1);
+                            Location loc2 = new Location("");
+                            loc2.setLatitude(lat2);
+                            loc2.setLongitude(lon2);
 //                        dist =  (loc1.distanceTo(loc2) / 1000.0);
 
-                        float pk = (float) (180.f / Math.PI);
+                            float pk = (float) (180.f / Math.PI);
 
-                        float a1 = (float) (lat1 / pk);
-                        float a2 = (float) (lon1 / pk);
-                        float b1 = lat2 / pk;
-                        float b2 = lon2 / pk;
+                            float a1 = (float) (lat1 / pk);
+                            float a2 = (float) (lon1 / pk);
+                            float b1 = lat2 / pk;
+                            float b2 = lon2 / pk;
 
-                        double t1 = Math.cos(a1) * Math.cos(a2) * Math.cos(b1) * Math.cos(b2);
-                        double t2 = Math.cos(a1) * Math.sin(a2) * Math.cos(b1) * Math.sin(b2);
-                        double t3 = Math.sin(a1) * Math.sin(b1);
-                        double tt = Math.acos(t1 + t2 + t3);
+                            double t1 = Math.cos(a1) * Math.cos(a2) * Math.cos(b1) * Math.cos(b2);
+                            double t2 = Math.cos(a1) * Math.sin(a2) * Math.cos(b1) * Math.sin(b2);
+                            double t3 = Math.sin(a1) * Math.sin(b1);
+                            double tt = Math.acos(t1 + t2 + t3);
 
-                        dist = 6366000 * tt;
+                            dist = 6366000 * tt;
 
 //                        dist = SphericalUtil.computeDistanceBetween(new LatLng(lat1, lon1), latLng);
 
+                        }
+
+                        Place place;
+                        String email = dataSnapshot.child("owner_email").getValue().toString();
+                        String place_name = dataSnapshot.child("name").getValue().toString();
+                        int charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                        int number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                        String category = dataSnapshot.child("category").getValue().toString();
+                        String description = dataSnapshot.child("description").getValue().toString();
+                        String image = dataSnapshot.child("image").getValue().toString();
+                        String area = dataSnapshot.child("area").getValue().toString().trim();
+                        String house_no = dataSnapshot.child("house_no").getValue().toString();
+                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+
+
+                        if (dist <= 3000.0) {
+                            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
+                            place.setImage(image);
+                            arrayList1.add(place);
+                            userlocation.push().setValue(place);
+                        }
+
                     }
-
-                    Place place;
-                    String email = dataSnapshot.child("owner_email").getValue().toString();
-                    String place_name = dataSnapshot.child("name").getValue().toString();
-                    Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
-                    String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
-                    Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
-                    String category = dataSnapshot.child("category").getValue().toString();
-                    String description = dataSnapshot.child("description").getValue().toString();
-                    String image = dataSnapshot.child("image").getValue().toString();
-                    String area = dataSnapshot.child("area").getValue().toString().trim();
-                    String house_no = dataSnapshot.child("house_no").getValue().toString();
-                    String postal_code = dataSnapshot.child("postal_code").getValue().toString();
-
-
-                    if (dist <= 3000.0) {
-                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
-                        place.setImage(image);
-                        arrayList1.add(place);
-                        userlocation.push().setValue(place);
-                    }
-
+                    adapter1.notifyDataSetChanged();
+                    progressBar.dismiss();
                 }
-                adapter1.notifyDataSetChanged();
-                progressBar.dismiss();
             }
 
 
@@ -592,7 +591,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     @Override
     public void onItemClick(int position) {
-        Log.i(TAG, "onItemClick: clicked " + featured_places_array.get(position).getName());
+
         Intent intent = new Intent(Launching_Activity.this, Place_Details_activity.class).putExtra("place", featured_places_array.get(position));
         Bundle extras = new Bundle();
         extras.putString("source", "notMyPlacesList");
@@ -686,6 +685,10 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     public void onChipViewClick(View view) {
         chipGroup.setVisibility(View.VISIBLE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+
     }
 
     private void readSearch(MySearchCallback myCallback) {
@@ -697,10 +700,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                 {
                     selectedChipData.add(buttonView.getText().toString());
 
-                    if(buttonView.getText().toString().equals("Name"))
-                    {
-                        search_name.setHint("Search by name");
-                    }
 
                     if(buttonView.getText().toString().equals("Category"))
                     {
@@ -712,6 +711,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                 }
                 else {
                     selectedChipData.remove(buttonView.getText().toString());
+
 
                     if(buttonView.getText().toString().equals("Category"))
                     {
