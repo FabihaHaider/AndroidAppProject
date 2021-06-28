@@ -40,10 +40,11 @@ public class My_places_activity extends AppCompatActivity {
     private DatabaseReference databaseReference, databaseReference_image;
     private MyPlacesAdapter myadapter;
     private ArrayList<Place> arrayList;
-    private String owner_email,category_string, Category, imgURL, name, Area, view_all;
+    private String owner_email,category_string, Category, imgURL, name, Area, view_all, featured_places;
     private Integer pos_in_purpose_array;
     private String[] purpose;
     private boolean myPlacesList = true;
+    private TextView no_such_places;
 
 
 
@@ -60,6 +61,7 @@ public class My_places_activity extends AppCompatActivity {
             name = (String) getIntent().getExtras().get("Name");
             Area = (String) getIntent().getExtras().get("Area");
             view_all = (String) getIntent().getExtras().get("View all");
+            featured_places = (String) getIntent().getExtras().get("featured_places");
 
 
             if(name != null)
@@ -120,19 +122,75 @@ public class My_places_activity extends AppCompatActivity {
                 setTitle("All Places");
             }
 
+            else if(featured_places != null)
+            {
+                myPlacesList = false;
+                invalidateOptionsMenu();
+                setTitle("Featured Places");
+            }
+
             else {
+                myPlacesList = true;
+                invalidateOptionsMenu();
                 setTitle("My Places");
             }
         }
 
     }
+
+    private void showFeaturedPlaces() {
+        DatabaseReference featured_places = FirebaseDatabase.getInstance().getReference().child("Featured_places");
+        featured_places.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (arrayList.size() != 0) {
+                    arrayList.clear();
+                }
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Place place;
+                    if (snapshot.exists()) {
+                        String email = dataSnapshot.child("owner_email").getValue().toString();
+                        String place_name = dataSnapshot.child("name").getValue().toString();
+                        String address = dataSnapshot.child("address").getValue().toString();
+                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                        String category = dataSnapshot.child("category").getValue().toString();
+                        String description = dataSnapshot.child("description").getValue().toString();
+                        String image = dataSnapshot.child("image").getValue().toString();
+                        String house_number = dataSnapshot.child("house_no").getValue().toString();
+                        String area = dataSnapshot.child("area").getValue().toString();
+                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+
+
+                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                        place.setImage(image);
+                        arrayList.add(place);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
     //
     @SuppressWarnings("ConstantConditions")
     @Override
     protected void onStart() {
         super.onStart();
-        retrieveDataFromFirebase();
-
+        if(featured_places == null) {
+            retrieveDataFromFirebase();
+        }
+        else{
+            showFeaturedPlaces();
+        }
     }
 
     private void bindUI() {
@@ -147,10 +205,13 @@ public class My_places_activity extends AppCompatActivity {
         arrayList = new ArrayList<>();
         myadapter = new MyPlacesAdapter(this, arrayList);
         recyclerView.setAdapter(myadapter);
+
+        no_such_places = findViewById(R.id.textview_no_place);
     }
 
     @SuppressWarnings("ConstantConditions")
     private void retrieveDataFromFirebase() {
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -158,7 +219,7 @@ public class My_places_activity extends AppCompatActivity {
                 if(arrayList.size() != 0){
                     arrayList.clear();
                 }
-                
+
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Place place;
                     if (snapshot.exists()) {
@@ -281,6 +342,10 @@ public class My_places_activity extends AppCompatActivity {
                     }
                 }
                 myadapter.notifyDataSetChanged();
+                if(arrayList.size() == 0){
+                    no_such_places.setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override

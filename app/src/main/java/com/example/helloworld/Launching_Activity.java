@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -95,8 +96,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     private ArrayList<Place> arrayList1, featured_places_array;
     private DatabaseReference ref, featured_places;
 
-    private Double latitude, longitude, dist;
-    private boolean first = true;
+    private Double dist;
     private LinearLayout linearLayout;
     private ScrollView scrollView;
     private ProgressDialog progressBar;
@@ -108,6 +108,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     private EditText search_name;
     private LatLng latLng;
     private String email;
+    private Button button_featured_places;
 
 
     @Override
@@ -124,7 +125,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         }
         bindUI();
 
-
+        inflateFeaturedplaces();
 
         readSearch(new MySearchCallback() {
             @Override
@@ -142,6 +143,14 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             }
         });
 
+        button_featured_places.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Launching_Activity.this, My_places_activity.class).putExtra("featured_places", "featured_places");
+                startActivity(intent);
+            }
+        });
+
         if(latLng == null)
         {
             checkCache();
@@ -155,6 +164,45 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         }
 
 
+    }
+
+    private void inflateFeaturedplaces() {
+        featured_places.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Place place;
+                for (DataSnapshot dataSnapshot: snapshot.getChildren())
+                {
+                    if(dataSnapshot.exists())
+                    {
+                        String email = dataSnapshot.child("owner_email").getValue().toString();
+                        String place_name = dataSnapshot.child("name").getValue().toString();
+                        String address = dataSnapshot.child("address").getValue().toString();
+                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                        String category = dataSnapshot.child("category").getValue().toString();
+                        String description = dataSnapshot.child("description").getValue().toString();
+                        String image = dataSnapshot.child("image").getValue().toString();
+                        String house_number = dataSnapshot.child("house_no").getValue().toString();
+                        String area = dataSnapshot.child("area").getValue().toString();
+                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+
+                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                        place.setImage(image);
+                        featured_places_array.add(place);
+                        image_model imageModel = new image_model(image);
+                        arrayList.add(imageModel);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void checkCache() {
@@ -239,43 +287,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         featured_places_array = new ArrayList<>();
 
         featured_places = FirebaseDatabase.getInstance().getReference().child("Featured_places");
-        featured_places.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Place place;
-                for (DataSnapshot dataSnapshot: snapshot.getChildren())
-                {
-                    if(dataSnapshot.exists())
-                    {
-                        String email = dataSnapshot.child("owner_email").getValue().toString();
-                        String place_name = dataSnapshot.child("name").getValue().toString();
-                        String address = dataSnapshot.child("address").getValue().toString();
-                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
-                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
-                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
-                        String category = dataSnapshot.child("category").getValue().toString();
-                        String description = dataSnapshot.child("description").getValue().toString();
-                        String image = dataSnapshot.child("image").getValue().toString();
-                        String house_number = dataSnapshot.child("house_no").getValue().toString();
-                        String area = dataSnapshot.child("area").getValue().toString();
-                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
-
-                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
-                        place.setImage(image);
-                        featured_places_array.add(place);
-                        image_model imageModel = new image_model(image);
-                        arrayList.add(imageModel);
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -331,7 +342,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
         search_name = findViewById(R.id.search_name);
 
-
+        button_featured_places = findViewById(R.id.button_featured_places);
     }
 
 
@@ -478,8 +489,8 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 arrayList1.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String area = dataSnapshot.child("area").getValue().toString().trim();
-                    LatLng latLng = getLocationFromAddress(Launching_Activity.this, area);
+                    String address = dataSnapshot.child("address").getValue().toString();
+                    LatLng latLng = getLocationFromAddress(Launching_Activity.this, address);
 
                     if (latLng != null) {
                         float lat2 = (float) latLng.latitude;
@@ -521,7 +532,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                     String category = dataSnapshot.child("category").getValue().toString();
                     String description = dataSnapshot.child("description").getValue().toString();
                     String image = dataSnapshot.child("image").getValue().toString();
-                    String address = dataSnapshot.child("address").getValue().toString();
+                    String area = dataSnapshot.child("area").getValue().toString().trim();
                     String house_no = dataSnapshot.child("house_no").getValue().toString();
                     String postal_code = dataSnapshot.child("postal_code").getValue().toString();
 
@@ -621,7 +632,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
         public Launching_Activity.MyPlacesHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_for_near_places, parent, false);
             return new Launching_Activity.MyPlacesHolder(view);
         }
 
@@ -629,20 +640,14 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         public void onBindViewHolder(@NonNull @NotNull Launching_Activity.MyPlacesHolder holder, int position) {
             final Place place = models.get(position);
 
-
-
                 Glide.with(context).load(place.getImage()).into(holder.image);
 
-                holder.place_name.setBackground(null);
-                holder.location.setBackground(null);
-                holder.charge.setBackground(null);
-                holder.rate.setBackground(null);
 
-                holder.place_name.setText("Name: " + place.getName());
-                holder.location.setText("Location: " + place.getAddress());
+                holder.place_name.setText(place.getName());
+                holder.location.setText(place.getAddress());
                 Integer amount = place.getAmount_of_charge();
-                holder.charge.setText("Price rate: Tk " + Integer.toString(amount));
-                holder.rate.setText(" " + place.getCharge_unit());
+                holder.charge.setText("Price rate: TK " + Integer.toString(amount) + " "+ place.getCharge_unit());
+
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -669,11 +674,10 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
         public MyPlacesHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            this.image = itemView.findViewById(R.id.cardview_image);
-            this.place_name = itemView.findViewById(R.id.cardview_place_name);
-            this.location = itemView.findViewById(R.id.cardview_location);
-            this.charge = itemView.findViewById(R.id.cardview_charge);
-            this.rate = itemView.findViewById(R.id.rate);
+            this.image = itemView.findViewById(R.id.imageview_near_places);
+            this.place_name = itemView.findViewById(R.id.textview_near_places_name);
+            this.location = itemView.findViewById(R.id.textview_near_places_address);
+            this.charge = itemView.findViewById(R.id.textview_near_places_price);
 
         }
     }

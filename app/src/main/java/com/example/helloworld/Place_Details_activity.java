@@ -152,7 +152,7 @@ public class Place_Details_activity extends AppCompatActivity {
                             String key = wishlistRef.push().getKey();
                             wishlistRef.child(key).setValue(wishList);
 
-                            Toast.makeText(Place_Details_activity.this, "Added to wishList successfully",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Place_Details_activity.this, "Added to wishlist successfully",Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(Place_Details_activity.this, Place_Details_activity.class).putExtra("place", place);
                             Bundle extras = new Bundle();
                             extras.putString("source", source);

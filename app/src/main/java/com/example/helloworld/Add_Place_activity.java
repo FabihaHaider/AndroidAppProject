@@ -69,8 +69,9 @@ public class Add_Place_activity extends AppCompatActivity{
     private String url;
     private FirebaseUser user;
     private Place getPlace;
-    private boolean updatePlaceDetails = false, uniqueName;
+    private boolean updatePlaceDetails = false, uniqueName = true;
     private ScrollView scrollView;
+    private ProgressDialog progressDialog;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -93,17 +94,20 @@ public class Add_Place_activity extends AppCompatActivity{
         bindValues();
         onClickingSpinner();
 
-        readName(new MyCallback() {
-            @Override
-            public void onCallback(boolean unique_place_name) {
-                uniqueName = unique_place_name;
-            }
-        });
-
 
         add_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(updatePlaceDetails)
+                {
+                    progressDialog.show();
+                }
+                readName(new MyCallback() {
+                    @Override
+                    public void onCallback(boolean unique_place_name) {
+                        uniqueName = unique_place_name;
+                    }
+                });
                 insertHouseData();
             }
         });
@@ -185,6 +189,9 @@ public class Add_Place_activity extends AppCompatActivity{
         place_first_pic = findViewById(R.id.place_first_pic);
         scrollView = findViewById(R.id.scrollView_add_place);
         scrollView.smoothScrollTo(0,0);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Updating place");
+
 
     }
 
@@ -254,31 +261,32 @@ public class Add_Place_activity extends AppCompatActivity{
         @Override
         public void onActivityResult(ActivityResult result) {
             if(result.getResultCode() == Activity.RESULT_OK){
-                Intent data = result.getData();
+                if(result.getData().getClipData() != null) {
+                    Intent data = result.getData();
 
-                if(data.getClipData().getItemCount() < 3){
-                    Toast.makeText(Add_Place_activity.this,"Please select at least 3 images", Toast.LENGTH_LONG).show();
-                }
+                    if (data.getClipData().getItemCount() < 3) {
+                        Toast.makeText(Add_Place_activity.this, "Please select at least 3 images", Toast.LENGTH_LONG).show();
+                    }
 
-                if(data != null && data.getClipData().getItemCount() >=3){
-                    int count_data = data.getClipData().getItemCount();
-                    int currentImage = 0;
+                    if (data != null && data.getClipData().getItemCount() >= 3) {
+                        int count_data = data.getClipData().getItemCount();
+                        int currentImage = 0;
 
-                    while(currentImage < count_data){
-                        imageUri = data.getClipData().getItemAt(currentImage).getUri();
-                        imageList.add(imageUri);
-                        currentImage++;
+                        while (currentImage < count_data) {
+                            imageUri = data.getClipData().getItemAt(currentImage).getUri();
+                            imageList.add(imageUri);
+                            currentImage++;
+                        }
                     }
                 }
                 else{
-                    Toast.makeText(Add_Place_activity.this,"No file selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Add_Place_activity.this,"No file selected. Long press to select a file", Toast.LENGTH_SHORT).show();
                 }
             }
         }
     });
 
     private void insertHouseData() {
-        uniqueName = true;
         if(!validateInput()){
             Toast.makeText(this, "Enter all details",Toast.LENGTH_LONG).show();
         }
@@ -292,7 +300,7 @@ public class Add_Place_activity extends AppCompatActivity{
             }
 
             else {
-                /*if(uniqueName)
+                if(uniqueName)
                 {
                     storeToDatabase(createPlace());
                     Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
@@ -301,9 +309,9 @@ public class Add_Place_activity extends AppCompatActivity{
                 else
                 {
                     Toast.makeText(Add_Place_activity.this, "Choose a unique name", Toast.LENGTH_LONG).show();
-                }*/
+                }
 
-                String place_name = name.getText().toString();
+                /*String place_name = name.getText().toString();
                 ref = FirebaseDatabase.getInstance().getReference().child("Place");
                 ref.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -329,7 +337,7 @@ public class Add_Place_activity extends AppCompatActivity{
                     @Override
                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
                     }
-                });
+                });*/
 
             }
         }
@@ -367,6 +375,7 @@ public class Add_Place_activity extends AppCompatActivity{
                             public void onSuccess(Void unused) {
                                 map.clear();
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
+                                progressDialog.dismiss();
                                 Intent intent = new Intent(Add_Place_activity.this, My_places_activity.class);
                                 startActivity(intent);
                             }
@@ -497,19 +506,20 @@ public class Add_Place_activity extends AppCompatActivity{
 
     }
     private void readName(MyCallback myCallback) {
-        uniqueName = true;
         {
-            String place_name = name.getText().toString();
+            EditText editText = findViewById(R.id.plainText_name);
+            String place_name = editText.getText().toString();
+
             ref = FirebaseDatabase.getInstance().getReference().child("Place");
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         String name = dataSnapshot.child("name").getValue().toString();
+                        Log.i("fabiha", "readName: "+place_name + " name " +name);
                         if(place_name.equals(name)){
                             uniqueName = false;
                             myCallback.onCallback(uniqueName);
-                            break;
                         }
                     }
                 }
@@ -527,6 +537,8 @@ public class Add_Place_activity extends AppCompatActivity{
     private interface MyCallback {
         void onCallback(boolean unique_place_name);
     }
+
+
 
 }
 
