@@ -35,10 +35,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
     }
 
     public PlacesAdapter(Context context, ArrayList<Place> models, ArrayList<Request> reqModels,String source) {
-       // Collections.reverse(models);
-       // Collections.reverse(reqModels);
 
-        Log.i("tuba", models.size()+" "+reqModels.size());
         this.context = context;
         this.models = models;
         this.reqModels = reqModels;
@@ -71,7 +68,9 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
         holder.rate.setText(" " + place.getCharge_unit());
 
         if(source.equals("SentRequestFragment") || source.equals("ReceivedRequestFragment")){
+
            final Request request = reqModels.get(models.size()-1-position);
+
             holder.charge.setText("");
             holder.rate.setText("");
 
@@ -133,4 +132,3 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
         return models.size();
     }
 }
-
