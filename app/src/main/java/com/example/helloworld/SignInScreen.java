@@ -124,7 +124,11 @@ public class SignInScreen extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         if (checkPermissions()) {
-            getLastLocation();
+            FirebaseUser user = firebase_auth.getCurrentUser();
+            if(user != null ) {
+                signed_in = true;
+                getLastLocation();
+            }
         }
     }
 
@@ -195,6 +199,7 @@ public class SignInScreen extends AppCompatActivity {
                             longitude = location.getLongitude();
                             LatLng latLng1 = new LatLng(latitude, longitude);
                             Log.i(TAG, "onComplete: latitude "+latitude+" longitude "+longitude + signed_in);
+
                             if(signed_in)
                             {
                                 Toast.makeText(SignInScreen.this, "Already signed in", Toast.LENGTH_SHORT).show();
@@ -209,7 +214,6 @@ public class SignInScreen extends AppCompatActivity {
                                     if(getIntent().getExtras() == null){
                                         Toast.makeText(SignInScreen.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
                                     }
-
                                 }
                                 else {
                                     validate(email.getText().toString(), password.getText().toString(), latLng1);

@@ -45,9 +45,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="14dp"
-        android:text="Upload"
-        android:layout_marginStart="10dp"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="15dp"
+        android:text="Upload" />
 
     <Button
         android:id="@+id/button_image_folder"
@@ -55,10 +55,10 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button_upload_picture"
         android:layout_alignBottom="@+id/button_upload_picture"
-        android:layout_marginStart="154dp"
-        android:layout_marginBottom="0dp"
+        android:layout_alignRight="@+id/progress_bar"
+        android:layout_marginLeft="140dp"
         android:layout_toEndOf="@id/button_upload_picture"
-        android:text="Image Folder"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text="Image Folder" />
 
 </RelativeLayout>

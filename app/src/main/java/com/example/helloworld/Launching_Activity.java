@@ -226,8 +226,10 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                     adapter1.notifyDataSetChanged();
                 }
 
-                else
+                else {
+                    linearLayout.setVisibility(View.GONE);
                     Log.i(TAG, "onDataChange: deosn't exist");
+                }
             }
 
             @Override
@@ -278,8 +280,11 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         featured_places = FirebaseDatabase.getInstance().getReference().child("Featured_places");
 
 
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        email = user.getEmail();
+        if(user != null) {
+            email = user.getEmail();
+        }
 
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setItemIconTintList(null);

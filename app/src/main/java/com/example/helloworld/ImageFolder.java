@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -199,7 +200,12 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
         HashMap<String, Object> map = new HashMap<>();
         map.put("image", selected_img_url);
 
-        databaseReference_place.child(key).updateChildren(map);
+        databaseReference_place.child(key).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(ImageFolder.this, "Selected as label image", Toast.LENGTH_SHORT).show();
+            }
+        });
         place.setImage(selected_img_url);
 
 
@@ -208,7 +214,10 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
 
     @Override
     public void onViewImageClick(int position) {
-        Log.i(TAG, "onViewImageClick: clicked");
+
+        Uri uri = Uri.parse(image_model_list.get(image_model_list.size() - position - 1).getImageUrl());
+        Intent intent = new Intent(ImageFolder.this, FullScreenImageActivity.class).setData(uri);
+        startActivity(intent);
     }
 
 

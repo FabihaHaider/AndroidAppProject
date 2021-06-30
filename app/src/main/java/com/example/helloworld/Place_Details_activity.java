@@ -9,7 +9,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,22 +19,18 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.LayoutInflater;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+
 import android.widget.Button;
-import android.widget.ImageView;
+
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,19 +42,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
+
 
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static android.content.ContentValues.TAG;
 
 
-public class Place_Details_activity extends AppCompatActivity {
+
+public class Place_Details_activity extends AppCompatActivity implements MyImageAdapter.OnItemClickListener {
     private TextView place_name, address, price_rate, number_of_guests, description, category, phone_number;
     private Button bookNow, wishlist;
     private Place place;
@@ -68,13 +63,12 @@ public class Place_Details_activity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MyImageAdapter myImageAdapter;
     private FirebaseUser user;
-    private String owner_email, number, email, password, username, prof;
+    private String owner_email, number, email;
     private LinearLayout layout;
     private boolean isMyplace = true;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Double latitude, longitude;
     private Geocoder geocoder;
-    private List<Address> addresses;
     private String source;
 
 
@@ -221,6 +215,7 @@ public class Place_Details_activity extends AppCompatActivity {
         image_models = new ArrayList<>();
         myImageAdapter = new MyImageAdapter(Place_Details_activity.this, image_models);
         recyclerView.setAdapter(myImageAdapter);
+        myImageAdapter.setOnItemClickListener(Place_Details_activity.this);
         ref = FirebaseDatabase.getInstance().getReference().child("Images").child(place.getName());
         databaseReference_user = FirebaseDatabase.getInstance().getReference().child("UserAccount");
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -356,7 +351,6 @@ public class Place_Details_activity extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                     String name = dataSnapshot.child("name").getValue().toString();
-                    String place_name = dataSnapshot.child("name").getValue().toString();
                     if(name.equals(place.getName())){
                         dataSnapshot.getRef().removeValue();
                         break;
@@ -451,4 +445,28 @@ public class Place_Details_activity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onItemClick(int position) {
+
+        Uri uri = Uri.parse(image_models.get(image_models.size() - position - 1).getImageUrl());
+        Intent intent = new Intent(Place_Details_activity.this, FullScreenImageActivity.class).setData(uri);
+        startActivity(intent);
+
+
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+
+    }
+
+    @Override
+    public void onLabelImageClick(int position) {
+
+    }
+
+    @Override
+    public void onViewImageClick(int position) {
+
+    }
 }

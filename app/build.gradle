@@ -83,9 +83,6 @@ dependencies {
 
     implementation 'com.google.maps.android:android-maps-utils:0.4'
 
-    implementation 'com.facebook.shimmer:shimmer:0.5.0@aar'
-
-
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     implementation ('com.github.jakebonk:ChipView:1.0.1'){
