@@ -272,14 +272,6 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if(snapshot.exists())
-                {
-                    Log.i("fabiha", "bindUI: "+place.getName());
-                }
-                else {
-                    Log.i("fabiha", "bindUI: "+place.getName() + " "+ snapshot.getChildrenCount());
-
-                }
                 for(DataSnapshot dataSnapshot: snapshot.getChildren())
                 {
                     String ImgUrl = dataSnapshot.child("ImgLink").getValue().toString();
@@ -457,7 +449,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
     @Override
     public void onItemClick(int position) {
 
-        Uri uri = Uri.parse(image_models.get(image_models.size() - position - 1).getImageUrl());
+        Uri uri = Uri.parse(image_models.get(position).getImageUrl());
         Intent intent = new Intent(Place_Details_activity.this, FullScreenImageActivity.class).setData(uri);
         startActivity(intent);
 

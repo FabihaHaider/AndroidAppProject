@@ -33,7 +33,7 @@
         <activity
             android:name=".Launching_Activity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Registration" /> <!-- <activity android:name=".LandlordView" /> -->
+        <activity android:name=".Registration" />
         <activity
             android:name=".SignInScreen"
             android:theme="@style/Theme.AppCompat.NoActionBar">
