@@ -712,7 +712,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                     }
 
 
-
                 }
                 else {
                     selectedChipData.remove(buttonView.getText().toString());

@@ -83,8 +83,6 @@ dependencies {
 
     implementation 'com.google.maps.android:android-maps-utils:0.4'
 
-    
-
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     implementation ('com.github.jakebonk:ChipView:1.0.1'){
@@ -93,7 +91,6 @@ dependencies {
     implementation 'com.github.DoodleScheduling:android-material-chips:1.1.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
 
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 

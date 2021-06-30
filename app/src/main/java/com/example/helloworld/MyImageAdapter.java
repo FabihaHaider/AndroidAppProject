@@ -41,7 +41,7 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.MyImageH
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull MyImageAdapter.MyImageHolder holder, int position) {
-        Glide.with(context).load(List.get(getItemCount() - position - 1).getImageUrl()).into(holder.imageView);
+        Glide.with(context).load(List.get(position).getImageUrl()).into(holder.imageView);
 
     }
 

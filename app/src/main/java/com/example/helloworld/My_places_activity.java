@@ -137,7 +137,7 @@ public class My_places_activity extends AppCompatActivity {
         }
 
     }
-
+    @SuppressWarnings("ConstantConditions")
     private void showFeaturedPlaces() {
         DatabaseReference featured_places = FirebaseDatabase.getInstance().getReference().child("Featured_places");
         featured_places.addValueEventListener(new ValueEventListener() {
@@ -170,6 +170,7 @@ public class My_places_activity extends AppCompatActivity {
 
                     }
                 }
+                myadapter.notifyDataSetChanged();
             }
 
             @Override
