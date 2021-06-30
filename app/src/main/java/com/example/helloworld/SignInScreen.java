@@ -174,7 +174,6 @@ public class SignInScreen extends AppCompatActivity {
     }
 
 
-
     @SuppressLint("MissingPermission")
     private void getLastLocation() {
         LatLng latLng = null;
@@ -183,7 +182,6 @@ public class SignInScreen extends AppCompatActivity {
 
             // check if location is enabled
             if (isLocationEnabled()) {
-
                 // getting last
                 // location from
                 // FusedLocationClient
@@ -193,6 +191,7 @@ public class SignInScreen extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Location> task) {
                         Location location = task.getResult();
                         if (location == null) {
+                            Log.i(TAG, "onClick: location null");
                             requestNewLocationData();
                         } else {
                             latitude = location.getLatitude();
@@ -224,7 +223,6 @@ public class SignInScreen extends AppCompatActivity {
                 });
 
             } else {
-
 
                 if(signed_in)
                 {
@@ -296,7 +294,7 @@ public class SignInScreen extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     private void requestNewLocationData() {
-
+        Log.i(TAG, "onClick: request new location data");
         // Initializing LocationRequest
         // object with appropriate methods
         LocationRequest mLocationRequest = new LocationRequest();
@@ -349,6 +347,7 @@ public class SignInScreen extends AppCompatActivity {
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
             Log.i(TAG, "onLocationResult: "+mLastLocation.getLatitude());
+            getLastLocation();
 //            distance(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
         }
     };

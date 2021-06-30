@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -94,7 +95,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
             }
         }
 
-        binnUI();
+        bindUI();
         if(!place.getOwner_email().equals(owner_email) || source.equals("notMyPlacesList"))
         {
             isMyplace = false;
@@ -200,7 +201,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
 
 
 
-    private void binnUI() {
+    private void bindUI() {
         place_name = findViewById(R.id.place_name);
         address = findViewById(R.id.address);
         number_of_guests = findViewById(R.id.guests_number);
@@ -271,6 +272,14 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if(snapshot.exists())
+                {
+                    Log.i("fabiha", "bindUI: "+place.getName());
+                }
+                else {
+                    Log.i("fabiha", "bindUI: "+place.getName() + " "+ snapshot.getChildrenCount());
+
+                }
                 for(DataSnapshot dataSnapshot: snapshot.getChildren())
                 {
                     String ImgUrl = dataSnapshot.child("ImgLink").getValue().toString();
@@ -380,11 +389,11 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                 fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        if(location != null){
+                        if(location != null) {
                             longitude = location.getLongitude();
                             latitude = location.getLatitude();
-                            showLocation(latitude+","+longitude);
-
+                            Log.i("fabiha", "onSuccess: location" + latitude+ " " + longitude);
+                            showLocation(latitude + "," + longitude);
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {

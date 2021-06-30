@@ -23,17 +23,22 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
                         />
+
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp">
+
 
                     <LinearLayout
+                        android:layout_below="@+id/swipe_left"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginLeft="10dp">
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="10dp">
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -61,7 +66,7 @@
 
                                     <TextView
                                         android:id="@+id/address"
-                                        android:layout_width="wrap_content"
+                                        android:layout_width="289dp"
                                         android:layout_height="wrap_content"
                                         android:lines="3"
                                         android:maxLines="5"
@@ -71,10 +76,12 @@
 
                                     <ImageView
                                         android:layout_width="30dp"
-                                        android:layout_height="30dp"
+                                        android:layout_height="43dp"
                                         android:layout_alignParentRight="true"
+                                        android:layout_toRightOf="@+id/address"
                                         android:onClick="onLocationClick"
                                         android:src="@drawable/ic_baseline_location_on_24" />
+
 
                             </RelativeLayout>
 

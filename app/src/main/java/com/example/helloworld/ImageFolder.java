@@ -179,11 +179,12 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
                 public void onSuccess(Void unused) {
                     databaseReference.child(selectedKey).removeValue();
                     Toast.makeText(ImageFolder.this, "Deleted", Toast.LENGTH_SHORT).show();
+                    image_model_list.remove(position);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull @NotNull Exception e) {
-                    Toast.makeText(ImageFolder.this, "Deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ImageFolder.this, "Couldn't delete", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -215,7 +216,7 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
     @Override
     public void onViewImageClick(int position) {
 
-        Uri uri = Uri.parse(image_model_list.get(image_model_list.size() - position - 1).getImageUrl());
+        Uri uri = Uri.parse(image_model_list.get(position).getImageUrl());
         Intent intent = new Intent(ImageFolder.this, FullScreenImageActivity.class).setData(uri);
         startActivity(intent);
     }

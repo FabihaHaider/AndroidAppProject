@@ -92,7 +92,6 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
     implementation 'org.apache.commons:commons-lang3:3.0'

@@ -518,7 +518,7 @@ public class Add_Place_activity extends AppCompatActivity{
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         String name = dataSnapshot.child("name").getValue().toString();
                         Log.i("fabiha", "readName: "+place_name + " name " +name);
-                        if(place_name.equals(name)){
+                        if(place_name.toLowerCase().trim().equals(name.toLowerCase().trim())){
                             uniqueName = false;
                             myCallback.onCallback(uniqueName);
                         }
