@@ -299,6 +299,7 @@
                 android:layout_below="@+id/search"
                 android:layout_margin="10dp"
                 android:orientation="vertical"
+                 android:visibility="gone"
                >
 
                 <RelativeLayout
@@ -332,6 +333,36 @@
                 </RelativeLayout>
 
                </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/tap_to_see_places_near_you"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/button_tap_to_see_near_places"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/trasparent"
+                    android:bottomLeftRadius="20dp"
+                    android:bottomRightRadius="20dp"
+                    android:src="@drawable/ic_baseline_location_on_24"
+                    android:text="Tap to see latest places near you"
+                    android:textColor="@color/black"
+                    android:topLeftRadius="20dp"
+                    android:topRightRadius="20dp"
+                    android:padding="5dp"
+                    android:drawableLeft="@drawable/ic_baseline_location_on_24"
+                    android:onClick="onNearPlacesButtonClick">
+
+                </Button>
+
+
+            </RelativeLayout>
 
 
 

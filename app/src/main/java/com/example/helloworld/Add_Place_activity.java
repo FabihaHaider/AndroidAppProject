@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -71,7 +72,7 @@ public class Add_Place_activity extends AppCompatActivity{
     private Place getPlace;
     private boolean updatePlaceDetails = false, uniqueName = true;
     private ScrollView scrollView;
-    private ProgressDialog progressDialog;
+    private ProgressDialog progressBar;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -100,7 +101,7 @@ public class Add_Place_activity extends AppCompatActivity{
             public void onClick(View v) {
                 if(updatePlaceDetails)
                 {
-                    progressDialog.show();
+                    progressBar.show();
                 }
                 readName(new MyCallback() {
                     @Override
@@ -189,8 +190,8 @@ public class Add_Place_activity extends AppCompatActivity{
         place_first_pic = findViewById(R.id.place_first_pic);
         scrollView = findViewById(R.id.scrollView_add_place);
         scrollView.smoothScrollTo(0,0);
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Updating place");
+        progressBar = new ProgressDialog(Add_Place_activity.this);
+        progressBar.setMessage("Updating place details");
 
 
     }
@@ -303,7 +304,6 @@ public class Add_Place_activity extends AppCompatActivity{
                 if(uniqueName)
                 {
                     storeToDatabase(createPlace());
-                    Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
                     finish();
                 }
                 else
@@ -363,7 +363,7 @@ public class Add_Place_activity extends AppCompatActivity{
                         map.put("house_no", place.getHouse_no());
                         map.put("area", place.getArea());
                         map.put("postal_code", place.getPostal_code());
-                        map.put("address", place.getHouse_no() + " " + place.getArea() + " " +place.getPostal_code());
+                        map.put("address", place.getHouse_no() + ", " + place.getArea() + ", " +place.getPostal_code());
                         map.put("amount_of_charge", place.getAmount_of_charge());
                         map.put("category", place.getCategory());
                         map.put("charge_unit", place.getCharge_unit());
@@ -375,7 +375,7 @@ public class Add_Place_activity extends AppCompatActivity{
                             public void onSuccess(Void unused) {
                                 map.clear();
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
-                                progressDialog.dismiss();
+                                progressBar.dismiss();
                                 finish();
                                 Intent intent = new Intent(Add_Place_activity.this, My_places_activity.class);
                                 startActivity(intent);
@@ -453,11 +453,11 @@ public class Add_Place_activity extends AppCompatActivity{
 
     private Place createPlace() {
 
-        String place_name = name.getText().toString();
+        String place_name = name.getText().toString().trim();
         String user_house_no = house_no.getText().toString();
         String user_area = area.getText().toString();
         String user_postal_code = postal_code.getText().toString();
-        String address = user_house_no + " " + user_area + " " + user_postal_code;
+        String address = user_house_no + ", " + user_area + ", " + user_postal_code;
         String price = amount_of_charge.getText().toString().trim();
         String crowd = guests_no.getText().toString().trim();
         String description_text = description.getText().toString();
@@ -487,7 +487,7 @@ public class Add_Place_activity extends AppCompatActivity{
 
 
     private void StorePicUri(DatabaseReference ref, String url, Place place, int upload_count) {
-        DatabaseReference Images = FirebaseDatabase.getInstance().getReference().child("Images").child(name.getText().toString());
+        DatabaseReference Images = FirebaseDatabase.getInstance().getReference().child("Images").child(name.getText().toString().trim());
         hashMap.put("ImgLink", url);
         Images.push().setValue(hashMap);
 
@@ -502,7 +502,7 @@ public class Add_Place_activity extends AppCompatActivity{
                     Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
                 }
             });
-            place.setKey("done");
+//            place.setKey("done");
         }
 
     }
@@ -517,7 +517,6 @@ public class Add_Place_activity extends AppCompatActivity{
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         String name = dataSnapshot.child("name").getValue().toString();
-                        Log.i("fabiha", "readName: "+place_name + " name " +name);
                         if(place_name.toLowerCase().trim().equals(name.toLowerCase().trim())){
                             uniqueName = false;
                             myCallback.onCallback(uniqueName);
@@ -532,8 +531,6 @@ public class Add_Place_activity extends AppCompatActivity{
         }
 
     }
-
-
 
     private interface MyCallback {
         void onCallback(boolean unique_place_name);

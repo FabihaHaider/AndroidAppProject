@@ -276,6 +276,7 @@ public class My_places_activity extends AppCompatActivity {
                                     words[i] = words[i].replaceAll("[\\s\\#()]", "");
                                     words[i] = words[i].replaceAll("[\\s\\=()]", "");
                                     words[i] = words[i].replaceAll("[\\s\\_()]", "");
+                                    words[i] = words[i].replaceAll("[\\s\\,()]", "");
                                     words[i] = words[i].replaceAll(" ", "");
 
 
@@ -382,7 +383,7 @@ public class My_places_activity extends AppCompatActivity {
 
             Glide.with(context).load(place.getImage()).into(holder.image);
             holder.place_name.setText("Name: " + place.getName());
-            holder.location.setText("Location: " + place.getAddress());
+            holder.location.setText("Area: " + place.getArea());
             Integer amount = place.getAmount_of_charge();
             holder.charge.setText("Price rate: Tk " + Integer.toString(amount));
             holder.rate.setText(" " + place.getCharge_unit());

@@ -132,11 +132,11 @@
 
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="402dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="30dp">
+            android:layout_marginRight="30dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textview_house_no"
@@ -179,12 +179,12 @@
                 android:layout_width="348dp"
                 android:layout_height="43dp"
                 android:layout_marginStart="30dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
                 android:ems="10"
                 android:hint="Enter area"
-                android:inputType="textLongMessage|textPostalAddress|textCapSentences"
+                android:inputType="textMultiLine|textLongMessage|textPostalAddress|textCapSentences"
                 android:textColor="#7E7676"
                 android:textSize="14sp" />
 
@@ -203,9 +203,9 @@
                 android:layout_width="348dp"
                 android:layout_height="43dp"
                 android:layout_marginStart="30dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
                 android:ems="10"
                 android:hint="Enter postal code"
                 android:inputType="textLongMessage|textPostalAddress|textCapSentences"
