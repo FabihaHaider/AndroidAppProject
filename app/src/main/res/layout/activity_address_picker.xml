@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddressPicker">
+
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        tools:context=".MainActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textview_selected_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#0000FF"
+            android:backgroundTint="@color/white"
+            android:lines="3"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:text="address"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:scrollHorizontally="true"
+            android:drawableRight = "@drawable/ic_baseline_content_copy_24"
+            android:onClick="onCopyTextClick"/>
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>

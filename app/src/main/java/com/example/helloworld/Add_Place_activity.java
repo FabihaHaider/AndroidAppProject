@@ -1,12 +1,11 @@
 package com.example.helloworld;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -23,13 +22,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,15 +46,19 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
-public class Add_Place_activity extends AppCompatActivity{
+
+public class Add_Place_activity extends AppCompatActivity {
 
 
-    private EditText name, house_no, area, postal_code, amount_of_charge, guests_no, description;
+    private EditText name, house_no, area, postal_code, amount_of_charge, guests_no, description, map_address;
     private TextView show_extra_image, imageText;
     private Button add_place, upload_btn;
     private ImageView image, place_first_pic;
@@ -176,6 +179,7 @@ public class Add_Place_activity extends AppCompatActivity{
         postal_code = findViewById(R.id.plainText_postal_code);
         amount_of_charge = findViewById(R.id.plainText_charge);
         guests_no = findViewById(R.id.plainText_number_of_guests);
+        map_address = findViewById(R.id.plaintext_map_address);
         add_place = findViewById(R.id.button_add_place);
         spinner_charge_rate = findViewById(R.id.spinner_charge_rate);
         image = findViewById(R.id.add_image);
@@ -399,9 +403,26 @@ public class Add_Place_activity extends AppCompatActivity{
 
     private boolean validateInput() {
         boolean allInputsValid = true;
+        String address_from_map = map_address.getText().toString();
+
+        if(address_from_map.isEmpty() || address_from_map.equals("address")){
+            for(EditText address_input : new EditText[]{house_no, area, postal_code}){
+                if(address_input.getText().toString().isEmpty()){
+                    address_input.setText("Please enter a value");
+                    allInputsValid = false;
+                }
+            }
+
+            String address = house_no.getText().toString() + ", "+area.getText().toString() + ", "+postal_code.getText().toString();
+            if(!checkAddressValidity(address.trim())) {
+                allInputsValid = false;
+                Toast.makeText(Add_Place_activity.this, "Enter a valid address. Select address from map if necessary", Toast.LENGTH_LONG).show();
+            }
+        }
+
 
         for(EditText input
-                : new EditText[]{name, house_no, area, postal_code, amount_of_charge, guests_no}) {
+                : new EditText[]{name, amount_of_charge, guests_no}) {
             if (input.getText().toString().isEmpty()) {
                 input.setText("Please enter a value");
                 allInputsValid = false;
@@ -419,6 +440,36 @@ public class Add_Place_activity extends AppCompatActivity{
             allInputsValid = false;
         }
         return allInputsValid;
+    }
+
+    private boolean checkAddressValidity(String strAddress) {
+            Geocoder coder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            List<Address> address;
+            LatLng p1 = null;
+
+            try {
+                // May throw an IOException
+                address = coder.getFromLocationName(strAddress, 15);
+                if (address == null) {
+                    return false;
+                }
+                if (address.size() < 1) {
+                    return false;
+                } else {
+                    Address location = address.get(0);
+                    p1 = new LatLng(location.getLatitude(), location.getLongitude());
+
+                }
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+            }
+            if(p1 == null)
+                return false;
+            else
+                return true;
+
     }
 
     private void storeToDatabase(Place place) {
@@ -454,10 +505,25 @@ public class Add_Place_activity extends AppCompatActivity{
     private Place createPlace() {
 
         String place_name = name.getText().toString().trim();
-        String user_house_no = house_no.getText().toString();
-        String user_area = area.getText().toString();
-        String user_postal_code = postal_code.getText().toString();
-        String address = user_house_no + ", " + user_area + ", " + user_postal_code;
+        String address = "";
+        String user_house_no = "";
+        String user_area = "";
+        String user_postal_code = "";
+
+        String address_from_map = map_address.getText().toString();
+
+        if(address_from_map.isEmpty()){
+            user_house_no = house_no.getText().toString();
+            user_area = area.getText().toString();
+            user_postal_code = postal_code.getText().toString();
+
+            address = user_house_no + ", " + user_area + ", " + user_postal_code;
+        }
+
+        else
+            address = address_from_map;
+
+
         String price = amount_of_charge.getText().toString().trim();
         String crowd = guests_no.getText().toString().trim();
         String description_text = description.getText().toString();
@@ -531,6 +597,14 @@ public class Add_Place_activity extends AppCompatActivity{
         }
 
     }
+
+    public void onAddressPickerClick(View view) {
+        Intent intent = new Intent(Add_Place_activity.this, AddressPicker.class);
+        startActivity(intent);
+
+    }
+
+
 
     private interface MyCallback {
         void onCallback(boolean unique_place_name);

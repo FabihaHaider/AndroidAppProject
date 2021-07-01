@@ -130,6 +130,31 @@
             android:textColor="#070707"
             android:textSize="16sp" />
 
+        <Button
+            android:id="@+id/button_address_picker"
+            android:layout_marginStart="31dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onAddressPickerClick"
+            android:text="map"/>
+
+
+        <EditText
+            android:id="@+id/plaintext_map_address"
+            android:layout_width="348dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:hint="Enter address from map"
+            android:inputType="textLongMessage|textPostalAddress|textCapSentences"
+            android:textColor="#7E7676"
+            android:textSize="14sp"
+            android:scrollHorizontally="true"/>
+
 
         <LinearLayout
             android:layout_width="402dp"
@@ -160,7 +185,8 @@
                 android:hint="Enter House number"
                 android:inputType="textLongMessage|textPostalAddress|textCapSentences"
                 android:textColor="#7E7676"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:scrollHorizontally="true"/>
 
 
             <TextView
@@ -186,7 +212,8 @@
                 android:hint="Enter area"
                 android:inputType="textMultiLine|textLongMessage|textPostalAddress|textCapSentences"
                 android:textColor="#7E7676"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:scrollHorizontally="true"/>
 
             <TextView
                 android:id="@+id/textview_postal_code"
@@ -210,7 +237,8 @@
                 android:hint="Enter postal code"
                 android:inputType="textLongMessage|textPostalAddress|textCapSentences"
                 android:textColor="#7E7676"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:scrollHorizontally="true"/>
 
         </LinearLayout>
 

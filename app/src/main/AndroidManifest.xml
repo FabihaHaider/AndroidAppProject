@@ -19,7 +19,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HelloWorld"
         tools:replace="android:label">
-        <activity android:name=".FullScreenImageActivity"></activity>
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCzp1YtY32TQage3AlPi_1hIIIaYxyoPOc"/>
+
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+        <activity android:name=".AddressPicker">
+            <meta-data android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyCzp1YtY32TQage3AlPi_1hIIIaYxyoPOc"/>
+        </activity>
+        <activity android:name=".FullScreenImageActivity" />
         <activity android:name=".WishlistActivity" />
         <activity android:name=".ReviewRequestActivity" />
         <activity android:name=".UpdatePicture" />

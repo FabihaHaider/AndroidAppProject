@@ -384,7 +384,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                         if(location != null) {
                             longitude = location.getLongitude();
                             latitude = location.getLatitude();
-                            Log.i("fabiha", "onSuccess: location" + latitude+ " " + longitude);
+
                             showLocation(latitude + "," + longitude);
                         }
                     }
