@@ -313,12 +313,14 @@ public class SignInScreen extends AppCompatActivity {
 
     // method to check for permissions
     private boolean checkPermissions() {
+        Log.i(TAG, "checkPermissions: ");
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     // method to request for permissions
 
     private void requestPermissions() {
+        Log.i(TAG, "requestPermissions: ");
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
