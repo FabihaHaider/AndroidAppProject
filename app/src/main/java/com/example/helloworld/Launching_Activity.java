@@ -97,7 +97,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     private ArrayList<Place> arrayList_places_near_you, featured_places_array;
     private DatabaseReference ref, featured_places;
 
-    private Double dist;
+    private int dist;
     private LinearLayout linearLayout;
     private ScrollView scrollView;
     private ProgressDialog progressBar;
@@ -155,6 +155,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     }
 
     private void removeCache() {
+        Log.i("tuba2", "Remove cache");
         email = email.replace('.',' ');
         DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
         userlocation.removeValue();
@@ -214,7 +215,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
         email = email.replace('.',' ');
         DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
-        userlocation.addValueEventListener(new ValueEventListener() {
+        userlocation.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if(snapshot.exists())
@@ -240,13 +241,14 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                         place.setImage(image);
                         arrayList_places_near_you.add(place);
                     }
-                    adapter1.notifyDataSetChanged();
+                    //adapter1.notifyDataSetChanged();
                 }
 
                 else {
                     linearLayout.setVisibility(View.GONE);
                     Log.i(TAG, "onDataChange: deosn't exist");
                 }
+
             }
 
             @Override
@@ -254,6 +256,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
             }
         });
+
     }
 
 
@@ -487,11 +490,12 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
    private void distance(LatLng latLng1)
    {
-
-        dist = 1000000.0;
+        dist = (int) 1000000.0;
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
         email = email.replace('.',' ');
         DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
+
+
 
         HashMap<String, LatLng> hashMap = new HashMap<>();
         hashMap.put("location", latLng1);
@@ -501,15 +505,19 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         double lon1 = latLng1.longitude;
         double lat1 = latLng1.latitude;
 
+
        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 arrayList_places_near_you.clear();
+                userlocation.removeValue();
                 linearLayout.setVisibility(View.VISIBLE);
                 if(snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         String address = dataSnapshot.child("address").getValue().toString();
                         LatLng latLng = getLocationFromAddress(Launching_Activity.this, address);
+
+                        dist = (int) 1000000.0;
 
                         if (latLng != null) {
                             float lat2 = (float) latLng.latitude;
@@ -536,7 +544,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                             double t3 = Math.sin(a1) * Math.sin(b1);
                             double tt = Math.acos(t1 + t2 + t3);
 
-                            dist = 6366000 * tt;
+                            dist = (int) (6366000 * tt);
 
 //                        dist = SphericalUtil.computeDistanceBetween(new LatLng(lat1, lon1), latLng);
 
@@ -559,13 +567,13 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                         if (dist <= 3000.0) {
                             place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
                             place.setImage(image);
-//                            arrayList_places_near_you.add(place);
+                            arrayList_places_near_you.add(place);
                             userlocation.push().setValue(place);
                         }
 
                     }
-//                    adapter1.notifyDataSetChanged();
-//                    progressBar.dismiss();
+                   adapter1.notifyDataSetChanged();
+                    progressBar.dismiss();
                 }
             }
 
@@ -604,8 +612,11 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
             ex.printStackTrace();
         }
+        if(p1==null)
+            Log.i("tuba4", "location null");
 
         return p1;
+
     }
 
 
@@ -636,7 +647,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     }
 
     public void onNearPlacesButtonClick(View view) {
-        removeCache();
+        //removeCache();
         progressBar.show();
         distance(latLng);
     }
@@ -713,13 +724,9 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     public void onChipViewClick(View view) {
         chipGroup.setVisibility(View.VISIBLE);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-<<<<<<< HEAD
+
        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-=======
-//        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
->>>>>>> 3cd2d1d65c8610d316797d17ea4ef38b493df798
 
     }
 

@@ -57,9 +57,12 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="15dp"
                             android:layout_marginTop="5dp"
-                            android:hint=" Enter Email"
+                            android:hint="Enter Email"
+                            android:drawablePadding="10dp"
                             android:drawableLeft="@drawable/ic_baseline_email"
-                            android:inputType="textEmailAddress" />
+                            android:textCursorDrawable="@null"
+                            android:inputType="textEmailAddress"
+                            />
 
                     </LinearLayout>
 
@@ -81,9 +84,11 @@
                             android:paddingLeft="15dp"
                             android:paddingRight="15dp"
                             android:layout_marginTop="5dp"
-                            android:hint=" Enter Password"
+                            android:hint="Enter Password"
+                            android:drawablePadding="10dp"
                             android:drawableLeft="@drawable/ic_baseline_lock"
-                            android:inputType="textPassword" />
+                            android:textCursorDrawable="@null"
+                            android:inputType="textPassword"/>
 
                     </LinearLayout>
                 </LinearLayout>
@@ -92,7 +97,7 @@
                     android:id="@+id/button_signIn"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="30dp"
                     android:background="@drawable/btn_bg"
                     android:textColor="@color/white"
                     android:backgroundTint="@color/purple_700"

@@ -62,8 +62,21 @@ public class SignInScreen extends AppCompatActivity {
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            rellay1.setVisibility(View.VISIBLE);
-            rellay2.setVisibility(View.VISIBLE);
+            //if user is already signed in then direct them to homepage
+            if(firebase_auth.getCurrentUser() != null){
+                signed_in = true;
+                getLastLocation();
+            }
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    rellay1.setVisibility(View.VISIBLE);
+                    rellay2.setVisibility(View.VISIBLE);
+                }
+            }, 1000);
+            /*rellay1.setVisibility(View.VISIBLE);
+            rellay2.setVisibility(View.VISIBLE);*/
         }
     };
 
@@ -91,10 +104,10 @@ public class SignInScreen extends AppCompatActivity {
         FirebaseUser user = firebase_auth.getCurrentUser();
 
         //if user is already signed in then direct them to homepage
-        if(user != null){
+        /*if(user != null){
             signed_in = true;
             getLastLocation();
-        }
+        }*/
 
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +133,7 @@ public class SignInScreen extends AppCompatActivity {
         });
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         if (checkPermissions()) {
@@ -130,7 +143,7 @@ public class SignInScreen extends AppCompatActivity {
                 getLastLocation();
             }
         }
-    }
+    }*/
 
     public void validate(String email_txt, String password_txt, LatLng latLng1){
 
