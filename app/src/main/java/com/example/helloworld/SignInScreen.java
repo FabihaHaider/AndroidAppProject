@@ -56,6 +56,7 @@ public class SignInScreen extends AppCompatActivity {
     int PERMISSION_ID = 44;
     private double latitude, longitude;
     private boolean signed_in = false;
+    private int requestCount = 0;
 
     RelativeLayout rellay1, rellay2;
     Handler handler = new Handler();
@@ -210,9 +211,8 @@ public class SignInScreen extends AppCompatActivity {
                             }
                             else{
                                 if(email.getText().toString().isEmpty()  || password.getText().toString().isEmpty()){
-                                    if(getIntent().getExtras() == null){
                                         Toast.makeText(SignInScreen.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
-                                    }
+
                                 }
                                 else {
                                     validate(email.getText().toString(), password.getText().toString(), latLng1);
@@ -286,7 +286,35 @@ public class SignInScreen extends AppCompatActivity {
         } else {
             // if permissions aren't available,
             // request for permissions
-            requestPermissions();
+            if(requestCount == 0) {
+                requestPermissions();
+                requestCount++;
+            }
+            else{
+
+                if(signed_in)
+                {
+                    Toast.makeText(SignInScreen.this, "Already signed in", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignInScreen.this, Launching_Activity.class);
+                    startActivity(intent);
+                    finish();
+
+                }
+                else{
+                    if(email.getText().toString().isEmpty()  || password.getText().toString().isEmpty()){
+                        if(getIntent().getExtras() == null){
+                            Toast.makeText(SignInScreen.this, "Please enter all the details", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                    else {
+                        validate(email.getText().toString(), password.getText().toString(),null);
+                    }
+                }
+
+
+
+            }
         }
 
 
@@ -313,14 +341,14 @@ public class SignInScreen extends AppCompatActivity {
 
     // method to check for permissions
     private boolean checkPermissions() {
-        Log.i(TAG, "checkPermissions: ");
+
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     // method to request for permissions
 
     private void requestPermissions() {
-        Log.i(TAG, "requestPermissions: ");
+
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
