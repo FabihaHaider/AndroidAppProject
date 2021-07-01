@@ -383,7 +383,7 @@ public class My_places_activity extends AppCompatActivity {
 
             Glide.with(context).load(place.getImage()).into(holder.image);
             holder.place_name.setText("Name: " + place.getName());
-            holder.location.setText("Area: " + place.getArea());
+            holder.location.setText("Address: " + place.getAddress());
             Integer amount = place.getAmount_of_charge();
             holder.charge.setText("Price rate: Tk " + Integer.toString(amount));
             holder.rate.setText(" " + place.getCharge_unit());
