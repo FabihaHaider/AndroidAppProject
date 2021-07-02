@@ -67,6 +67,7 @@ public class AddressPicker extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address_picker);
 
+        setTitle("Select address from map");
         bindUI();
         checkPermission();
 
