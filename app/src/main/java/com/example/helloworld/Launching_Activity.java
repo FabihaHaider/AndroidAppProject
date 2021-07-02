@@ -282,12 +282,9 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
 
     /*private void checkCacheAndShowCache() {
-
-
         email = email.replace('.',' ');
         DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
         userlocation.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -306,29 +303,21 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                         String house_no = dataSnapshot.child("house_no").getValue().toString();
                         String postal_code = dataSnapshot.child("postal_code").getValue().toString();
                         String area = dataSnapshot.child("area").getValue().toString().trim();
-
                         place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
                         place.setImage(image);
                         arrayList_places_near_you.add(place);
                     }
                     adapter1.notifyDataSetChanged();
               }
-
                 else {
-
                     linearLayout.setVisibility(View.GONE);
                     Log.i(TAG, "onDataChange: deosn't exist");
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
-
-
     }*/
 
 
@@ -566,8 +555,8 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     }
 
 
-   private void distance(LatLng latLng1)
-   {
+    private void distance(LatLng latLng1)
+    {
 
         dist = (int) 1000000.0;
 
@@ -581,7 +570,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         double lat1 = latLng1.latitude;
 
 
-       ref.addValueEventListener(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 arrayList_places_near_you.clear();
@@ -648,7 +637,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                         }
 
                     }
-                   adapter1.notifyDataSetChanged();
+                    adapter1.notifyDataSetChanged();
                     progressBar.dismiss();
                 }
             }
@@ -760,25 +749,25 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         public void onBindViewHolder(@NonNull @NotNull Launching_Activity.MyPlacesHolder holder, int position) {
             final Place place = models.get(position);
 
-                Glide.with(context).load(place.getImage()).into(holder.image);
+            Glide.with(context).load(place.getImage()).into(holder.image);
 
 
-                holder.place_name.setText(place.getName());
-                holder.location.setText(place.getAddress());
-                Integer amount = place.getAmount_of_charge();
-                holder.charge.setText("Price rate: TK " + Integer.toString(amount) + " "+ place.getCharge_unit());
+            holder.place_name.setText(place.getName());
+            holder.location.setText(place.getAddress());
+            Integer amount = place.getAmount_of_charge();
+            holder.charge.setText("Price rate: TK " + Integer.toString(amount) + " "+ place.getCharge_unit());
 
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Launching_Activity.this, Place_Details_activity.class).putExtra("place", place);
-                        Bundle extras = new Bundle();
-                        extras.putString("source", "notMyPlacesList");
-                        intent.putExtras(extras);
-                        startActivity(intent);
-                    }
-                });
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Launching_Activity.this, Place_Details_activity.class).putExtra("place", place);
+                    Bundle extras = new Bundle();
+                    extras.putString("source", "notMyPlacesList");
+                    intent.putExtras(extras);
+                    startActivity(intent);
+                }
+            });
 
         }
 
@@ -808,7 +797,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         chipGroup.setVisibility(View.VISIBLE);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-       InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
 
     }
@@ -890,5 +879,3 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     }
 
 }
-
-

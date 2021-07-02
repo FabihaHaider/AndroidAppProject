@@ -207,6 +207,7 @@ public class AddressPicker extends AppCompatActivity{
                 addresses = geocoder.getFromLocation(latitude, longitude, 1);
                 if (address != null) {
                     address = addresses.get(0).getAddressLine(0);
+                    Log.i("fabiha", "getAddress: "+address);
                 }else {
                     Toast.makeText(AddressPicker.this, "Address not found", Toast.LENGTH_LONG).show();
                 }
