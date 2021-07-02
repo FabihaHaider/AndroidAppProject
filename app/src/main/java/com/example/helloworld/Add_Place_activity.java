@@ -137,7 +137,7 @@ public class Add_Place_activity extends AppCompatActivity {
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         String name = dataSnapshot.child("name").getValue().toString().trim();
                         if(place_name.toLowerCase().trim().equals(name.toLowerCase().trim())){
-                           Toast.makeText(Add_Place_activity.this, "Please enter a unique name for your pace", Toast.LENGTH_SHORT).show();
+                           Toast.makeText(Add_Place_activity.this, "Please enter a unique name for your place", Toast.LENGTH_SHORT).show();
                            flag=0;
                            break;
                         }
@@ -223,6 +223,7 @@ public class Add_Place_activity extends AppCompatActivity {
     private void bindValues() {
         if (getPlace != null) {
             name.setText(getPlace.getName());
+            map_address.setText(getPlace.getAddress());
             house_no.setText(getPlace.getHouse_no());
             area.setText(getPlace.getArea());
             postal_code.setText(getPlace.getPostal_code());
@@ -344,10 +345,10 @@ public class Add_Place_activity extends AppCompatActivity {
                     {
                         Map<String, Object> map = new HashMap<>();
                         map.clear();
+                        map.put("address", place.getAddress());
                         map.put("house_no", place.getHouse_no());
                         map.put("area", place.getArea());
                         map.put("postal_code", place.getPostal_code());
-                        map.put("address", place.getHouse_no() + ", " + place.getArea() + ", " +place.getPostal_code());
                         map.put("amount_of_charge", place.getAmount_of_charge());
                         map.put("category", place.getCategory());
                         map.put("charge_unit", place.getCharge_unit());
@@ -551,7 +552,7 @@ public class Add_Place_activity extends AppCompatActivity {
                     Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
                 }
             });
-//            place.setKey("done");
+            place.setKey("done");
         }
 
     }

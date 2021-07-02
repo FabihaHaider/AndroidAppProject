@@ -354,9 +354,9 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                     String name = dataSnapshot.child("name").getValue().toString();
                     if(name.equals(place.getName())){
 //                        dataSnapshot.getRef().removeValue();
-                        Log.i("fabiha", "onDataChange: "+dataSnapshot.getRef().toString() + " "+ dataSnapshot.getRef());
-                        dataSnapshot.getRef().setValue(null);
-//                        databaseReference.child(dataSnapshot.getRef().toString()).setValue(null);
+//                        Log.i("fabiha", "onDataChange: "+dataSnapshot.getRef().toString() + " "+ dataSnapshot.getRef());
+//                        dataSnapshot.getRef().setValue(null);
+                        databaseReference.child(dataSnapshot.getRef().getKey()).setValue(null);
                         break;
                     }
                 }
