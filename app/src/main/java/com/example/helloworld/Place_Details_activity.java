@@ -49,6 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -401,8 +402,8 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                         if(location != null) {
                             longitude = location.getLongitude();
                             latitude = location.getLatitude();
-
-                            showLocation(latitude + "," + longitude);
+                            Log.i("fabiha", "onSuccess: "+latitude+" "+longitude);
+                            showLocation(getAddress(latitude, longitude));
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -418,6 +419,34 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
             //permission granted
         }
 
+    }
+
+    private String getAddress(Double latitude, Double longitude){
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(Place_Details_activity.this, Locale.getDefault());
+        String address = "";
+        if(latitude != 0) {
+            try {
+                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                if (address != null) {
+                    address = addresses.get(0).getAddressLine(0);
+                }else {
+                    Toast.makeText(Place_Details_activity.this, "Address not found", Toast.LENGTH_LONG).show();
+                }
+
+                return address;
+
+
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+        else{
+            Toast.makeText(Place_Details_activity.this, "Null latitude longitude", Toast.LENGTH_LONG).show();
+        }
+        Log.i("fabiha", "getAddress: "+address);
+        return address;
     }
 
     private void showLocation(String completeAddressString) {

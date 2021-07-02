@@ -41,7 +41,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Place name"/>
+                                android:text="Place Name"
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/place_name"
@@ -55,7 +56,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Address"
-                                android:layout_marginTop="8dp"/>
+                                android:layout_marginTop="15dp"
+                                android:textStyle="bold"/>
 
 
                             <RelativeLayout
@@ -89,7 +91,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Price rate"
-                                android:layout_marginTop="8dp"/>
+                                android:layout_marginTop="15dp"
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/price_rate"
@@ -103,7 +106,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Maximum number of guests"
-                                android:layout_marginTop="8dp"/>
+                                android:layout_marginTop="15dp"
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/guests_number"
@@ -116,8 +120,9 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Purpose" />
+                                android:layout_marginTop="15dp"
+                                android:text="Purpose"
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/textview_category"
@@ -130,8 +135,9 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Owner Phone Number" />
+                                android:layout_marginTop="15dp"
+                                android:text="Owner Phone Number"
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/textview_phone_number"
@@ -144,8 +150,9 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Description" />
+                                android:layout_marginTop="15dp"
+                                android:text="Description"
+                                android:textStyle="bold"/>
 
 
 
@@ -155,7 +162,10 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
                                 android:textIsSelectable="true"
-                                tools:text="no parking allowed"/>
+                                tools:text="no parking allowed"
+                                android:layout_marginBottom="20dp"
+
+                                />
 
                             <LinearLayout
                                 android:id="@+id/layout_requestsButton"

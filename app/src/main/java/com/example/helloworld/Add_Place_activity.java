@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -76,6 +77,8 @@ public class Add_Place_activity extends AppCompatActivity {
     private boolean updatePlaceDetails = false, uniqueName = true;
     private ScrollView scrollView;
     private ProgressDialog progressBar;
+    private ProgressDialog progressDialog_adding_place;
+    private LinearLayout linearLayout_manual_address;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +105,11 @@ public class Add_Place_activity extends AppCompatActivity {
         add_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (updatePlaceDetails) {
+                    progressBar.show();
+                } else {
+                    progressDialog_adding_place.show();
+                }
                 insertHouseData();
             }
         });
@@ -126,6 +134,8 @@ public class Add_Place_activity extends AppCompatActivity {
 
     private void checkAndInsert() {
 
+        progressDialog_adding_place.setMessage("Checking if the name is unique");
+
             EditText editText = findViewById(R.id.plainText_name);
             String place_name = editText.getText().toString().trim();
 
@@ -137,6 +147,7 @@ public class Add_Place_activity extends AppCompatActivity {
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         String name = dataSnapshot.child("name").getValue().toString().trim();
                         if(place_name.toLowerCase().trim().equals(name.toLowerCase().trim())){
+                            progressDialog_adding_place.dismiss();
                            Toast.makeText(Add_Place_activity.this, "Please enter a unique name for your place", Toast.LENGTH_SHORT).show();
                            flag=0;
                            break;
@@ -214,7 +225,9 @@ public class Add_Place_activity extends AppCompatActivity {
         scrollView.smoothScrollTo(0,0);
         progressBar = new ProgressDialog(Add_Place_activity.this);
         progressBar.setMessage("Updating place details");
-
+        progressDialog_adding_place = new ProgressDialog(Add_Place_activity.this);
+        progressDialog_adding_place.setMessage("Inserting place record");
+        linearLayout_manual_address = findViewById(R.id.linearlayout_manual_address);
 
     }
 
@@ -312,6 +325,8 @@ public class Add_Place_activity extends AppCompatActivity {
 
     private void insertHouseData() {
         if(!validateInput()){
+            progressDialog_adding_place.dismiss();
+            progressBar.dismiss();
             Toast.makeText(this, "Enter all details",Toast.LENGTH_LONG).show();
         }
 
@@ -326,11 +341,12 @@ public class Add_Place_activity extends AppCompatActivity {
                 checkAndInsert();
             }
         }
-        
+
     }
 
 
     private void updateDatabase(Place place) {
+        progressBar.setMessage("Updating to database");
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -356,8 +372,11 @@ public class Add_Place_activity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void unused) {
                                 map.clear();
+                                if(!Add_Place_activity.this.isFinishing() && progressBar != null){
+                                    progressBar.dismiss();
+                                }
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
-                                progressBar.dismiss();
+
                                 finish();
                                 Intent intent = new Intent(Add_Place_activity.this, My_places_activity.class);
                                 startActivity(intent);
@@ -380,6 +399,8 @@ public class Add_Place_activity extends AppCompatActivity {
     }
 
     private boolean validateInput() {
+        progressDialog_adding_place.setMessage("Checking inputs validity");
+        progressBar.setMessage("Checking inputs validity");
         boolean allInputsValid = true;
         String address_from_map = map_address.getText().toString();
 
@@ -451,7 +472,7 @@ public class Add_Place_activity extends AppCompatActivity {
     }
 
     private void storeToDatabase(Place place) {
-
+        progressDialog_adding_place.setMessage("Storing to database");
 
         StorageReference imageFolderName = FirebaseStorage.getInstance().getReference().child(user.getEmail()).child(place.getName());
         place.setKey("");
@@ -546,6 +567,9 @@ public class Add_Place_activity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Void unused) {
                     place.setKey("done");
+                    if(!Add_Place_activity.this.isFinishing() && progressDialog_adding_place != null){
+                        progressDialog_adding_place.dismiss();
+                    }
                     Toast.makeText(Add_Place_activity.this, "Place inserted successfully", Toast.LENGTH_LONG).show();
                 }
             });
@@ -561,6 +585,9 @@ public class Add_Place_activity extends AppCompatActivity {
 
     }
 
+    public void onManualAddressButtonClick(View view) {
+        linearLayout_manual_address.setVisibility(View.VISIBLE);
+    }
 
 
     private interface MyCallback {
