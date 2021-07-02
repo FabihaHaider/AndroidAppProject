@@ -111,8 +111,8 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     private String email;
     private Button button_featured_places;
     private RelativeLayout tap_to_see_places_near_you;
-    private DatabaseReference userlocation;
-    private ValueEventListener cacheListener;
+    private DatabaseReference userlocation, placeRef;
+    private ValueEventListener cacheListener, userLocationListener;
 
 
 
@@ -130,8 +130,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         }
 
         bindUI();
-
-        checkCacheAndShowCache();
+        //checkCacheAndShowCache();
 
 
         if (latLng != null) {
@@ -158,23 +157,88 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     }
 
-    private void removeCache() {
-
-        Log.i("tuba2", "Remove cache");
-        email = email.replace('.',' ');
-        DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
-        userlocation.removeValue();
-        Log.i(TAG, "removeCache: "+arrayList_places_near_you.size());
-        int size = arrayList_places_near_you.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                arrayList_places_near_you.remove(0);
-            }
-
-            adapter1.notifyItemRangeRemoved(0, size);
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkCacheAndShowCache();
 
     }
+
+    private void checkCacheAndShowCache() {
+        cacheListener= new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if(arrayList_places_near_you.size()!=0)
+                    arrayList_places_near_you.clear();
+
+                linearLayout.setVisibility(View.VISIBLE);
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String email = dataSnapshot.child("owner_email").getValue().toString();
+                    String place_name = dataSnapshot.child("name").getValue().toString().trim();
+                    //////
+                    retrievePlace(place_name);
+
+                }
+                adapter1.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled (@NonNull @NotNull DatabaseError error){
+
+            }
+        };
+        userlocation.addValueEventListener(cacheListener);
+
+    }
+
+    private void retrievePlace(String placeName){
+        //Log.i("tuba", placeName);
+        placeRef=FirebaseDatabase.getInstance().getReference().child("Place");
+        placeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                int flag=0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Place place;
+                    if (snapshot.exists()) {
+                        String db_place_name = dataSnapshot.child("name").getValue().toString().trim();
+
+                        if(db_place_name.equals(placeName)) {
+                            Log.i("tuba", placeName+" "+db_place_name);
+                            String email = dataSnapshot.child("owner_email").getValue().toString().trim();
+                            String address = dataSnapshot.child("address").getValue().toString();
+                            Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString().trim());
+                            String charge_rate = dataSnapshot.child("charge_unit").getValue().toString().trim();
+                            Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString().trim());
+                            String category = dataSnapshot.child("category").getValue().toString().trim();
+                            String description = dataSnapshot.child("description").getValue().toString().trim();
+                            String image = dataSnapshot.child("image").getValue().toString().trim();
+                            String house_number = dataSnapshot.child("house_no").getValue().toString().trim();
+                            String area = dataSnapshot.child("area").getValue().toString().trim();
+                            String postal_code = dataSnapshot.child("postal_code").getValue().toString().trim();
+
+
+                            place = new Place(db_place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                            place.setImage(image);
+                            arrayList_places_near_you.add(place);
+                            flag=1;
+
+                        }
+                    }
+                }
+
+                adapter1.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
 
     private void inflateFeaturedplaces() {
         featured_places.addValueEventListener(new ValueEventListener() {
@@ -266,56 +330,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     }*/
 
-    private void checkCacheAndShowCache() {
-        email = email.replace('.', ' ');
-        userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
-        cacheListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                        Place place;
-                        linearLayout.setVisibility(View.VISIBLE);
-                        //arrayList_places_near_you.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String email = dataSnapshot.child("owner_email").getValue().toString();
-                            String place_name = dataSnapshot.child("name").getValue().toString();
-                            Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
-                            String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
-                            Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
-                            String category = dataSnapshot.child("category").getValue().toString();
-                            String description = dataSnapshot.child("description").getValue().toString();
-                            String image = dataSnapshot.child("image").getValue().toString();
-                            String address = dataSnapshot.child("address").getValue().toString();
-                            String house_no = dataSnapshot.child("house_no").getValue().toString();
-                            String postal_code = dataSnapshot.child("postal_code").getValue().toString();
-                            String area = dataSnapshot.child("area").getValue().toString().trim();
-
-                            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
-                            place.setImage(image);
-                            arrayList_places_near_you.add(place);
-                        }
-                        adapter1.notifyDataSetChanged();
-
-                    }
-                    else {
-
-                        linearLayout.setVisibility(View.GONE);
-                        Log.i(TAG, "onDataChange: deosn't exist");
-                    }
-
-                }
-
-                @Override
-                public void onCancelled (@NonNull @NotNull DatabaseError error){
-
-                }
-            };
-
-        userlocation.addValueEventListener(cacheListener);
-
-
-
-    }
 
 
 
@@ -418,6 +432,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
         email = email.replace('.',' ');
         userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
+
 
     }
 
@@ -555,11 +570,8 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
         dist = (int) 1000000.0;
 
-        DatabaseReference userLocationEmail = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email.replace('.',' '));
-        DatabaseReference userLocation = FirebaseDatabase.getInstance().getReference().child("UserLocation");
-        userLocation.child(userLocationEmail.getKey()).removeValue();
-
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
+        userlocation.removeValue();
 
         HashMap<String, LatLng> hashMap = new HashMap<>();
         hashMap.put("location", latLng1);
@@ -711,10 +723,12 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     public void onNearPlacesButtonClick(View view) {
         userlocation.removeEventListener(cacheListener);
-        //removeCache();
         progressBar.show();
         distance(latLng);
         tap_to_see_places_near_you.setVisibility(View.GONE);
+        Intent intent = new Intent(Launching_Activity.this,Launching_Activity.class);
+        startActivity(intent);
+        finish();
     }
 
     public class MyPlacesAdapter extends RecyclerView.Adapter<Launching_Activity.MyPlacesHolder> {
