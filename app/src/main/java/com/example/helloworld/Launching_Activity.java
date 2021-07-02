@@ -97,7 +97,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     private ArrayList<Place> arrayList_places_near_you, featured_places_array;
     private DatabaseReference ref, featured_places;
 
-    private Double dist;
+    private int dist;
     private LinearLayout linearLayout;
     private ScrollView scrollView;
     private ProgressDialog progressBar;
@@ -111,7 +111,8 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     private String email;
     private Button button_featured_places;
     private RelativeLayout tap_to_see_places_near_you;
-    private DatabaseReference userlocation;
+    private DatabaseReference userlocation, placeRef;
+    private ValueEventListener cacheListener, userLocationListener;
 
 
 
@@ -129,8 +130,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         }
 
         bindUI();
-
-        checkCacheAndShowCache();
+        //checkCacheAndShowCache();
 
 
         if (latLng != null) {
@@ -157,19 +157,88 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     }
 
-    private void removeCache() {
-
-        Log.i(TAG, "removeCache: "+arrayList_places_near_you.size());
-        int size = arrayList_places_near_you.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                arrayList_places_near_you.remove(0);
-            }
-
-            adapter1.notifyItemRangeRemoved(0, size);
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkCacheAndShowCache();
 
     }
+
+    private void checkCacheAndShowCache() {
+        cacheListener= new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if(arrayList_places_near_you.size()!=0)
+                    arrayList_places_near_you.clear();
+
+                linearLayout.setVisibility(View.VISIBLE);
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String email = dataSnapshot.child("owner_email").getValue().toString();
+                    String place_name = dataSnapshot.child("name").getValue().toString().trim();
+                    //////
+                    retrievePlace(place_name);
+
+                }
+                adapter1.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled (@NonNull @NotNull DatabaseError error){
+
+            }
+        };
+        userlocation.addValueEventListener(cacheListener);
+
+    }
+
+    private void retrievePlace(String placeName){
+        //Log.i("tuba", placeName);
+        placeRef=FirebaseDatabase.getInstance().getReference().child("Place");
+        placeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                int flag=0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Place place;
+                    if (snapshot.exists()) {
+                        String db_place_name = dataSnapshot.child("name").getValue().toString().trim();
+
+                        if(db_place_name.equals(placeName)) {
+                            Log.i("tuba", placeName+" "+db_place_name);
+                            String email = dataSnapshot.child("owner_email").getValue().toString().trim();
+                            String address = dataSnapshot.child("address").getValue().toString();
+                            Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString().trim());
+                            String charge_rate = dataSnapshot.child("charge_unit").getValue().toString().trim();
+                            Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString().trim());
+                            String category = dataSnapshot.child("category").getValue().toString().trim();
+                            String description = dataSnapshot.child("description").getValue().toString().trim();
+                            String image = dataSnapshot.child("image").getValue().toString().trim();
+                            String house_number = dataSnapshot.child("house_no").getValue().toString().trim();
+                            String area = dataSnapshot.child("area").getValue().toString().trim();
+                            String postal_code = dataSnapshot.child("postal_code").getValue().toString().trim();
+
+
+                            place = new Place(db_place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                            place.setImage(image);
+                            arrayList_places_near_you.add(place);
+                            flag=1;
+
+                        }
+                    }
+                }
+
+                adapter1.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
 
     private void inflateFeaturedplaces() {
         featured_places.addValueEventListener(new ValueEventListener() {
@@ -211,9 +280,13 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     }
 
 
-    private void checkCacheAndShowCache() {
+    /*private void checkCacheAndShowCache() {
 
-        userlocation.addValueEventListener(new ValueEventListener() {
+
+        email = email.replace('.',' ');
+        DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
+        userlocation.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -238,10 +311,14 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                         arrayList_places_near_you.add(place);
                     }
                     adapter1.notifyDataSetChanged();
-                } else {
+              }
+
+                else {
+
                     linearLayout.setVisibility(View.GONE);
                     Log.i(TAG, "onDataChange: deosn't exist");
                 }
+
             }
 
             @Override
@@ -250,7 +327,9 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             }
         });
 
-    }
+
+    }*/
+
 
 
 
@@ -353,6 +432,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
         email = email.replace('.',' ');
         userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
+
 
     }
 
@@ -487,12 +567,11 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
    private void distance(LatLng latLng1)
    {
-        DatabaseReference userLocationEmail = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email.replace('.',' '));
-        DatabaseReference userLocation = FirebaseDatabase.getInstance().getReference().child("UserLocation");
-        userLocation.child(userLocationEmail.getKey()).removeValue();
 
-        dist = 1000000.0;
+        dist = (int) 1000000.0;
+
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
+        userlocation.removeValue();
 
         HashMap<String, LatLng> hashMap = new HashMap<>();
         hashMap.put("location", latLng1);
@@ -500,15 +579,20 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         double lon1 = latLng1.longitude;
         double lat1 = latLng1.latitude;
 
+
        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                arrayList_places_near_you.clear();
-//                linearLayout.setVisibility(View.VISIBLE);
+                arrayList_places_near_you.clear();
+                userlocation.removeValue();
+                linearLayout.setVisibility(View.VISIBLE);
+
                 if(snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         String address = dataSnapshot.child("address").getValue().toString();
                         LatLng latLng = getLocationFromAddress(Launching_Activity.this, address);
+
+                        dist = (int) 1000000.0;
 
                         if (latLng != null) {
                             float lat2 = (float) latLng.latitude;
@@ -535,7 +619,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                             double t3 = Math.sin(a1) * Math.sin(b1);
                             double tt = Math.acos(t1 + t2 + t3);
 
-                            dist = 6366000 * tt;
+                            dist = (int) (6366000 * tt);
 
 //                        dist = SphericalUtil.computeDistanceBetween(new LatLng(lat1, lon1), latLng);
 
@@ -558,13 +642,13 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                         if (dist <= 3000.0) {
                             place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
                             place.setImage(image);
-//                            arrayList_places_near_you.add(place);
+                            arrayList_places_near_you.add(place);
                             userlocation.push().setValue(place);
                         }
 
                     }
-//                    adapter1.notifyDataSetChanged();
-//                    progressBar.dismiss();
+                   adapter1.notifyDataSetChanged();
+                    progressBar.dismiss();
                 }
             }
 
@@ -574,9 +658,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                 Log.i(TAG, "onCancelled: "+error.getMessage());
             }
         });
-       arrayList_places_near_you.clear();
-       adapter1.notifyDataSetChanged();
-        checkCacheAndShowCache();
+
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -605,8 +687,11 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
             ex.printStackTrace();
         }
+        if(p1==null)
+            Log.i("tuba4", "location null");
 
         return p1;
+
     }
 
 
@@ -637,10 +722,13 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     }
 
     public void onNearPlacesButtonClick(View view) {
-//        userlocation.removeValue();
-//        removeCache();
-//        progressBar.show();
+        userlocation.removeEventListener(cacheListener);
+        progressBar.show();
         distance(latLng);
+        tap_to_see_places_near_you.setVisibility(View.GONE);
+        Intent intent = new Intent(Launching_Activity.this,Launching_Activity.class);
+        startActivity(intent);
+        finish();
     }
 
     public class MyPlacesAdapter extends RecyclerView.Adapter<Launching_Activity.MyPlacesHolder> {
@@ -715,8 +803,9 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     public void onChipViewClick(View view) {
         chipGroup.setVisibility(View.VISIBLE);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-//        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+
+       InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
 
     }
 

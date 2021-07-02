@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -55,6 +56,7 @@ public class SentRequestFragment extends Fragment {
         recyclerView = root.findViewById(R.id.sentRequestRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
         adapter =new PlacesAdapter(getContext(), placeList, requestList, "SentRequestFragment");
         recyclerView.setAdapter(adapter);
         return root;
@@ -108,7 +110,9 @@ public class SentRequestFragment extends Fragment {
 
                     }
                 }
+
                 adapter.notifyDataSetChanged();
+
             }
 
             @Override
