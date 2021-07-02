@@ -421,6 +421,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
 
     }
 
+
     private String getAddress(Double latitude, Double longitude){
         Geocoder geocoder;
         List<Address> addresses;
@@ -431,6 +432,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                 addresses = geocoder.getFromLocation(latitude, longitude, 1);
                 if (address != null) {
                     address = addresses.get(0).getAddressLine(0);
+                    Log.i("fabiha", "getAddress: "+address);
                 }else {
                     Toast.makeText(Place_Details_activity.this, "Address not found", Toast.LENGTH_LONG).show();
                 }
@@ -445,7 +447,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
         else{
             Toast.makeText(Place_Details_activity.this, "Null latitude longitude", Toast.LENGTH_LONG).show();
         }
-        Log.i("fabiha", "getAddress: "+address);
+
         return address;
     }
 
@@ -485,7 +487,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
 
         if(requestCode == 200){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(Place_Details_activity.this, "Permission granted", Toast.LENGTH_LONG).show();
+                Toast.makeText(Place_Details_activity.this, "Permission granted. Click map icon again", Toast.LENGTH_LONG).show();
             }else {
                 Toast.makeText(Place_Details_activity.this, "Permission denied", Toast.LENGTH_LONG).show();
             }
