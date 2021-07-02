@@ -112,7 +112,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     private Button button_featured_places;
     private RelativeLayout tap_to_see_places_near_you;
     private DatabaseReference userlocation, placeRef;
-    private ValueEventListener cacheListener, userLocationListener;
+    private ValueEventListener cacheListener,placeListener, userLocationListener;
 
 
 
@@ -188,14 +188,14 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
             }
         };
-        userlocation.addValueEventListener(cacheListener);
+        userlocation.addListenerForSingleValueEvent(cacheListener);
 
     }
 
     private void retrievePlace(String placeName){
         //Log.i("tuba", placeName);
         placeRef=FirebaseDatabase.getInstance().getReference().child("Place");
-        placeRef.addValueEventListener(new ValueEventListener() {
+        placeListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 int flag=0;
@@ -227,7 +227,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                         }
                     }
                 }
-
                 adapter1.notifyDataSetChanged();
             }
 
@@ -235,7 +234,9 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
-        });
+        };
+
+        placeRef.addListenerForSingleValueEvent(placeListener);
 
     }
 
@@ -723,12 +724,15 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     public void onNearPlacesButtonClick(View view) {
         userlocation.removeEventListener(cacheListener);
+        placeRef.removeEventListener(placeListener);
+
         progressBar.show();
+
         distance(latLng);
-        tap_to_see_places_near_you.setVisibility(View.GONE);
-        Intent intent = new Intent(Launching_Activity.this,Launching_Activity.class);
-        startActivity(intent);
-        finish();
+        //tap_to_see_places_near_you.setVisibility(View.GONE);
+        //Intent intent = new Intent(Launching_Activity.this,Launching_Activity.class);
+        //startActivity(intent);
+        //finish();
     }
 
     public class MyPlacesAdapter extends RecyclerView.Adapter<Launching_Activity.MyPlacesHolder> {
