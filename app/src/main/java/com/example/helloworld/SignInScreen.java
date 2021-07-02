@@ -300,11 +300,12 @@ public class SignInScreen extends AppCompatActivity {
             // if permissions aren't available,
             // request for permissions
             if(requestCount == 0) {
+                Log.i(TAG, "getLastLocation: "+requestCount);
                 requestPermissions();
                 requestCount++;
             }
             else{
-
+                Log.i(TAG, "getLastLocation: "+signed_in + " "+requestCount);
                 if(signed_in)
                 {
                     Toast.makeText(SignInScreen.this, "Already signed in", Toast.LENGTH_SHORT).show();
@@ -361,7 +362,7 @@ public class SignInScreen extends AppCompatActivity {
     // method to request for permissions
 
     private void requestPermissions() {
-
+        Log.i(TAG, "requestPermissions: ");
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
@@ -383,15 +384,19 @@ public class SignInScreen extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
             }
+            else{
+                getLastLocation();
+            }
         }
+
     }
+
     private LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             Location mLastLocation = locationResult.getLastLocation();
             Log.i(TAG, "onLocationResult: "+mLastLocation.getLatitude());
             getLastLocation();
-//            distance(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
         }
     };
 }
