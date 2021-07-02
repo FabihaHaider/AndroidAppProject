@@ -281,56 +281,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     }
 
 
-    /*private void checkCacheAndShowCache() {
-
-
-        email = email.replace('.',' ');
-        DatabaseReference userlocation = FirebaseDatabase.getInstance().getReference().child("UserLocation").child(email);
-        userlocation.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    Place place;
-                    linearLayout.setVisibility(View.VISIBLE);
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        String email = dataSnapshot.child("owner_email").getValue().toString();
-                        String place_name = dataSnapshot.child("name").getValue().toString();
-                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
-                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
-                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
-                        String category = dataSnapshot.child("category").getValue().toString();
-                        String description = dataSnapshot.child("description").getValue().toString();
-                        String image = dataSnapshot.child("image").getValue().toString();
-                        String address = dataSnapshot.child("address").getValue().toString();
-                        String house_no = dataSnapshot.child("house_no").getValue().toString();
-                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
-                        String area = dataSnapshot.child("area").getValue().toString().trim();
-
-                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_no, area, postal_code);
-                        place.setImage(image);
-                        arrayList_places_near_you.add(place);
-                    }
-                    adapter1.notifyDataSetChanged();
-              }
-
-                else {
-
-                    linearLayout.setVisibility(View.GONE);
-                    Log.i(TAG, "onDataChange: deosn't exist");
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-
-
-    }*/
-
 
 
 
@@ -581,7 +531,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         double lat1 = latLng1.latitude;
 
 
-       ref.addValueEventListener(new ValueEventListener() {
+       ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 arrayList_places_near_you.clear();
