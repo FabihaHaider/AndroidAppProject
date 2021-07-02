@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -71,6 +72,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
     private Double latitude, longitude;
     private Geocoder geocoder;
     private String source;
+    private ProgressDialog progressDialog;
 
 
 
@@ -230,6 +232,9 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
 
         geocoder = new Geocoder(Place_Details_activity.this, Locale.getDefault());
 
+        progressDialog = new ProgressDialog(Place_Details_activity.this);
+        progressDialog.setMessage("Deleting place record");
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -337,6 +342,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                progressDialog.show();
                                 deletePlace();
                             }
                         })
@@ -353,10 +359,11 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                     String name = dataSnapshot.child("name").getValue().toString();
                     if(name.equals(place.getName())){
+                        place.setKey(dataSnapshot.getKey());
 //                        dataSnapshot.getRef().removeValue();
 //                        Log.i("fabiha", "onDataChange: "+dataSnapshot.getRef().toString() + " "+ dataSnapshot.getRef());
 //                        dataSnapshot.getRef().setValue(null);
-                        databaseReference.child(dataSnapshot.getRef().getKey()).setValue(null);
+//                        databaseReference.child(dataSnapshot.getRef().getKey()).setValue(null);
                         break;
                     }
                 }
@@ -367,9 +374,16 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
 
             }
         });
+
+        Log.i("fabiha", "deletePlace: "+place.getKey());
+
+        databaseReference.child(place.getKey()).removeValue();
+
         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("Images").child(place.getName());
 
         databaseReference1.removeValue();
+
+        progressDialog.dismiss();
 
         Toast.makeText(this, "Place deleted", Toast.LENGTH_LONG).show();
 

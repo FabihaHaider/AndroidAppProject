@@ -326,10 +326,7 @@ public class Add_Place_activity extends AppCompatActivity {
                 checkAndInsert();
             }
         }
-
-
-
-
+        
     }
 
 
