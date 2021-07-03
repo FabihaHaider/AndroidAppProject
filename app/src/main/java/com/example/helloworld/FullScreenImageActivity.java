@@ -18,6 +18,7 @@ public class FullScreenImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_full_screen_image);
 
         bindUI();
+        setTitle("Full Screen Image");
 
         Intent callingActivityIntent = getIntent();
         if(callingActivityIntent != null)

@@ -81,6 +81,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 import static android.content.ContentValues.TAG;
@@ -164,6 +165,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void checkCacheAndShowCache() {
         cacheListener= new ValueEventListener() {
             @Override
@@ -192,6 +194,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void retrievePlace(String placeName){
         //Log.i("tuba", placeName);
         placeRef=FirebaseDatabase.getInstance().getReference().child("Place");
@@ -240,9 +243,10 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
     }
 
-
+    @SuppressWarnings("ConstantConditions")
     private void inflateFeaturedplaces() {
-        featured_places.addValueEventListener(new ValueEventListener() {
+        placeRef=FirebaseDatabase.getInstance().getReference().child("Place");
+        placeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Place place;
@@ -250,24 +254,26 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                 {
                     if(dataSnapshot.exists())
                     {
-                        String email = dataSnapshot.child("owner_email").getValue().toString();
-                        String place_name = dataSnapshot.child("name").getValue().toString();
-                        String address = dataSnapshot.child("address").getValue().toString();
-                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
-                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
-                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
-                        String category = dataSnapshot.child("category").getValue().toString();
-                        String description = dataSnapshot.child("description").getValue().toString();
-                        String image = dataSnapshot.child("image").getValue().toString();
-                        String house_number = dataSnapshot.child("house_no").getValue().toString();
-                        String area = dataSnapshot.child("area").getValue().toString();
-                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+                        if (dataSnapshot.child("ifFeatured").exists()) {
+                            String email = dataSnapshot.child("owner_email").getValue().toString();
+                            String place_name = dataSnapshot.child("name").getValue().toString();
+                            String address = dataSnapshot.child("address").getValue().toString();
+                            Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                            String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                            Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                            String category = dataSnapshot.child("category").getValue().toString();
+                            String description = dataSnapshot.child("description").getValue().toString();
+                            String image = dataSnapshot.child("image").getValue().toString();
+                            String house_number = dataSnapshot.child("house_no").getValue().toString();
+                            String area = dataSnapshot.child("area").getValue().toString();
+                            String postal_code = dataSnapshot.child("postal_code").getValue().toString();
 
-                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
-                        place.setImage(image);
-                        featured_places_array.add(place);
-                        image_model imageModel = new image_model(image);
-                        arrayList_featured_place.add(imageModel);
+                            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                            place.setImage(image);
+                            featured_places_array.add(place);
+                            image_model imageModel = new image_model(image);
+                            arrayList_featured_place.add(imageModel);
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -294,7 +300,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
 
@@ -443,11 +449,12 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                 return;
             } else {
                 String name = search_name.getText().toString();
-                search_name.getText().clear();
-                chipgroup1.clear();
-                chipgroup2.clear();
+
+                chipGroup_category.clearCheck();
+                chipGroup.clearCheck();
                 intent.putExtra("Name", name);
                 startActivity(intent);
+                search_name.getText().clear();
             }
         }
 
@@ -479,10 +486,12 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             }
 
             if(isThereArea || isThereCategory) {
-                search_name.getText().clear();
-                chipgroup1.clear();
-                chipgroup2.clear();
+
+                chipGroup_category.clearCheck();
+                chipGroup.clearCheck();
                 startActivity(intent);
+                search_name.getText().clear();
+
             }
         }
         else if (isThereViewAll)
@@ -492,7 +501,11 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
             } else {
                 String view_all = "";
                 intent.putExtra("View all", view_all);
+
+                chipGroup_category.clearCheck();
+                chipGroup.clearCheck();
                 startActivity(intent);
+                search_name.getText().clear();
             }
         }
 
@@ -513,7 +526,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         return super.onOptionsItemSelected(item);
     }
 
-
+    @SuppressWarnings("ConstantConditions")
     private void distance(LatLng latLng1) {
 
         dist = (int) 1000000.0;
@@ -760,12 +773,14 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
         chipGroup.setVisibility(View.VISIBLE);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+//        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
 
     }
 
     private void readSearch(MySearchCallback myCallback) {
+
+
 
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override

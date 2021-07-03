@@ -248,6 +248,7 @@ public class Add_Place_activity extends AppCompatActivity {
             add_place.setText("Update Place Details");
             place_first_pic.setVisibility(View.VISIBLE);
             Picasso.get().load(getPlace.getImage()).into(place_first_pic);
+            imageText.setText("Click the image below to add or delete picture");
 
         }
     }
@@ -344,10 +345,60 @@ public class Add_Place_activity extends AppCompatActivity {
 
     }
 
-
+    @SuppressWarnings("ConstantConditions")
     private void updateDatabase(Place place) {
         progressBar.setMessage("Updating to database");
+
+        /*DatabaseReference featured_places = FirebaseDatabase.getInstance().getReference().child("Featured_places");
+        featured_places.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+
+                for(DataSnapshot dataSnapshot: snapshot.getChildren())
+                {
+                    String name = dataSnapshot.child("name").getValue().toString();
+                    if(place.getName().equals(name))
+                    {
+                        Map<String, Object> map = new HashMap<>();
+                        map.clear();
+                        map.put("address", place.getAddress());
+                        map.put("house_no", place.getHouse_no());
+                        map.put("area", place.getArea());
+                        map.put("postal_code", place.getPostal_code());
+                        map.put("amount_of_charge", place.getAmount_of_charge());
+                        map.put("category", place.getCategory());
+                        map.put("charge_unit", place.getCharge_unit());
+                        map.put("description", place.getDescription());
+                        map.put("maxm_no_of_guests", place.getMaxm_no_of_guests());
+
+                        dataSnapshot.getRef().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                if(!Add_Place_activity.this.isFinishing() && progressBar != null){
+                                    progressBar.dismiss();
+                                }
+                                Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
+
+//                                Intent intent = new Intent(Add_Place_activity.this, My_places_activity.class);
+//                                startActivity(intent);
+                            }
+                        });
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });*/
+
+
         ref = FirebaseDatabase.getInstance().getReference().child("Place");
+
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -371,7 +422,6 @@ public class Add_Place_activity extends AppCompatActivity {
                         dataSnapshot.getRef().updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                map.clear();
                                 if(!Add_Place_activity.this.isFinishing() && progressBar != null){
                                     progressBar.dismiss();
                                 }
@@ -408,6 +458,7 @@ public class Add_Place_activity extends AppCompatActivity {
             for(EditText address_input : new EditText[]{house_no, area, postal_code}){
                 if(address_input.getText().toString().isEmpty()){
                     address_input.setText("Please enter a value");
+                    address_input.setTextColor(getResources().getColor(R.color.red, getApplicationContext().getTheme()));
                     allInputsValid = false;
                 }
             }

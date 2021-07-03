@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Place_Details_activity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/background_color">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,15 +25,35 @@
                         android:layout_marginBottom="20dp"
                         />
 
+                    <TextView
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
+                        android:layout_below="@+id/recyclerView_SHOW_IMAGES"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Swipe left to see more images"/>
+
             </RelativeLayout>
 
             <RelativeLayout
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="10dp">
+                    <LinearLayout
+                        android:id="@+id/textview_instructions_for_image_swipe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="10dp">
 
+
+
+                    </LinearLayout>
 
                     <LinearLayout
+                        android:layout_below="@+id/textview_instructions_for_image_swipe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -41,10 +62,13 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Place name"/>
+                                android:text="Place name"
+                                android:textStyle="bold"
+                                android:textSize="20sp"/>
 
                             <TextView
                                 android:id="@+id/place_name"
+                                android:layout_marginTop="10dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
@@ -55,10 +79,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Address"
-                                android:layout_marginTop="8dp"/>
+                                android:layout_marginTop="20dp"
+                                android:textStyle="bold"
+                                android:textSize="20sp"/>
 
 
                             <RelativeLayout
+                                android:layout_marginTop="10dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
@@ -79,7 +106,8 @@
                                         android:layout_alignParentRight="true"
                                         android:layout_toRightOf="@+id/address"
                                         android:onClick="onLocationClick"
-                                        android:src="@drawable/ic_baseline_location_on_24" />
+                                        android:src="@drawable/ic_baseline_location_on_24"
+                                        android:contentDescription="TODO" />
 
 
                             </RelativeLayout>
@@ -89,7 +117,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Price rate"
-                                android:layout_marginTop="8dp"/>
+                                android:layout_marginTop="20dp"
+                                android:textStyle="bold"
+                                android:textSize="20sp"/>
 
                             <TextView
                                 android:id="@+id/price_rate"
@@ -97,13 +127,16 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
                                 android:textIsSelectable="true"
-                                tools:text="Tk 25 daily"/>
+                                tools:text="Tk 25 daily"
+                                android:layout_marginTop="10dp"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Maximum number of guests"
-                                android:layout_marginTop="8dp"/>
+                                android:layout_marginTop="20dp"
+                                android:textStyle="bold"
+                                android:textSize="20sp"/>
 
                             <TextView
                                 android:id="@+id/guests_number"
@@ -111,13 +144,16 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
                                 android:textIsSelectable="true"
-                                tools:text="50"/>
+                                tools:text="50"
+                                android:layout_marginTop="10dp"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Purpose" />
+                                android:layout_marginTop="20dp"
+                                android:text="Purpose"
+                                android:textStyle="bold"
+                                android:textSize="20sp"/>
 
                             <TextView
                                 android:id="@+id/textview_category"
@@ -125,13 +161,16 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
                                 android:textIsSelectable="true"
-                                tools:text = "Educational purposes"/>
+                                tools:text = "Educational purposes"
+                                android:layout_marginTop="10dp"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Owner Phone Number" />
+                                android:layout_marginTop="20dp"
+                                android:text="Owner Phone Number"
+                                android:textStyle="bold"
+                                android:textSize="20sp"/>
 
                             <TextView
                                 android:id="@+id/textview_phone_number"
@@ -139,13 +178,16 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
                                 android:textIsSelectable="true"
-                                tools:text = "0111111"/>
+                                tools:text = "0111111"
+                                android:layout_marginTop="10dp"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Description" />
+                                android:layout_marginTop="20dp"
+                                android:text="Description"
+                                android:textStyle="bold"
+                                android:textSize="20sp"/>
 
 
 
@@ -155,7 +197,9 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
                                 android:textIsSelectable="true"
-                                tools:text="no parking allowed"/>
+                                tools:text="no parking allowed"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="20dp"/>
 
                             <LinearLayout
                                 android:id="@+id/layout_requestsButton"

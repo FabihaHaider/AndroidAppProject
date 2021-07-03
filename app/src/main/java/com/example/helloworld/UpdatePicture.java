@@ -133,6 +133,7 @@ public class UpdatePicture extends AppCompatActivity {
                             String url = String.valueOf(uri);
                             StorePicUri(url);
                             Toast.makeText(UpdatePicture.this, "Upload successful", Toast.LENGTH_LONG).show();
+                            choose_image.setEnabled(false);
                             upload_image.setEnabled(false);
                         }
                     }).addOnFailureListener(new OnFailureListener() {

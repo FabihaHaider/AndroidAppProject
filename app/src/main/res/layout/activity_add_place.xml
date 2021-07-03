@@ -8,7 +8,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.helloworld.Add_Place_activity">
+    tools:context="com.example.helloworld.Add_Place_activity"
+    android:background="@color/background_color">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,69 +23,82 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="31dp"
-            android:layout_marginTop="20dp"
-            android:text="Click the icon below to insert images"
+            android:layout_marginTop="30dp"
+            android:text="Insert images"
             android:textColor="#070707"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
+                    <ImageView
+                        android:id="@+id/place_first_pic"
+                        android:layout_marginBottom="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:elevation="10dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="30dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        />
 
                 <ImageView
-                    android:id="@+id/place_first_pic"
-                    android:layout_marginBottom="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:elevation="10dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="30dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone"
-                    />
+                    android:id="@+id/add_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="31dp"
+                    android:layout_marginTop="10dp"
+                    android:contextClickable="true"
+                    android:src="@drawable/ic_baseline_add_photo"/>
 
-            <ImageView
-                android:id="@+id/add_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="31dp"
-                android:layout_marginTop="10dp"
-                android:contextClickable="true"
-                android:src="@drawable/ic_baseline_add_photo" />
+                <ImageView
+                    android:id="@+id/image_added1"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="31dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_baseline_add_photo"
+                    android:visibility="gone"/>
 
-            <ImageView
-                android:id="@+id/image_added1"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="31dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_baseline_add_photo"
-                android:visibility="gone"/>
+                <ImageView
+                    android:id="@+id/image_added2"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="31dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_baseline_add_photo"
+                   android:visibility="gone"/>
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/image_added2"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="31dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_baseline_add_photo"
-                android:visibility="gone"/>
+                    <LinearLayout
+                        android:id="@+id/more_than_three_pics"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/show_extra_image"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="31dp"
+                        android:text="one more"
+                        android:gravity="center"
+                        android:visibility="gone"/>
+                    </LinearLayout>
 
-            <TextView
-                android:id="@+id/show_extra_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="31dp"
-                android:text="one more"
-                android:gravity="center"
-                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -113,11 +127,13 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="30dp"
-            android:ems="10"
             android:hint="Enter unique name"
             android:inputType="textMultiLine|textCapSentences"
-            android:textColor="#7E7676"
-            android:textSize="16sp" />
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:background="@drawable/et_bg"
+            android:backgroundTint="@color/white"
+            android:padding="10dp" />
 
         <TextView
             android:id="@+id/textview_address"
@@ -136,7 +152,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onAddressPickerClick"
-            android:text="map"/>
+            android:text="map"
+            android:drawableLeft="@drawable/ic_baseline_location_on_24"/>
 
 
         <EditText
@@ -150,9 +167,12 @@
             android:ems="10"
             android:hint="Enter address from map"
             android:inputType="textLongMessage|textPostalAddress|textCapSentences"
-            android:textColor="#7E7676"
-            android:textSize="14sp"
-            android:scrollHorizontally="true"/>
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:scrollHorizontally="true"
+            android:background="@drawable/et_bg"
+            android:backgroundTint="@color/white"
+            android:padding="10dp" />
 
 
         <Button
@@ -276,19 +296,21 @@
             android:ems="10"
             android:hint="Enter amount"
             android:inputType="number"
-            android:textColor="#7E7676"
-            android:textSize="14sp" />
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:background="@drawable/et_bg"
+            android:backgroundTint="@color/white"
+            android:padding="10dp"/>
 
         <Spinner
             android:id="@+id/spinner_charge_rate"
             android:layout_width="match_parent"
-            android:layout_height="21dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="10dp"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
             android:spinnerMode="dropdown"
-            android:backgroundTint="@color/black"
+            android:background="@drawable/spinner_bg"
             android:text="choose an unit" />
 
         <TextView
@@ -311,20 +333,25 @@
             android:ems="10"
             android:hint="Enter maximum number of guests allowed"
             android:inputType="number"
-            android:textColor="#7E7676"
-            android:textSize="16sp" />
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:background="@drawable/et_bg"
+            android:backgroundTint="@color/white"
+            android:padding="10dp" />
 
         <Spinner
             android:id="@+id/spinner_purpose"
             android:layout_width="match_parent"
-            android:layout_height="21dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="10dp"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:spinnerMode="dropdown"
-            android:backgroundTint="@color/black"
-            android:text="choose an unit" />
+            android:background = "@drawable/spinner_bg"
+            android:text="choose an unit"
+            />
+
 
         <TextView
             android:id="@+id/textView_description"
@@ -349,7 +376,11 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="10dp"
                 android:inputType="textMultiLine|textCapSentences"
-                android:hint="Add any notes (if any)" />
+                android:hint="Add any notes (if any)"
+                android:background="@drawable/et_bg"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/spinner_bg"
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -359,6 +390,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             android:text="Add Place" />
 
 

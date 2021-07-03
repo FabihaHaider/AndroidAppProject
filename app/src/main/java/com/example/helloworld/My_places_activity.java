@@ -140,7 +140,7 @@ public class My_places_activity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void showFeaturedPlaces() {
         DatabaseReference featured_places = FirebaseDatabase.getInstance().getReference().child("Featured_places");
-        featured_places.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (arrayList.size() != 0) {
@@ -150,24 +150,26 @@ public class My_places_activity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Place place;
                     if (snapshot.exists()) {
-                        String email = dataSnapshot.child("owner_email").getValue().toString();
-                        String place_name = dataSnapshot.child("name").getValue().toString();
-                        String address = dataSnapshot.child("address").getValue().toString();
-                        Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
-                        String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
-                        Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
-                        String category = dataSnapshot.child("category").getValue().toString();
-                        String description = dataSnapshot.child("description").getValue().toString();
-                        String image = dataSnapshot.child("image").getValue().toString();
-                        String house_number = dataSnapshot.child("house_no").getValue().toString();
-                        String area = dataSnapshot.child("area").getValue().toString();
-                        String postal_code = dataSnapshot.child("postal_code").getValue().toString();
+                        if (dataSnapshot.child("ifFeatured").exists()) {
+                            String email = dataSnapshot.child("owner_email").getValue().toString();
+                            String place_name = dataSnapshot.child("name").getValue().toString();
+                            String address = dataSnapshot.child("address").getValue().toString();
+                            Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString());
+                            String charge_rate = dataSnapshot.child("charge_unit").getValue().toString();
+                            Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString());
+                            String category = dataSnapshot.child("category").getValue().toString();
+                            String description = dataSnapshot.child("description").getValue().toString();
+                            String image = dataSnapshot.child("image").getValue().toString();
+                            String house_number = dataSnapshot.child("house_no").getValue().toString();
+                            String area = dataSnapshot.child("area").getValue().toString();
+                            String postal_code = dataSnapshot.child("postal_code").getValue().toString();
 
 
-                        place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
-                        place.setImage(image);
-                        arrayList.add(place);
+                            place = new Place(place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                            place.setImage(image);
+                            arrayList.add(place);
 
+                        }
                     }
                 }
                 myadapter.notifyDataSetChanged();

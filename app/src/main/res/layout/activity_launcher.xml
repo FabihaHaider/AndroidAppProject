@@ -141,7 +141,8 @@
                     android:id="@+id/flexbox_layout"
                     android:layout_width="362dp"
                     android:layout_height="match_parent"
-                    android:background="@color/spinner_bg"
+                    android:background="@drawable/et_bg"
+                    android:backgroundTint="@color/spinner_bg"
                     android:gravity="center"
                     android:padding="10dp">
 
@@ -153,11 +154,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginTop="1dp"
                         android:layout_marginEnd="1dp"
                         android:layout_marginRight="1dp"
-                        android:background="@color/spinner_bg"
-                        android:paddingTop="10dp"
+
                         android:src="@android:drawable/ic_search_category_default" />
 
 
@@ -171,7 +170,8 @@
                         android:inputType="text"
                         android:onClick="onChipViewClick"
                         android:textIsSelectable="true"
-                        app:layout_flexGrow="1" />
+                        app:layout_flexGrow="1"
+                        android:padding="10dp"/>
 
 
 
@@ -274,7 +274,6 @@
                         android:id="@+id/button_featured_places"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@color/quantum_grey"
                         android:layout_margin="10dp"
                         android:text="View All">
 

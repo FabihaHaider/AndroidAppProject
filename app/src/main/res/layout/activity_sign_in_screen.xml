@@ -100,7 +100,7 @@
                     android:layout_marginTop="30dp"
                     android:background="@drawable/btn_bg"
                     android:textColor="@color/white"
-                    android:backgroundTint="@color/purple_700"
+                    android:backgroundTint="@color/purple_500"
                     android:paddingRight="70dp"
                     android:paddingLeft="70dp"
                     android:text="Sign In Now"
@@ -128,7 +128,7 @@
             android:id="@+id/textView_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/purple_700"
+            android:textColor="@color/purple_500"
             android:background="@color/trasparent"
             android:textAllCaps="true"
             android:text="Sign up"/>
@@ -138,7 +138,7 @@
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/purple_700"
+            android:textColor="@color/purple_500"
             android:textAllCaps="true"
             android:background="@color/trasparent"
             android:text="Forgot Password"/>
