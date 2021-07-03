@@ -17,9 +17,13 @@ public class Request implements Serializable {
     String guestNum;
     String state;
 
+    //
+    String rate;
+    String totalCost;
 
 
-    public Request(String placeName, String location, String ownerMail, String senderMail, String startDate, String endDate, String startTime, String endTime, String bookingPurpose, String guestNum, String state) {
+
+    public Request(String placeName, String location, String ownerMail, String senderMail, String startDate, String endDate, String startTime, String endTime, String bookingPurpose, String guestNum, String state, String rate, String totalCost) {
         this.placeName = placeName;
         this.location = location;
         this.ownerMail = ownerMail;
@@ -31,6 +35,9 @@ public class Request implements Serializable {
         this.bookingPurpose = bookingPurpose;
         this.guestNum = guestNum;
         this.state = state;
+        ////
+        this.rate = rate;
+        this.totalCost = totalCost;
     }
 
     @Override
@@ -146,4 +153,22 @@ public class Request implements Serializable {
     }
 
 
+    //////
+
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
+    public String getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(String totalCost) {
+        this.totalCost = totalCost;
+    }
 }

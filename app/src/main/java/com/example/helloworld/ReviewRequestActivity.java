@@ -3,6 +3,7 @@ package com.example.helloworld;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,13 +21,20 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 public class ReviewRequestActivity extends AppCompatActivity {
-    TextView dateTime, purpose, guestNum, state, placeName, location, personDetails;
+    TextView dateTime, purpose, guestNum, state, placeName, location, personDetails, rate, totalCost;
     Button accept, decline;
     Request request;
     DatabaseReference databaseReference, userRef;
     String fromActivity;
     View divider;
 
+
+   @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ReviewRequestActivity.this, Requests_Activity.class));
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,9 @@ public class ReviewRequestActivity extends AppCompatActivity {
 
         bindUI();
 
+
+
+
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,6 +66,9 @@ public class ReviewRequestActivity extends AppCompatActivity {
                 decline.setVisibility(View.INVISIBLE);
                 state.setText("Accepted");
                 state.setTextColor(Color.GREEN);
+
+                //startActivity(new Intent(ReviewRequestActivity.this, Requests_Activity.class));
+                //finish();
 
             }
         });
@@ -69,6 +83,9 @@ public class ReviewRequestActivity extends AppCompatActivity {
                 decline.setVisibility(View.INVISIBLE);
                 state.setText("Declined");
                 state.setTextColor(Color.RED);
+
+                //startActivity(new Intent(ReviewRequestActivity.this, Requests_Activity.class));
+                //finish();
 
             }
         });
@@ -96,7 +113,11 @@ public class ReviewRequestActivity extends AppCompatActivity {
                         String guestNum = dataSnapshot.child("guestNum").getValue().toString();
                         String state = dataSnapshot.child("state").getValue().toString();
 
-                        databaseRequest= new Request(placeName,location, ownerMail, senderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state);
+                        ///
+                        String rate = dataSnapshot.child("rate").getValue().toString().trim().trim();
+                        String totalCost =dataSnapshot.child("totalCost").getValue().toString().trim().trim();
+
+                        databaseRequest= new Request(placeName,location, ownerMail, senderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state, rate, totalCost);
                         if(request.equals(databaseRequest)){
                             Log.i("debug2", placeName);
                             dataSnapshot.getRef().child("state").setValue(acceptance);
@@ -132,6 +153,9 @@ public class ReviewRequestActivity extends AppCompatActivity {
         userRef = FirebaseDatabase.getInstance().getReference().child("UserAccount");
         divider = findViewById(R.id.viewDivider);
         personDetails = findViewById(R.id.tvPersonDetails);
+        rate = findViewById(R.id.tvReviewRate);
+        totalCost = findViewById(R.id.tvReviewTotalCost);
+
 
 
         placeName.setText(request.getPlaceName());
@@ -139,6 +163,8 @@ public class ReviewRequestActivity extends AppCompatActivity {
         dateTime.setText("From "+request.getStartDate()+", "+request.getStartTime()+"\n"+"to "+request.getEndDate()+", "+request.getEndTime());
         purpose.setText("Purpose: "+ request.getBookingPurpose());
         guestNum.setText("Number of Guests:"+ request.getGuestNum());
+        rate.setText("Rate: "+ request.getRate());
+        totalCost.setText("Total "+request.getTotalCost());
 
         if(fromActivity.equals("SentRequest"))
             showDetail(request.getOwnerMail(), "Owner");
@@ -147,7 +173,7 @@ public class ReviewRequestActivity extends AppCompatActivity {
 
 
 
-        if(request.getState().equals("1") || request.getState().equals("2")){
+        if(request.getState().equals("1") || request.getState().equals("2")  || request.getState().equals("3")){
             accept.setEnabled(false);
             accept.setVisibility(View.INVISIBLE);
             decline.setEnabled(false);
@@ -156,9 +182,14 @@ public class ReviewRequestActivity extends AppCompatActivity {
                 state.setText("Accepted");
                 state.setTextColor(Color.GREEN);
             }
-            else{
+            else if(request.getState().equals("2")){
                 state.setText("Declined");
                 state.setTextColor(Color.RED);
+
+            }
+            else if(request.getState().equals("3")){
+                state.setText("Place not found");
+                state.setTextColor(Color.BLACK);
 
             }
 

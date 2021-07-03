@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class RequestAdapter extends FragmentStateAdapter {
     private Context context;
     private int totalTabs;
-    private String[] tabTitles = new String[]{"Sent Requests", "Received Requests"};
+    /*private String[] tabTitles = new String[]{"Received Requests", "Sent Requests"};*/
 
 
     public RequestAdapter(@NonNull @NotNull FragmentManager fragmentManager, @NonNull @NotNull Lifecycle lifecycle) {
@@ -27,9 +27,9 @@ public class RequestAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 1:
-                return new ReceivedRequestFragment();
+                return new SentRequestFragment();
         }
-        return new SentRequestFragment();
+        return new ReceivedRequestFragment();
     }
 
     @Override

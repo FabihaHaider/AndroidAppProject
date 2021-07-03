@@ -97,14 +97,18 @@ public class SentRequestFragment extends Fragment {
                         String endTime = dataSnapshot.child("endTime").getValue().toString().trim();
                         String purpose = dataSnapshot.child("bookingPurpose").getValue().toString().trim();
                         String guestNum = dataSnapshot.child("guestNum").getValue().toString().trim();
-                        String state = dataSnapshot.child("state").getValue().toString().trim().trim();
+                        String state = dataSnapshot.child("state").getValue().toString().trim();
+
+                        ////
+                        String rate = dataSnapshot.child("rate").getValue().toString().trim();
+                        String totalCost =dataSnapshot.child("totalCost").getValue().toString().trim();
 
                         if(dbSenderMail.equals(currentUserMail)){
 
-                            request= new Request(dbPlaceName,location, ownerMail, dbSenderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state);
+                            request= new Request(dbPlaceName,location, ownerMail, dbSenderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state, rate, totalCost);
                             requestList.add(request);
 
-                            retrievePlace(dbPlaceName);
+                            retrievePlace(request);
                             ////////////////////////////
                         }
 
@@ -124,19 +128,22 @@ public class SentRequestFragment extends Fragment {
     }
 
 
-    private void retrievePlace(String placeName){
+    private void retrievePlace(Request request){
+        String placeName = request.getPlaceName().trim();
         placeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-
+                boolean placeFound= false;
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Place place;
                     if (snapshot.exists()) {
                         String db_place_name = dataSnapshot.child("name").getValue().toString().trim();
-                        if(db_place_name.equals(placeName)) {
+                        String db_address = dataSnapshot.child("address").getValue().toString().trim();
+                        if(db_place_name.equals(placeName) && db_address.equals(request.getLocation().trim()) ) {
+                            placeFound= true;
 
                             String email = dataSnapshot.child("owner_email").getValue().toString().trim();
-                            String address = dataSnapshot.child("address").getValue().toString().trim();
+
                             Integer charge_amount = Integer.parseInt(dataSnapshot.child("amount_of_charge").getValue().toString().trim());
                             String charge_rate = dataSnapshot.child("charge_unit").getValue().toString().trim();
                             Integer number_of_guests = Integer.parseInt(dataSnapshot.child("maxm_no_of_guests").getValue().toString().trim());
@@ -148,13 +155,19 @@ public class SentRequestFragment extends Fragment {
                             String postal_code = dataSnapshot.child("postal_code").getValue().toString().trim();
 
 
-                            place = new Place(db_place_name, address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
+                            place = new Place(db_place_name, db_address, email, charge_amount, charge_rate, number_of_guests, description, category, image, house_number, area, postal_code);
                             place.setImage(image);
                             placeList.add(place);
-
+                            break;
 
                         }
                     }
+                }
+                if(!placeFound){
+                    Place place = new Place(placeName, request.getLocation(), request.getOwnerMail(), 0, "", Integer.valueOf(request.getGuestNum()), "", "not found", "", "", "", "");
+                    //place.setImage(image);
+                    placeList.add(place);
+
                 }
                 adapter.notifyDataSetChanged();
             }

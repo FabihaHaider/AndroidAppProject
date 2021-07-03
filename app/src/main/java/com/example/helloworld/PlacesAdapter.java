@@ -1,5 +1,6 @@
 package com.example.helloworld;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -42,7 +43,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
         this.source = source;
 
 
-
     }
 
     @NonNull
@@ -74,18 +74,29 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
             holder.charge.setText("");
             holder.rate.setText("");
 
-            if(request.getState().equals("0")) {
-                holder.charge.setText("Not reviewed");
-                holder.charge.setTextColor(Color.BLACK);
+            if(place.getCategory().equals("not found")){
+               request.setState("3");
             }
-            else if(request.getState().equals("1")) {
-                holder.charge.setText("Accepted");
-                holder.charge.setTextColor(Color.GREEN);
+
+            if(request.getState().equals("0") || request.getState().equals("1") || request.getState().equals("2") || request.getState().equals("3")) {
+                    if (request.getState().equals("0")) {
+                        holder.charge.setText("Not reviewed");
+                        holder.charge.setTextColor(Color.BLACK);
+                    }
+                    else if (request.getState().equals("1")) {
+                        holder.charge.setText("Accepted");
+                        holder.charge.setTextColor(Color.GREEN);
+                    }
+                    else if(request.getState().equals("2")){
+                        holder.charge.setText("Declined");
+                        holder.charge.setTextColor(Color.RED);
+                    }
+                    else{
+                        holder.charge.setText("Place not found");
+                        holder.charge.setTextColor(Color.BLACK);
+                    }
             }
-            else if(request.getState().equals("2")) {
-                holder.charge.setText("Declined");
-                holder.charge.setTextColor(Color.RED);
-            }
+
 
         }
 
@@ -103,6 +114,10 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
                 }
                 else if(source.equals("SentRequestFragment" ) ){
                     final Request request = reqModels.get(models.size()-1-position);
+                    if(place.getCategory().equals("not found")) {
+                        request.setState("3"); //not found
+                    }
+
                     Intent intent = new Intent(context, ReviewRequestActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("fromActivity", "SentRequest");
@@ -111,9 +126,13 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
 
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                    ((Activity)context).finish();
                 }
                 else if(source.equals("ReceivedRequestFragment" ) ){
                     final Request request = reqModels.get(models.size()-1-position);
+                    if(place.getCategory().equals("not found")) {
+                        request.setState("3"); //not found
+                    }
                     Intent intent = new Intent(context, ReviewRequestActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("fromActivity", "ReceivedRequest");
@@ -122,11 +141,12 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesHolder>{
 
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                    ((Activity)context).finish();
                 }
             }
         });
     }
-
+    //
     @Override
     public int getItemCount() {
         return models.size();
