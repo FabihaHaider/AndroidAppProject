@@ -104,6 +104,10 @@ public class AddressPicker extends AppCompatActivity{
                             mMap = googleMap;
 
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            if(latLng == null){
+                                Toast.makeText(AddressPicker.this, "Turn your location on", Toast.LENGTH_LONG).show();
+                            }
+//                            Log.i("fabiha", "onMapReady: "+ latLng.latitude + " "+ latLng.longitude);
                             MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(getAddress(location.getLatitude(), location.getLongitude())).draggable(true);
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
                             googleMap.addMarker(markerOptions).showInfoWindow();
@@ -211,8 +215,6 @@ public class AddressPicker extends AppCompatActivity{
                 }else {
                     Toast.makeText(AddressPicker.this, "Address not found", Toast.LENGTH_LONG).show();
                 }
-
-                return address;
 
 
             } catch (IOException ioException) {

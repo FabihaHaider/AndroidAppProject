@@ -111,7 +111,7 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
 
     }
 
-    @SuppressLint("SetTextI18n")
+
     private void bindUI() {
 
 
@@ -154,7 +154,7 @@ public class ImageFolder extends AppCompatActivity implements MyImageAdapter.OnI
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(this, "Normal click", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

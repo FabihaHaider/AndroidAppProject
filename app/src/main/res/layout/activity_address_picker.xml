@@ -34,7 +34,9 @@
             android:textSize="18sp"
             android:scrollHorizontally="true"
             android:drawableRight = "@drawable/ic_baseline_content_copy_24"
-            android:onClick="onCopyTextClick"/>
+            android:onClick="onCopyTextClick"
+            android:textIsSelectable="true"
+            android:isScrollContainer="true"/>
 
 
     </RelativeLayout>

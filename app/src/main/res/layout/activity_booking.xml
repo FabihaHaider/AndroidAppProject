@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BookingActivity">
+    tools:context=".BookingActivity"
+    android:background="@color/background_color">
 
     <TextView
         android:id="@+id/tvBookingPlaceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name"
+        android:text="Name"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.111"
@@ -24,8 +26,9 @@
         android:id="@+id/tvBookingPlaceLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="location"
+        android:text="Location"
         android:textSize="20sp"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -58,7 +61,10 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:background="@drawable/et_bg"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"/>
 
     <EditText
         android:id="@+id/etBookingStartTime"
@@ -72,7 +78,10 @@
         app:layout_constraintHorizontal_bias="0.464"
         app:layout_constraintStart_toEndOf="@+id/etBookingStartDate"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        android:background="@drawable/et_bg"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/textView7"
@@ -99,7 +108,10 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView7"
         app:layout_constraintTop_toBottomOf="@+id/textView7"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:background="@drawable/et_bg"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"/>
 
     <EditText
         android:id="@+id/etBookingEndTime"
@@ -113,7 +125,10 @@
         app:layout_constraintHorizontal_bias="0.464"
         app:layout_constraintStart_toEndOf="@+id/etBookingEndDate"
         app:layout_constraintTop_toBottomOf="@+id/etBookingStartTime"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        android:background="@drawable/et_bg"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/tvBookingDuration"
@@ -121,6 +136,7 @@
         android:layout_height="wrap_content"
         android:text="Duration:"
         android:textStyle="bold"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -134,6 +150,7 @@
         android:layout_height="wrap_content"
         android:text="Cost:"
         android:textStyle="bold"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -148,12 +165,16 @@
         android:ems="10"
         android:hint="Enter Your Booking Purpose"
         android:inputType="textPersonName"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvBookingCost"
         app:layout_constraintTop_toBottomOf="@+id/tvBookingCost"
-        app:layout_constraintVertical_bias="0.031" />
+        app:layout_constraintVertical_bias="0.031"
+        android:background="@drawable/et_bg"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"/>
 
     <EditText
         android:id="@+id/etBookingGuest"
@@ -167,7 +188,11 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etBookingPurpose"
         app:layout_constraintTop_toBottomOf="@+id/etBookingPurpose"
-        app:layout_constraintVertical_bias="0.033" />
+        app:layout_constraintVertical_bias="0.033"
+        android:background="@drawable/et_bg"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"/>
 
     <Button
         android:id="@+id/btSendRequest"
@@ -186,6 +211,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="alert message"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -203,7 +229,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etBookingGuest"
         app:layout_constraintTop_toBottomOf="@+id/etBookingGuest"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginTop="15dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -124,7 +124,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
 
     }
 
-
+    @SuppressWarnings("ConstantConditions")
     private void readData(){
         wishlistRef= FirebaseDatabase.getInstance().getReference().child("Wishlist");
 
@@ -203,7 +203,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
     }
 
 
-
+    @SuppressWarnings("ConstantConditions")
     private void bindUI() {
         place_name = findViewById(R.id.place_name);
         address = findViewById(R.id.address);
@@ -239,6 +239,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
     }
 
     @SuppressLint("SetTextI18n")
+    @SuppressWarnings("ConstantConditions")
     private void bindLabels() {
 
         databaseReference_user.addValueEventListener(new ValueEventListener() {
@@ -267,11 +268,11 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
         place_name.setText(place.getName());
         address.setText(place.getAddress());
         number_of_guests.setText(Integer.toString(place.getMaxm_no_of_guests()));
-        price_rate.setText("Tk " + Integer.toString(place.getAmount_of_charge()) + " " + place.getCharge_unit());
+        price_rate.setText("Tk " + place.getAmount_of_charge() + " " + place.getCharge_unit());
         category.setText(place.getCategory());
         description.setText(place.getDescription());
 
-        if(place.getDescription().toString() == "none"){
+        if(place.getDescription().equals("none")){
             description.setHintTextColor(Color.DKGRAY);
         }
 
@@ -352,6 +353,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                 .show();
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void deletePlace() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Place");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -405,6 +407,9 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                             Log.i("fabiha", "onSuccess: "+latitude+" "+longitude);
                             showLocation(getAddress(latitude, longitude));
                         }
+                        else{
+                            Toast.makeText(Place_Details_activity.this, "Turn your location on", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -416,7 +421,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             }
         }else {
-            //permission granted
+            //
         }
 
     }

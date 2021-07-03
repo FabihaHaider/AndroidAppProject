@@ -159,7 +159,7 @@ public class SignInScreen extends AppCompatActivity {
                     checkEmailVerification(latLng1);
                 }
                 else{
-                    Toast.makeText(SignInScreen.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignInScreen.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                     counter--;
 
                     if(counter == 0){

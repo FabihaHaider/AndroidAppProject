@@ -4,7 +4,7 @@
     <item
         android:id="@+id/homepage"
         android:icon="@drawable/ic_baseline_homepage"
-        android:title="homepage" />
+        android:title="home" />
     <item android:id="@+id/requests"
         android:icon="@drawable/ic_baseline_requests"
         android:title="requests"/>
