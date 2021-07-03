@@ -26,8 +26,8 @@ public class Requests_Activity extends AppCompatActivity {
         viewPager = findViewById(R.id.requestsViewPager);
         tabLayout = findViewById(R.id.requestsTabLayout);
 
-        tabLayout.addTab(tabLayout.newTab().setText("Sent Requests"));
         tabLayout.addTab(tabLayout.newTab().setText("Received Requests"));
+        tabLayout.addTab(tabLayout.newTab().setText("Sent Requests"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         adapter = new RequestAdapter(getSupportFragmentManager(), getLifecycle());

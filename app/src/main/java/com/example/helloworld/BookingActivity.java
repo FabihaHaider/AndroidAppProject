@@ -50,7 +50,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
     private Calendar calendar;
     private Calendar gCalendar;
     private DatabaseReference databaseReference;
-    private String sFromDate, sToDate, sFromTime, sToTime, sPurpose, sGuestNum;
+    private String sFromDate, sToDate, sFromTime, sToTime, sPurpose, sGuestNum, sRate, sTotalCost;
     private Date thisFromDateTime, thisToDateTime;
     private boolean ret;
     private ArrayList<Request> arrayList;
@@ -129,7 +129,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onCallback(List<Request> list){
                 Log.i("tuba3" , String.valueOf(list.size()));
-                int flag=1;
+                boolean overlappingDate = false;
                 for (int i=0;i<list.size();i++){
                     Request req = list.get(i);
                     String senderMail= req.getSenderMail().trim();
@@ -138,15 +138,20 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     String startTime = req.getStartTime().trim();
                     String endTime = req.getEndTime().trim();
                     String placeName= req.getPlaceName().trim();
+                    String location = req.getLocation().trim();
                     String state = req.getState().trim();
 
-                    if(senderMail.equals(currentUserMail) && placeName.equals(place.getName().trim()) && startDate.equals(sFromDate) && endDate.equals(sToDate)
+                    if(senderMail.equals(currentUserMail) && placeName.equals(place.getName().trim()) && location.equals(place.getAddress().trim()) && startDate.equals(sFromDate) && endDate.equals(sToDate)
                             && startTime.equals(sFromTime) && endTime.equals(sToTime)){
+
+
+
                         Log.i("tuba", "YES1");
                         alert2.setVisibility(View.VISIBLE);
+
                         alert2.setText("! This request has been sent");
                         alert2.setTextColor(Color.RED);
-                        flag=0;
+                        overlappingDate=true;
                         break;
                     }
 
@@ -163,12 +168,12 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         e.printStackTrace();
                     }
 
-                    if(placeName.equals(place.getName().trim()) && state.equals("1") ){
+                    if(placeName.equals(place.getName().trim()) && state.equals("1") && location.equals(place.getAddress().trim()) ){
                         if(dbFromDateTime.compareTo(thisFromDateTime)<=0 && dbToDateTime.compareTo(thisFromDateTime)>0){
                             alert2.setVisibility(View.VISIBLE);
                             alert2.setText("! This timeslot is already booked. Please try another.");
                             alert2.setTextColor(Color.RED);
-                            flag=0;
+                            overlappingDate= true;
                             break;
 
                         }
@@ -176,20 +181,20 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                             alert2.setVisibility(View.VISIBLE);
                             alert2.setText("! This timeslot is already booked. Please try another.");
                             alert2.setTextColor(Color.RED);
-                            flag=0;
+                            overlappingDate= true;
                             break;
 
                         }
                         else {
-                            flag=1;
+                            overlappingDate= false;
                         }
 
 
                     }
-                    else flag=1;
+                    else overlappingDate= false;
 
                 }
-                if(flag==1){
+                if(!overlappingDate){
                     insertRequest();
                 }
 
@@ -221,8 +226,11 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                         String purpose = dataSnapshot.child("bookingPurpose").getValue().toString();
                         String guestNum = dataSnapshot.child("guestNum").getValue().toString();
                         String state = dataSnapshot.child("state").getValue().toString();
+                        ////
+                        String rate = dataSnapshot.child("rate").getValue().toString();
+                        String totalCost = dataSnapshot.child("totalCost").getValue().toString();
 
-                        request= new Request(placeName,location, ownerMail, senderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state);
+                        request= new Request(placeName,location, ownerMail, senderMail, startDate, endDate, startTime, endTime,purpose,guestNum, state, rate, totalCost);
                         arrayList.add(request);
 
                     }
@@ -253,7 +261,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String sUserEmail = user.getEmail();
 
-        Request request = new Request(place.getName(),place.getAddress(), place.getOwner_email(), sUserEmail, sFromDate, sToDate, sFromTime, sToTime, sPurpose, sGuestNum, state);
+        Request request = new Request(place.getName(),place.getAddress(), place.getOwner_email(), sUserEmail, sFromDate, sToDate, sFromTime, sToTime, sPurpose, sGuestNum, state, sRate, sTotalCost);
         String key = databaseReference.push().getKey();
         databaseReference.child(key).setValue(request);
 
@@ -282,10 +290,6 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
         placeName.setText(place.getName());
         location.setText(place.getAddress());
-//        duration.setText("");
-//        cost.setText("");
-//        alert.setText("");
-//        alert2.setText("");
 
         if(place.getCharge_unit().trim().equals("Daily")){
             fromTime.setVisibility(View.GONE);
@@ -398,7 +402,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             try {
-//                alert2.setText("");
+                alert2.setVisibility(View.GONE);
                 calculateCostDuration();
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -435,11 +439,14 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                 alert.setTextColor(Color.RED);
 //                duration.setText("");
 //                cost.setText("");
+                duration.setVisibility(View.GONE);
+                cost.setVisibility(View.GONE);
 
             }
 
             else{
                 //calculate
+                sRate = place.getAmount_of_charge()+" "+ "taka"+" "+place.getCharge_unit();
                 if(place.getCharge_unit().equals("Daily")){
                     long diff= dToDate.getTime() - dFromDate.getTime();
                     diff= diff/(24*60*60*1000);
@@ -450,6 +457,9 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     duration.setText("Duration: "+diff + " day(s)");
                     cost.setText("Cost: BDT "+amount);
 //                    alert.setText("");
+                    alert.setVisibility(View.GONE);
+
+                    sTotalCost = "Cost: BDT "+amount;
 
 
                 }
@@ -465,6 +475,9 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     duration.setText("Duration: "+fdiff + " hour(s) (considered as "+ceilFdiff+" hour(s))");
                     cost.setText("Cost: BDT "+amount);
 //                    alert.setText("");
+                    alert.setVisibility(View.GONE);
+
+                    sTotalCost = "Cost: BDT "+amount;
 
                 }
             }

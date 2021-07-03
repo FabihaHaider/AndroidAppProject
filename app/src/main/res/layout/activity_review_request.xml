@@ -14,22 +14,20 @@
         android:text="Name"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.058" />
+        app:layout_constraintVertical_bias="0.036" />
 
     <TextView
         android:id="@+id/tvReviewPlaceLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Location"
-        android:textStyle="bold"
         android:textSize="20sp"
-        android:layout_marginTop="15dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -43,7 +41,6 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="16sp"
-        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -85,10 +82,10 @@
         android:text="Decline"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.186"
+        app:layout_constraintHorizontal_bias="0.137"
         app:layout_constraintStart_toStartOf="@+id/tvReviewGuestNum"
         app:layout_constraintTop_toBottomOf="@+id/tvReviewGuestNum"
-        app:layout_constraintVertical_bias="0.786" />
+        app:layout_constraintVertical_bias="0.847" />
 
     <Button
         android:id="@+id/btReviewAccept"
@@ -107,11 +104,11 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btReviewAccept"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/btReviewDecline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.792" />
+        app:layout_constraintVertical_bias="0.835" />
 
     <TextView
         android:id="@+id/textView6"
@@ -119,8 +116,7 @@
         android:layout_height="wrap_content"
         android:text="Date and Time:"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginStart="10dp"
+        android:textStyle="normal"
         app:layout_constraintBottom_toTopOf="@+id/tvReviewDateTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -130,13 +126,14 @@
 
     <View
         android:id="@+id/viewDivider"
-        android:layout_width="416dp"
+        android:layout_width="300dp"
         android:layout_height="2dp"
         android:background="#837D7D"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btReviewAccept"
+        app:layout_constraintStart_toStartOf="@+id/btReviewDecline"
         app:layout_constraintTop_toBottomOf="@+id/tvReviewGuestNum"
-        app:layout_constraintVertical_bias="0.085" />
+        app:layout_constraintVertical_bias="0.248" />
 
     <TextView
         android:id="@+id/tvPersonDetails"
@@ -149,6 +146,32 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvReviewGuestNum"
         app:layout_constraintTop_toBottomOf="@+id/viewDivider"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintVertical_bias="0.13" />
+
+    <TextView
+        android:id="@+id/tvReviewRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/viewDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvReviewGuestNum"
+        app:layout_constraintTop_toBottomOf="@+id/tvReviewGuestNum"
+        app:layout_constraintVertical_bias="0.198" />
+
+    <TextView
+        android:id="@+id/tvReviewTotalCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/viewDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvReviewRate"
+        app:layout_constraintTop_toBottomOf="@+id/tvReviewRate"
+        app:layout_constraintVertical_bias="0.322" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
