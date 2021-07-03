@@ -142,7 +142,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etBookingEndDate"
         app:layout_constraintTop_toBottomOf="@+id/tvBookingAlert"
-        app:layout_constraintVertical_bias="0.021" />
+        app:layout_constraintVertical_bias="0.021"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tvBookingCost"
@@ -217,7 +218,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etBookingEndDate"
         app:layout_constraintTop_toBottomOf="@+id/etBookingEndDate"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tvBookingAlert2"
@@ -230,7 +232,8 @@
         app:layout_constraintStart_toStartOf="@+id/etBookingGuest"
         app:layout_constraintTop_toBottomOf="@+id/etBookingGuest"
         app:layout_constraintVertical_bias="0.0"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:visibility="gone"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
