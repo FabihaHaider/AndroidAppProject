@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ClipData;
@@ -82,17 +83,9 @@ public class AddressPicker extends AppCompatActivity{
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
+
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
@@ -104,10 +97,6 @@ public class AddressPicker extends AppCompatActivity{
                             mMap = googleMap;
 
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                            if(latLng == null){
-                                Toast.makeText(AddressPicker.this, "Turn your location on", Toast.LENGTH_LONG).show();
-                            }
-//                            Log.i("fabiha", "onMapReady: "+ latLng.latitude + " "+ latLng.longitude);
                             MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(getAddress(location.getLatitude(), location.getLongitude())).draggable(true);
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
                             googleMap.addMarker(markerOptions).showInfoWindow();
@@ -170,6 +159,9 @@ public class AddressPicker extends AppCompatActivity{
 
                         }
                     });
+                }
+                else{
+                    Toast.makeText(AddressPicker.this, "Turn your location on", Toast.LENGTH_LONG).show();
                 }
             }
         });
