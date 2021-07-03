@@ -144,6 +144,11 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     if(senderMail.equals(currentUserMail) && placeName.equals(place.getName().trim()) && location.equals(place.getAddress().trim()) && startDate.equals(sFromDate) && endDate.equals(sToDate)
                             && startTime.equals(sFromTime) && endTime.equals(sToTime)){
 
+
+
+                        Log.i("tuba", "YES1");
+                        alert2.setVisibility(View.VISIBLE);
+
                         alert2.setText("! This request has been sent");
                         alert2.setTextColor(Color.RED);
                         overlappingDate=true;
@@ -165,6 +170,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
                     if(placeName.equals(place.getName().trim()) && state.equals("1") && location.equals(place.getAddress().trim()) ){
                         if(dbFromDateTime.compareTo(thisFromDateTime)<=0 && dbToDateTime.compareTo(thisFromDateTime)>0){
+                            alert2.setVisibility(View.VISIBLE);
                             alert2.setText("! This timeslot is already booked. Please try another.");
                             alert2.setTextColor(Color.RED);
                             overlappingDate= true;
@@ -172,6 +178,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
                         }
                         else if(dbFromDateTime.compareTo(thisFromDateTime)>0 && dbFromDateTime.compareTo(thisToDateTime)<=0){
+                            alert2.setVisibility(View.VISIBLE);
                             alert2.setText("! This timeslot is already booked. Please try another.");
                             alert2.setTextColor(Color.RED);
                             overlappingDate= true;
@@ -283,10 +290,6 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
         placeName.setText(place.getName());
         location.setText(place.getAddress());
-        duration.setText("");
-        cost.setText("");
-        alert.setText("");
-        alert2.setText("");
 
         if(place.getCharge_unit().trim().equals("Daily")){
             fromTime.setVisibility(View.GONE);
@@ -399,7 +402,7 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             try {
-                alert2.setText("");
+                alert2.setVisibility(View.GONE);
                 calculateCostDuration();
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -431,10 +434,13 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
 
             if(dFromDate.compareTo(dToDate)>0 || (dFromDate.compareTo(dToDate)==0 && dFromTime.compareTo(dToTime)>=0) || thisToDateTime.compareTo(new Date())<=0){
                 //invalid
+                alert.setVisibility(View.VISIBLE);
                 alert.setText("! invalid date and time");
                 alert.setTextColor(Color.RED);
-                duration.setText("");
-                cost.setText("");
+//                duration.setText("");
+//                cost.setText("");
+                duration.setVisibility(View.GONE);
+                cost.setVisibility(View.GONE);
 
             }
 
@@ -446,9 +452,12 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     diff= diff/(24*60*60*1000);
                     diff++;
                     long amount = diff * place.getAmount_of_charge();
+                    duration.setVisibility(View.VISIBLE);
+                    cost.setVisibility(View.VISIBLE);
                     duration.setText("Duration: "+diff + " day(s)");
                     cost.setText("Cost: BDT "+amount);
-                    alert.setText("");
+//                    alert.setText("");
+                    alert.setVisibility(View.GONE);
 
                     sTotalCost = "Cost: BDT "+amount;
 
@@ -461,9 +470,12 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
                     fdiff= (double) round(fdiff*100)/100;
                     double ceilFdiff= ceil(fdiff);
                     long amount = (long) (ceilFdiff * place.getAmount_of_charge());
+                    duration.setVisibility(View.VISIBLE);
+                    cost.setVisibility(View.VISIBLE);
                     duration.setText("Duration: "+fdiff + " hour(s) (considered as "+ceilFdiff+" hour(s))");
                     cost.setText("Cost: BDT "+amount);
-                    alert.setText("");
+//                    alert.setText("");
+                    alert.setVisibility(View.GONE);
 
                     sTotalCost = "Cost: BDT "+amount;
 
