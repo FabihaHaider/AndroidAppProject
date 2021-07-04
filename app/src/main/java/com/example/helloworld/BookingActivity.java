@@ -66,6 +66,8 @@ public class BookingActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
 
+        setTitle("Booking");
+
         if (getIntent().getExtras() != null) {
             Object place = getIntent().getExtras().get("place");
             if (place != null) {
