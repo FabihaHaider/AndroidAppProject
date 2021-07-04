@@ -134,7 +134,9 @@ public class My_places_activity extends AppCompatActivity {
                 invalidateOptionsMenu();
                 setTitle("My Places");
             }
+
         }
+
 
     }
     @SuppressWarnings("ConstantConditions")

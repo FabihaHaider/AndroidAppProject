@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="31dp"
             android:layout_marginTop="30dp"
-            android:text="Insert images"
+            android:text="Insert at least three images"
             android:textColor="#070707"
             android:textSize="16sp"
             android:textStyle="bold"/>
@@ -193,7 +193,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:orientation="vertical"
-            android:visibility="gone">
+            >
 
             <TextView
                 android:id="@+id/textview_house_no"
@@ -216,9 +216,12 @@
                 android:ems="10"
                 android:hint="Enter House number"
                 android:inputType="textLongMessage|textPostalAddress|textCapSentences"
-                android:textColor="#7E7676"
-                android:textSize="14sp"
-                android:scrollHorizontally="true"/>
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:scrollHorizontally="true"
+                android:background="@drawable/et_bg"
+                android:backgroundTint="@color/white"
+                android:padding="10dp"/>
 
 
             <TextView
@@ -243,9 +246,12 @@
                 android:ems="10"
                 android:hint="Enter area"
                 android:inputType="textMultiLine|textLongMessage|textPostalAddress|textCapSentences"
-                android:textColor="#7E7676"
-                android:textSize="14sp"
-                android:scrollHorizontally="true"/>
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:scrollHorizontally="true"
+                android:background="@drawable/et_bg"
+                android:backgroundTint="@color/white"
+                android:padding="10dp"/>
 
             <TextView
                 android:id="@+id/textview_postal_code"
@@ -268,9 +274,12 @@
                 android:ems="10"
                 android:hint="Enter postal code"
                 android:inputType="textLongMessage|textPostalAddress|textCapSentences"
-                android:textColor="#7E7676"
-                android:textSize="14sp"
-                android:scrollHorizontally="true"/>
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:scrollHorizontally="true"
+                android:background="@drawable/et_bg"
+                android:backgroundTint="@color/white"
+                android:padding="10dp"/>
 
         </LinearLayout>
 
@@ -294,7 +303,7 @@
             android:layout_marginLeft="30dp"
             android:layout_marginTop="10dp"
             android:ems="10"
-            android:hint="Enter amount"
+            android:hint="Enter amount in Taka"
             android:inputType="number"
             android:textColor="@color/black"
             android:textSize="16sp"

@@ -428,8 +428,8 @@ public class Add_Place_activity extends AppCompatActivity {
                                 Toast.makeText(Add_Place_activity.this, "Place has been updated successfully", Toast.LENGTH_LONG).show();
 
                                 finish();
-//                                Intent intent = new Intent(Add_Place_activity.this, My_places_activity.class);
-//                                startActivity(intent);
+                                Intent intent = new Intent(Add_Place_activity.this, My_places_activity.class);
+                                startActivity(intent);
                             }
                         });
 
@@ -465,6 +465,13 @@ public class Add_Place_activity extends AppCompatActivity {
 
             String address = house_no.getText().toString() + ", "+area.getText().toString() + ", "+postal_code.getText().toString();
             if(!checkAddressValidity(address.trim())) {
+                allInputsValid = false;
+                Toast.makeText(Add_Place_activity.this, "Enter a valid address. Select address from map if necessary", Toast.LENGTH_LONG).show();
+            }
+        }
+        else{
+            if(!checkAddressValidity(address_from_map))
+            {
                 allInputsValid = false;
                 Toast.makeText(Add_Place_activity.this, "Enter a valid address. Select address from map if necessary", Toast.LENGTH_LONG).show();
             }

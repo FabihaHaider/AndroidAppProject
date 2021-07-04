@@ -27,6 +27,8 @@ public class ResetPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
+        setTitle("Reset Password");
+
         email = findViewById(R.id.etResetMail);
         reset = findViewById(R.id.btResetPassword);
         firebaseAuth = FirebaseAuth.getInstance();

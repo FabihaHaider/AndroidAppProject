@@ -332,6 +332,7 @@ public class Place_Details_activity extends AppCompatActivity implements MyImage
     }
 
     private void onEdit() {
+        finish();
         Intent intent = new Intent(Place_Details_activity.this, Add_Place_activity.class).putExtra("place", place);
         startActivity(intent);
     }

@@ -246,12 +246,16 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
     @SuppressWarnings("ConstantConditions")
     private void inflateFeaturedplaces() {
         placeRef=FirebaseDatabase.getInstance().getReference().child("Place");
+
         placeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Place place;
                 for (DataSnapshot dataSnapshot: snapshot.getChildren())
                 {
+                    if(!arrayList_featured_place.isEmpty()){
+                        arrayList_featured_place.clear();
+                    }
                     if(dataSnapshot.exists())
                     {
                         if (dataSnapshot.child("ifFeatured").exists()) {
@@ -284,6 +288,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
             }
         });
+
     }
 
 
