@@ -307,7 +307,7 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4};
+        int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3, R.drawable.image4, R.drawable.image5};
 
         sliderView = findViewById(R.id.imageSlider);
         MySliderAdapter mySliderAdapter = new MySliderAdapter(images, Launching_Activity.this);
