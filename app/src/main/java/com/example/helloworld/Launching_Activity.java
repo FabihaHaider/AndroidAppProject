@@ -253,9 +253,6 @@ public class Launching_Activity extends AppCompatActivity implements MyImageAdap
                 Place place;
                 for (DataSnapshot dataSnapshot: snapshot.getChildren())
                 {
-                    if(!arrayList_featured_place.isEmpty()){
-                        arrayList_featured_place.clear();
-                    }
                     if(dataSnapshot.exists())
                     {
                         if (dataSnapshot.child("ifFeatured").exists()) {
